@@ -40,12 +40,12 @@
       <intentions xmi:type="edu.toronto.cs.openome_model:Goal" xmi:id="_guJsALQ2EeeH0cvGH7A_lw" name="Handle Request" parentDecompositions="_jaFRELTWEeemDrxI7bIXrQ"/>
       <intentions xmi:type="edu.toronto.cs.openome_model:Task" xmi:id="_rwYqYLQ2EeeH0cvGH7A_lw" name="Process Request" decompositions="_jaFRELTWEeemDrxI7bIXrQ" parentDecompositions="_t6bEILSmEee4CYAIFqV9BA _Rj22YLTWEeemDrxI7bIXrQ"/>
       <intentions xmi:type="edu.toronto.cs.openome_model:Task" xmi:id="_sTmFILQ2EeeH0cvGH7A_lw" dependencyFrom="_b_seALQkEeesNeeMjj9O4w" name="Get Notification" decompositions="_vZTyQLTNEeemDrxI7bIXrQ"/>
-      <intentions xmi:type="edu.toronto.cs.openome_model:Task" xmi:id="_FH_2ELQ7EeegAuPkb6ZuNA" name="Generate parse error" decompositions="_iKUHwLTVEeemDrxI7bIXrQ"/>
-      <intentions xmi:type="edu.toronto.cs.openome_model:Task" xmi:id="_MwQn8LQ7EeegAuPkb6ZuNA" name="Generate invalid Request error" decompositions="_kUCNULTVEeemDrxI7bIXrQ"/>
-      <intentions xmi:type="edu.toronto.cs.openome_model:Task" xmi:id="_PwTRgLQ7EeegAuPkb6ZuNA" name="Generate method not found error" decompositions="_tthsQLTVEeemDrxI7bIXrQ"/>
-      <intentions xmi:type="edu.toronto.cs.openome_model:Task" xmi:id="_ZTdCwLQ7EeegAuPkb6ZuNA" name="Generate invalid params error" decompositions="_uj898LTVEeemDrxI7bIXrQ"/>
-      <intentions xmi:type="edu.toronto.cs.openome_model:Task" xmi:id="_iaEB8LQ7EeegAuPkb6ZuNA" name="Generate internal error" decompositions="_mB-V0LTVEeemDrxI7bIXrQ"/>
-      <intentions xmi:type="edu.toronto.cs.openome_model:Task" xmi:id="_nJF84LQ7EeegAuPkb6ZuNA" name="Generate server error" decompositions="_vSSqoLTVEeemDrxI7bIXrQ"/>
+      <intentions xmi:type="edu.toronto.cs.openome_model:Task" xmi:id="_FH_2ELQ7EeegAuPkb6ZuNA" name="Generate &quot;Parse error&quot; Error" decompositions="_iKUHwLTVEeemDrxI7bIXrQ"/>
+      <intentions xmi:type="edu.toronto.cs.openome_model:Task" xmi:id="_MwQn8LQ7EeegAuPkb6ZuNA" name="Generate &quot;Invalid Request error&quot; Error" decompositions="_kUCNULTVEeemDrxI7bIXrQ"/>
+      <intentions xmi:type="edu.toronto.cs.openome_model:Task" xmi:id="_PwTRgLQ7EeegAuPkb6ZuNA" name="Generate &quot;Method not found error&quot; Error" decompositions="_tthsQLTVEeemDrxI7bIXrQ"/>
+      <intentions xmi:type="edu.toronto.cs.openome_model:Task" xmi:id="_ZTdCwLQ7EeegAuPkb6ZuNA" name="Generate &quot;Invalid params error&quot; Error" decompositions="_uj898LTVEeemDrxI7bIXrQ"/>
+      <intentions xmi:type="edu.toronto.cs.openome_model:Task" xmi:id="_iaEB8LQ7EeegAuPkb6ZuNA" name="Generate &quot;internal error&quot; Error" decompositions="_mB-V0LTVEeemDrxI7bIXrQ"/>
+      <intentions xmi:type="edu.toronto.cs.openome_model:Task" xmi:id="_nJF84LQ7EeegAuPkb6ZuNA" name="Generate &quot;Server error&quot; Error" decompositions="_vSSqoLTVEeemDrxI7bIXrQ"/>
       <intentions xmi:type="edu.toronto.cs.openome_model:Task" xmi:id="_g2ALkbSmEee4CYAIFqV9BA" dependencyFrom="_UzwZwLQ6EeegAuPkb6ZuNA" name="Get Request" decompositions="_t6bEILSmEee4CYAIFqV9BA"/>
       <intentions xmi:type="edu.toronto.cs.openome_model:Goal" xmi:id="_LVOgAbTNEeemDrxI7bIXrQ" name="Handle Notification" parentDecompositions="_vZTyQLTNEeemDrxI7bIXrQ"/>
       <intentions xmi:type="edu.toronto.cs.openome_model:Task" xmi:id="_LwatkLTVEeemDrxI7bIXrQ" dependencyTo="_YVZ9kLQkEeesNeeMjj9O4w" name="Send Response with result" decompositions="_SPtsQLTVEeemDrxI7bIXrQ"/>
