@@ -474,6 +474,18 @@
       </children>
       <layoutConstraint xmi:type="notation:Bounds" xmi:id="_MKAKobpZEeepeOLKMPzdiw" x="1188" y="828"/>
     </children>
+    <children xmi:type="notation:Shape" xmi:id="_Rh5GQbpiEeee1dwK-njUEA" type="Note" fontName=".SF NS Text" description="Create trnsparent communication between Clients and Servers" fillColor="13369343" transparency="0" lineColor="6737151" lineWidth="1">
+      <children xmi:type="notation:BasicDecorationNode" xmi:id="_Rh8woLpiEeee1dwK-njUEA" type="DiagramName">
+        <element xsi:nil="true"/>
+      </children>
+      <children xmi:type="notation:BasicDecorationNode" xmi:id="_Rh8wobpiEeee1dwK-njUEA" type="Description">
+        <element xsi:nil="true"/>
+      </children>
+      <styles xmi:type="notation:TextStyle" xmi:id="_Rh5GQrpiEeee1dwK-njUEA"/>
+      <styles xmi:type="notation:LineTypeStyle" xmi:id="_Rh5GQ7piEeee1dwK-njUEA"/>
+      <element xsi:nil="true"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Rh5GRLpiEeee1dwK-njUEA" x="1236" y="24" width="101" height="79"/>
+    </children>
     <styles xmi:type="notation:DiagramStyle" xmi:id="_F01pQbMPEeekiLnwOFkF3Q"/>
     <edges xmi:type="notation:Connector" xmi:id="_F6qS0LQfEeekiLnwOFkF3Q" type="4001" element="_F6prwLQfEeekiLnwOFkF3Q" source="_OI-l0bQkEeekiLnwOFkF3Q" target="_CEnOULQfEeekiLnwOFkF3Q">
       <styles xmi:type="notation:FontStyle" xmi:id="_F6qS0bQfEeekiLnwOFkF3Q" fontName="Segoe UI"/>
@@ -701,6 +713,13 @@
     <edges xmi:type="notation:Connector" xmi:id="_85YDwLpZEeepeOLKMPzdiw" type="4001" element="_85W1oLpZEeepeOLKMPzdiw" source="_MKAKoLpZEeepeOLKMPzdiw" target="_mpTHILicEeeM24zdBgSIlg">
       <styles xmi:type="notation:FontStyle" xmi:id="_85YDwbpZEeepeOLKMPzdiw" fontName="Lucida Grande"/>
       <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_85YDwrpZEeepeOLKMPzdiw" points="[26, -29, -181, 223]$[227, -223, 20, 29]"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_bjSSsLpiEeee1dwK-njUEA" type="NoteAttachment" source="_jt-a8LibEeeM24zdBgSIlg" target="_Rh5GQbpiEeee1dwK-njUEA" lineWidth="1">
+      <styles xmi:type="notation:ArrowStyle" xmi:id="_bjSSsbpiEeee1dwK-njUEA"/>
+      <styles xmi:type="notation:LineTypeStyle" xmi:id="_bjSSsrpiEeee1dwK-njUEA"/>
+      <element xsi:nil="true"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_bjSSs7piEeee1dwK-njUEA" points="[-6, -29, 0, 31]$[-6, -61, 0, -1]"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_bjUu8LpiEeee1dwK-njUEA" id="(0.3465346534653465,1.0)"/>
     </edges>
   </notation:Diagram>
 </xmi:XMI>
