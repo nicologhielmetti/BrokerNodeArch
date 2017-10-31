@@ -7,7 +7,7 @@
     <intentions xmi:type="edu.toronto.cs.openome_model:Resource" xmi:id="_AL5IULg0EeeBBc1mH3UJsg" dependencyFrom="_mc7aULg0EeeBBc1mH3UJsg" dependencyTo="_CZ5VsLicEeeM24zdBgSIlg" name="JSON-RPC Response"/>
     <intentions xmi:type="edu.toronto.cs.openome_model:Resource" xmi:id="_kJ-h0LiYEeeM24zdBgSIlg" dependencyFrom="_rSLTkLiYEeeM24zdBgSIlg" dependencyTo="_p84UkLiYEeeM24zdBgSIlg" name="JSON-RPC Request"/>
     <intentions xmi:type="edu.toronto.cs.openome_model:Resource" xmi:id="_9LamALiYEeeM24zdBgSIlg" dependencyFrom="_L053kLicEeeM24zdBgSIlg" dependencyTo="_-Szr4LiYEeeM24zdBgSIlg" name="JSON-RPC Response"/>
-    <intentions xmi:type="edu.toronto.cs.openome_model:Goal" xmi:id="_MH9jQbpZEeepeOLKMPzdiw" dependencyFrom="_85W1oLpZEeepeOLKMPzdiw" dependencyTo="_76eLgLpZEeepeOLKMPzdiw" name="Delete an available Service"/>
+    <intentions xmi:type="edu.toronto.cs.openome_model:Goal" xmi:id="_MH9jQbpZEeepeOLKMPzdiw" dependencyFrom="_85W1oLpZEeepeOLKMPzdiw" dependencyTo="_76eLgLpZEeepeOLKMPzdiw" name="Delete an unavailable Service"/>
     <contributions xmi:type="edu.toronto.cs.openome_model:SomePlusContribution" xmi:id="_3RuooLQgEeekiLnwOFkF3Q" target="_c-NDwLQbEeekiLnwOFkF3Q" source="_jM1wQLQbEeekiLnwOFkF3Q"/>
     <contributions xmi:type="edu.toronto.cs.openome_model:SomePlusContribution" xmi:id="_2nQ4ULifEeeM24zdBgSIlg" target="_c-NDwLQbEeekiLnwOFkF3Q" source="_mpR5ALicEeeM24zdBgSIlg"/>
     <dependencies xmi:type="edu.toronto.cs.openome_model:Dependency" xmi:id="_F6prwLQfEeekiLnwOFkF3Q" dependencyFrom="_CEmnQLQfEeekiLnwOFkF3Q" dependencyTo="_OI-l0LQkEeekiLnwOFkF3Q"/>
@@ -444,7 +444,7 @@
       <styles xmi:type="notation:TextStyle" xmi:id="_b6wLIbgrEeeBBc1mH3UJsg"/>
       <styles xmi:type="notation:LineTypeStyle" xmi:id="_b6wLIrgrEeeBBc1mH3UJsg"/>
       <element xsi:nil="true"/>
-      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_b6wLI7grEeeBBc1mH3UJsg" x="837" y="18" width="147" height="69"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_b6wLI7grEeeBBc1mH3UJsg" x="837" y="18" width="174" height="88"/>
     </children>
     <children xmi:type="notation:Shape" xmi:id="_AL6WcLg0EeeBBc1mH3UJsg" type="2008" element="_AL5IULg0EeeBBc1mH3UJsg" fontName=".SF NS Text">
       <children xmi:type="notation:DecorationNode" xmi:id="_AL69gLg0EeeBBc1mH3UJsg" type="5024"/>
@@ -474,7 +474,7 @@
       </children>
       <layoutConstraint xmi:type="notation:Bounds" xmi:id="_MKAKobpZEeepeOLKMPzdiw" x="1188" y="828"/>
     </children>
-    <children xmi:type="notation:Shape" xmi:id="_Rh5GQbpiEeee1dwK-njUEA" type="Note" fontName=".SF NS Text" description="Create trnsparent communication between Clients and Servers" fillColor="13369343" transparency="0" lineColor="6737151" lineWidth="1">
+    <children xmi:type="notation:Shape" xmi:id="_Rh5GQbpiEeee1dwK-njUEA" type="Note" fontName=".SF NS Text" description="Create transparent communication between Clients and Servers" fillColor="13369343" transparency="0" lineColor="6737151" lineWidth="1">
       <children xmi:type="notation:BasicDecorationNode" xmi:id="_Rh8woLpiEeee1dwK-njUEA" type="DiagramName">
         <element xsi:nil="true"/>
       </children>
@@ -484,7 +484,7 @@
       <styles xmi:type="notation:TextStyle" xmi:id="_Rh5GQrpiEeee1dwK-njUEA"/>
       <styles xmi:type="notation:LineTypeStyle" xmi:id="_Rh5GQ7piEeee1dwK-njUEA"/>
       <element xsi:nil="true"/>
-      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Rh5GRLpiEeee1dwK-njUEA" x="1236" y="24" width="101" height="79"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Rh5GRLpiEeee1dwK-njUEA" x="1170" y="24" width="167" height="79"/>
     </children>
     <styles xmi:type="notation:DiagramStyle" xmi:id="_F01pQbMPEeekiLnwOFkF3Q"/>
     <edges xmi:type="notation:Connector" xmi:id="_F6qS0LQfEeekiLnwOFkF3Q" type="4001" element="_F6prwLQfEeekiLnwOFkF3Q" source="_OI-l0bQkEeekiLnwOFkF3Q" target="_CEnOULQfEeekiLnwOFkF3Q">
