@@ -2,7 +2,7 @@
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:edu.toronto.cs.openome_model="http:///edu/toronto/cs/openome_model.ecore" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation">
   <edu.toronto.cs.openome_model:Model xmi:id="_2hk3sbQYEeesNeeMjj9O4w">
     <intentions xmi:type="edu.toronto.cs.openome_model:Resource" xmi:id="_HuE-8LQkEeesNeeMjj9O4w" dependencyFrom="_Z7vpQLQkEeesNeeMjj9O4w" dependencyTo="_UzwZwLQ6EeegAuPkb6ZuNA" name="JSON-RPC Request"/>
-    <intentions xmi:type="edu.toronto.cs.openome_model:Resource" xmi:id="_JiVx4LQkEeesNeeMjj9O4w" dependencyFrom="_YVZ9kLQkEeesNeeMjj9O4w" dependencyTo="_XeIXULQkEeesNeeMjj9O4w" name="JSON-RPC Request"/>
+    <intentions xmi:type="edu.toronto.cs.openome_model:Resource" xmi:id="_JiVx4LQkEeesNeeMjj9O4w" dependencyFrom="_YVZ9kLQkEeesNeeMjj9O4w" dependencyTo="_XeIXULQkEeesNeeMjj9O4w" name="JSON-RPC Response"/>
     <intentions xmi:type="edu.toronto.cs.openome_model:Resource" xmi:id="_Q5F9ALQkEeesNeeMjj9O4w" dependencyFrom="_cijTcLQkEeesNeeMjj9O4w" dependencyTo="_b_seALQkEeesNeeMjj9O4w" name="JSON-RPC Notification"/>
     <intentions xmi:type="edu.toronto.cs.openome_model:Resource" xmi:id="_SMmMQLQkEeesNeeMjj9O4w" dependencyFrom="_dvdygLQkEeesNeeMjj9O4w" dependencyTo="_dPPaULQkEeesNeeMjj9O4w" name="JSON-RPC Error"/>
     <dependencies xmi:type="edu.toronto.cs.openome_model:Dependency" xmi:id="_XeIXULQkEeesNeeMjj9O4w" dependencyFrom="_JiVx4LQkEeesNeeMjj9O4w" dependencyTo="_jMwnALQ3EeeH0cvGH7A_lw"/>
