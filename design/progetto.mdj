@@ -78271,11 +78271,11 @@
 															"containerExtending": false,
 															"left": 773,
 															"top": 191,
-															"width": 90,
+															"width": 111,
 															"height": 13,
 															"autoResize": false,
 															"underline": false,
-															"text": ":JsonManager",
+															"text": ":JsonRpcManager",
 															"horizontalAlignment": 2,
 															"verticalAlignment": 5,
 															"wordWrap": false
@@ -78343,7 +78343,7 @@
 													"containerExtending": false,
 													"left": 768,
 													"top": 184,
-													"width": 100,
+													"width": 121,
 													"height": 25,
 													"autoResize": false,
 													"stereotypeLabel": {
@@ -78371,7 +78371,7 @@
 											"containerExtending": false,
 											"left": 768,
 											"top": 184,
-											"width": 100,
+											"width": 121,
 											"height": 73,
 											"autoResize": false,
 											"stereotypeDisplay": "label",
@@ -81308,15 +81308,15 @@
 													"showShadow": true,
 													"containerChangeable": false,
 													"containerExtending": false,
-													"left": 516,
+													"left": 504.5,
 													"top": 168,
-													"width": 225,
+													"width": 248,
 													"height": 13,
 													"autoResize": false,
 													"alpha": 1.57079566012823,
 													"distance": 15,
 													"underline": false,
-													"text": "5 : jm = new JsonManager(connection)",
+													"text": "5 : jm = new JsonRpcManager(connection)",
 													"horizontalAlignment": 2,
 													"verticalAlignment": 5,
 													"wordWrap": false
@@ -83014,7 +83014,7 @@
 									"_parent": {
 										"$ref": "AAAAAAFfz+SCbhHQJBE="
 									},
-									"name": "new JsonManager",
+									"name": "new JsonRpcManager",
 									"source": {
 										"$ref": "AAAAAAFfz+SCbhHL70U="
 									},
@@ -83139,7 +83139,7 @@
 									"_parent": {
 										"$ref": "AAAAAAFfz+SCbhHQJBE="
 									},
-									"name": ":JsonManager",
+									"name": ":JsonRpcManager",
 									"visibility": "public",
 									"represent": {
 										"$ref": "AAAAAAFfz+SCbhHqY2Q="
