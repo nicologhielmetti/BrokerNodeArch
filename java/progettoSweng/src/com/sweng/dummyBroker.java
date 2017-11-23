@@ -1,4 +1,4 @@
-package progettoSweng;
+package com.sweng;
 
 public class dummyBroker {
 }

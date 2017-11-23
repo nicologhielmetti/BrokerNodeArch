@@ -1,4 +1,4 @@
-package JsonRpc;
+package com.jsonrpc;
 
 import java.lang.String;
 
