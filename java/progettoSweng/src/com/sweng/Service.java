@@ -2,7 +2,6 @@ package com.sweng;
 
 import com.jsonrpc.JsonRpcRequest;
 import com.jsonrpc.JsonRpcResponse;
-
 import java.util.function.Function;
 
 public class Service {
