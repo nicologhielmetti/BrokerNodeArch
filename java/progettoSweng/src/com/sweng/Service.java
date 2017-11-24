@@ -15,6 +15,10 @@ public class Service {
         this.serviceMetadata = serviceMetadata;
     }
 
-    public JsonRpcResponse processRequest(JsonRpcRequest request) {}
+    public JsonRpcResponse processRequest(JsonRpcRequest request) {
+        JsonRpcResponse response = null;
+        // do something
+        return response;
+    }
 
 }
