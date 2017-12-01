@@ -2,22 +2,24 @@ package com.sweng;
 
 import com.jsonrpc.JsonRpcRequest;
 import com.jsonrpc.JsonRpcResponse;
-import java.util.function.Function;
+import org.json.simple.JSONObject;
 
 public class Service {
 
     private ServiceMetadata serviceMetadata;
-    private Function function;
+    private ServiceMethod function;
 
-    public Service(Function function, ServiceMetadata serviceMetadata) {
+    public Service(ServiceMethod function, ServiceMetadata serviceMetadata) {
         this.function = function;
         this.serviceMetadata = serviceMetadata;
     }
 
-    public JsonRpcResponse processRequest(JsonRpcRequest request) {
-        JsonRpcResponse response = null;
-        // do something
+    public JSONObject processRequest(JsonRpcRequest request) {
+        JSONObject response = this.function.run(null);
         return response;
     }
 
+    public ServiceMetadata getServiceMetadata() {
+        return serviceMetadata;
+    }
 }
