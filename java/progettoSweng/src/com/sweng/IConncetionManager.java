@@ -1,4 +1,4 @@
 package com.sweng;
 
-public class IConncetionManager {
+public interface IConncetionManager {
 }

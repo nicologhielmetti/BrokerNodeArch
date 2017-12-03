@@ -1,4 +1,9 @@
 package com.sweng;
 
-public class IConnectionFactory {
+public interface IConnectionFactory {
+
+    IConnection createConnection() {
+
+    }
+
 }

@@ -2,7 +2,7 @@ package com.sweng;
 
 import org.json.simple.JSONObject;
 
-public interface ServiceMethod {
+public interface IServiceMethod {
 
     JSONObject run(JSONObject parameters);
 
