@@ -8,10 +8,14 @@ public class Main {
         System.out.println("Hello world!");
 
         ServiceMetadata sm = new ServiceMetadata("title", "owner");
-        ServiceMethod s = new ServiceMethod() {
+        IServiceMethod s = new IServiceMethod() {
             @Override
             public JSONObject run(JSONObject parameters) {
                 System.out.println("Service is running...");
+                try {
+                    Thread.sleep(1000);
+                }
+                catch (InterruptedException I) { }
                 System.out.println("Service finish");
                 return null;
             }

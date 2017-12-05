@@ -2,14 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1c2b6c70-4ea2-4b05-b26b-e04f307e3125" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/com/jsonrpc/IConncetion.java" afterPath="$PROJECT_DIR$/src/com/jsonrpc/IConnection.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/progettoSweng/com/sweng/Main.class" afterPath="$PROJECT_DIR$/out/production/progettoSweng/com/sweng/Main.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/jsonrpc/JsonRpcManager.java" afterPath="$PROJECT_DIR$/src/com/jsonrpc/JsonRpcManager.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sweng/DummyClient.java" afterPath="$PROJECT_DIR$/src/com/sweng/DummyClient.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sweng/DummyServer.java" afterPath="$PROJECT_DIR$/src/com/sweng/DummyServer.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sweng/Main.java" afterPath="$PROJECT_DIR$/src/com/sweng/Main.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sweng/Node.java" afterPath="$PROJECT_DIR$/src/com/sweng/Node.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sweng/ZeroMQConncetionManager.java" afterPath="$PROJECT_DIR$/src/com/sweng/ZeroMQConncetionManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sweng/ZeroMQConnection.java" afterPath="$PROJECT_DIR$/src/com/sweng/ZeroMQConnection.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/sweng/ZeroMQConnectionFactory.java" afterPath="$PROJECT_DIR$/src/com/sweng/ZeroMQConnectionFactory.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -22,22 +20,15 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="DummyServer.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/sweng/DummyServer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="19" column="50" lean-forward="false" selection-start-line="19" selection-start-column="50" selection-end-line="19" selection-end-column="50" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="ZeroMQConnectionFactory.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/sweng/ZeroMQConnectionFactory.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="5" column="0" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="30">
+              <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+              <folding>
+                <element signature="e#164#165#0" expanded="true" />
+                <element signature="e#191#192#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -45,7 +36,7 @@
       <file leaf-file-name="Node.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/sweng/Node.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="458">
+            <state relative-caret-position="585">
               <caret line="39" column="33" lean-forward="false" selection-start-line="39" selection-start-column="33" selection-end-line="39" selection-end-column="33" />
               <folding>
                 <element signature="e#1785#1802#0" expanded="true" />
@@ -54,8 +45,8 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Broker.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/sweng/Broker.java">
+      <file leaf-file-name="JsonRpcMessage.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/jsonrpc/JsonRpcMessage.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="30">
               <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
@@ -64,12 +55,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dummyBroker.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/sweng/dummyBroker.java">
+      <file leaf-file-name="JsonRpcManager.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/com/jsonrpc/JsonRpcManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+            <state relative-caret-position="60">
+              <caret line="4" column="8" lean-forward="false" selection-start-line="4" selection-start-column="8" selection-end-line="4" selection-end-column="8" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DummyClient.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/sweng/DummyClient.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="405">
+              <caret line="27" column="0" lean-forward="true" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -84,18 +87,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DummyClient.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/sweng/DummyClient.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="12" column="30" lean-forward="false" selection-start-line="12" selection-start-column="30" selection-end-line="12" selection-end-column="30" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="IConncetionManager.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/sweng/IConncetionManager.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -106,11 +97,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ZeroMQConnection.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ZeroMQConnection.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/sweng/ZeroMQConnection.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="60">
               <caret line="4" column="54" lean-forward="true" selection-start-line="4" selection-start-column="54" selection-end-line="4" selection-end-column="54" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="IConnection.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/jsonrpc/IConnection.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="4" column="17" lean-forward="false" selection-start-line="4" selection-start-column="17" selection-end-line="4" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -150,7 +151,6 @@
         <option value="$PROJECT_DIR$/src/com/sweng/Broker.java" />
         <option value="$PROJECT_DIR$/src/com/jsonrpc/Error.java" />
         <option value="$PROJECT_DIR$/src/com/jsonrpc/IConncetion.java" />
-        <option value="$PROJECT_DIR$/src/com/jsonrpc/JsonRpcManager.java" />
         <option value="$PROJECT_DIR$/src/com/jsonrpc/JsonRpcMessage.java" />
         <option value="$PROJECT_DIR$/src/com/jsonrpc/JsonRpcRequest.java" />
         <option value="$PROJECT_DIR$/src/com/jsonrpc/JsonRpcResponse.java" />
@@ -158,14 +158,15 @@
         <option value="$PROJECT_DIR$/src/com/sweng/ServiceMethod.java" />
         <option value="$PROJECT_DIR$/src/com/sweng/Service.java" />
         <option value="$PROJECT_DIR$/src/com/sweng/Main.java" />
-        <option value="$PROJECT_DIR$/src/com/sweng/DummyClient.java" />
         <option value="$PROJECT_DIR$/src/com/sweng/IConncetionManager.java" />
         <option value="$PROJECT_DIR$/src/com/sweng/IConnectionFactory.java" />
         <option value="$PROJECT_DIR$/src/com/sweng/DummyServer.java" />
-        <option value="$PROJECT_DIR$/src/com/sweng/ZeroMQConnectionFactory.java" />
         <option value="$PROJECT_DIR$/src/com/sweng/Node.java" />
         <option value="$PROJECT_DIR$/src/com/sweng/ZeroMQConnection.java" />
         <option value="$PROJECT_DIR$/src/com/sweng/ZeroMQConncetionManager.java" />
+        <option value="$PROJECT_DIR$/src/com/sweng/DummyClient.java" />
+        <option value="$PROJECT_DIR$/src/com/sweng/ZeroMQConnectionFactory.java" />
+        <option value="$PROJECT_DIR$/src/com/jsonrpc/JsonRpcManager.java" />
       </list>
     </option>
   </component>
@@ -359,11 +360,19 @@
       <option name="project" value="LOCAL" />
       <updated>1512334881721</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="IConnection* ZeroMQ* classes updated">
+      <created>1512465993075</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1512465993075</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -377,7 +386,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1797619" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1797619" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -431,7 +440,8 @@
     <MESSAGE value="Service class updated" />
     <MESSAGE value="Service class updated and ServiceMethod class added" />
     <MESSAGE value="Service, ServiceMetadata, DummyClient, DummyServer, Node, Service class updated and ServiceMethod class added" />
-    <option name="LAST_COMMIT_MESSAGE" value="Service, ServiceMetadata, DummyClient, DummyServer, Node, Service class updated and ServiceMethod class added" />
+    <MESSAGE value="IConnection* ZeroMQ* classes updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="IConnection* ZeroMQ* classes updated" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -664,20 +674,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/jsonrpc/JsonRpcManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="20" lean-forward="false" selection-start-line="0" selection-start-column="20" selection-end-line="0" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/jsonrpc/JsonRpcMessage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="20" lean-forward="false" selection-start-line="0" selection-start-column="20" selection-end-line="0" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/jsonrpc/JsonRpcRequest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
@@ -689,13 +685,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
           <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/jsonrpc/IConnection.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="20" lean-forward="false" selection-start-line="0" selection-start-column="20" selection-end-line="0" selection-end-column="20" />
         </state>
       </provider>
     </entry>
@@ -775,39 +764,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/sweng/DummyClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="30" lean-forward="false" selection-start-line="12" selection-start-column="30" selection-end-line="12" selection-end-column="30" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/sweng/DummyServer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
           <caret line="19" column="50" lean-forward="false" selection-start-line="19" selection-start-column="50" selection-end-line="19" selection-end-column="50" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/sweng/ZeroMQConnectionFactory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="0" lean-forward="false" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/sweng/Node.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="458">
-          <caret line="39" column="33" lean-forward="false" selection-start-line="39" selection-start-column="33" selection-end-line="39" selection-end-column="33" />
-          <folding>
-            <element signature="e#1785#1802#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -835,10 +796,65 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/jsonrpc/IConnection.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="17" lean-forward="false" selection-start-line="4" selection-start-column="17" selection-end-line="4" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/sweng/Node.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="585">
+          <caret line="39" column="33" lean-forward="false" selection-start-line="39" selection-start-column="33" selection-end-line="39" selection-end-column="33" />
+          <folding>
+            <element signature="e#1785#1802#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/jsonrpc/JsonRpcMessage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/sweng/DummyClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="405">
+          <caret line="27" column="0" lean-forward="true" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/sweng/ZeroMQConnection.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
           <caret line="4" column="54" lean-forward="true" selection-start-line="4" selection-start-column="54" selection-end-line="4" selection-end-column="54" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/sweng/ZeroMQConnectionFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+          <folding>
+            <element signature="e#164#165#0" expanded="true" />
+            <element signature="e#191#192#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/jsonrpc/JsonRpcManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="8" lean-forward="false" selection-start-line="4" selection-start-column="8" selection-end-line="4" selection-end-column="8" />
           <folding />
         </state>
       </provider>

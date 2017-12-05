@@ -7,7 +7,7 @@ public class DummyServer {
     public static void main(String[] args) {
 
         // Create node obj
-        IConnectionFactory connectionFactory = new IConnectionFactory();
+        ZeroMQConnectionFactory connectionFactory = new ZeroMQConnectionFactory();
         Node node = new Node(connectionFactory);
 
         // Provide a service

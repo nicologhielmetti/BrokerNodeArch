@@ -10,7 +10,7 @@ public class DummyClient {
     public static void main(String[] args) {
 
         // Create new node obj
-        IConnectionFactory conncetionFactory = new IConnectionFactory();
+        IConnectionFactory connectionFactory = new IConnectionFactory();
         Node node = new Node(conncetionFactory);
 
         // Get list of available services from broker

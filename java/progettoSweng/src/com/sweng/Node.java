@@ -37,8 +37,7 @@ public class Node {
         IConnection connection = this.connectionFactory.createConnection();
         JsonRpcManager manager = new JsonRpcManager(connection);
 
-        JsonRpcRequest notification = new JsonRpcRequest();
-        notification.isNotification();
+        manager.sendNotification();
 
         this.ownServices.remove(method);
     }
