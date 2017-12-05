@@ -44,7 +44,7 @@ public class Node {
             }
         });
 
-        ownServices.put(service.getServiceMetadata().getTitle(), new Triple(Service service, JsonRpcManager manager, Thread thread));
+        ownServices.put(service.getServiceMetadata().getTitle(), new Triple<Service,JsonRpcManager,Thread>(service,manager, thread));
     }
 
     public void deleteService(String method) { // missed in uml class diagram
