@@ -37,7 +37,7 @@ public class ServiceMetadata {
         this.signature = (String) json.get("signature");
         JSONArray jsonKeywords = (JSONArray) json.get("keywords");
         Iterator<String> iterator = jsonKeywords.iterator();
-        for (iterator.hasNext()) {
+        while (iterator.hasNext()) {
             this.keywords.add(iterator.next());
         }
     }
