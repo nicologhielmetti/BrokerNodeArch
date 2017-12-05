@@ -1,4 +1,5 @@
 package com.sweng;
 
-public class ZeroMQConncetionManager {
+public class ZeroMQConncetionManager implements IConncetionManager {
+
 }

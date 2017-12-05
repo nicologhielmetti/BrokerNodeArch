@@ -1,4 +1,6 @@
 package com.sweng;
 
-public class ZeroMQConnection {
+import com.jsonrpc.*
+
+public class ZeroMQConnection implements IConnection {
 }
