@@ -4,16 +4,13 @@ import org.json.simple.JSONObject;
 
 public class JsonRpcResponse extends JsonRpcMessage {
 
-    public JsonRpcResponse(String jsonrpc, JSONObject result, int id){
-        json.put("jsonrpc",jsonrpc);
-        json.put("result", result);
-        json.put("id",id);
+    public JsonRpcResponse(Error error, int id) {
+        json.put("error",error);
+        json.put("id", id);
     }
 
-    public JsonRpcResponse(String jsonrpc, Error error, JSONObject result, int id){
-        json.put("jsonrpc",jsonrpc);
-        json.put("error",error);
-        json.put("result", result);
+    public JsonRpcResponse(JSONObject result, int id) {
+        json.put("result",result);
         json.put("id",id);
     }
 
@@ -33,4 +30,7 @@ public class JsonRpcResponse extends JsonRpcMessage {
         return (JSONObject) json.get("result");
     }
 
+    public void setResult(JSONObject result){
+        json.put("result",result);
+    }
 }
