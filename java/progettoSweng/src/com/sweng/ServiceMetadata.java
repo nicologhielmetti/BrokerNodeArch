@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Iterator;
 
 public class ServiceMetadata {
 
@@ -19,11 +20,26 @@ public class ServiceMetadata {
     private String signature; // change to Json string
 
     public ServiceMetadata(String title, String owner) {
+        this.keywords.clear();
         this.title = title;
         this.owner = owner;
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
         activationDate = dateFormat.format(date);
+    }
+
+    public ServiceMetadata(JSONObject json) {
+        this.title = (String) json.get("title");
+        this.owner = (String) json.get("owner");
+        this.activationDate = (String) json.get("activationDate");
+        this.description = (String) json.get("description");
+        this.applicationField = (String) json.get("applicationField");
+        this.signature = (String) json.get("signature");
+        JSONArray jsonKeywords = (JSONArray) json.get("keywords");
+        Iterator<String> iterator = jsonKeywords.iterator();
+        for (iterator.hasNext()) {
+            this.keywords.add(iterator.next());
+        }
     }
 
     public JSONObject toJson() {
