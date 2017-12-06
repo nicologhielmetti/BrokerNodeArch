@@ -135,7 +135,7 @@ public class Broker {
 
         JsonRpcRequest r = null;
         try {
-            r = m.getRequest();
+            r = m.listenRequest();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -151,11 +151,12 @@ public class Broker {
 
             if (server != null) {
                 server.sendRequest(r);
-                JsonRpcResponse res = server.getResponse();
+                JsonRpcResponse res = server.listenResponse();
 
                 m.sendResponse(res);
             } else {
-                return m.sendError(new Error("-32601","method not found"), r.getId());
+                m.sendError(new Error("-32601","method not found"), r.getId());
+                return;
             }
         }
 
