@@ -4,6 +4,8 @@ import java.lang.String;
 
 public interface IConnection {
     public String read();
-    public String consume();
+    public void consume();
     public void send(String message);
+
+    public void close();
 }

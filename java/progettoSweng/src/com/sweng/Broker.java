@@ -9,12 +9,17 @@ import java.util.Map;
 import com.jsonrpc.*;
 import com.jsonrpc.Error;
 
-//todo handle broker services as Service(s) (now they are hard-coded)
+import com.google.gson.*;
 
+//todo handle broker services as Service(s) (now they are hard-coded)
+//todo change get__ to listen__ where necessary
 
 public class Broker {
 
     private IConnectionManager connectionManager;
+    private boolean isClosed;
+
+    private Map<String, Service> brokerServices;
 
     private Map<String, JsonRpcManager> servers;
     private List<ServiceMetadata> services;
@@ -26,48 +31,59 @@ public class Broker {
      * @return
      */
     String generateMethodName(String hint) {
-        if (services.get(hint) == null) return hint;
+        if (servers.get(hint) == null) return hint;
 
         int i = 1;
         String generated;
         do {
             generated = hint + "@" + i;
             i++;
-        } while (services.get(hint) != null);
+        } while (servers.get(generated) != null);
 
         return generated;
     }
 
     void registerService(JsonRpcRequest request, JsonRpcManager manager) {
-        String name = request.getParams().get("title");
+        String name = request.getParams().get("title").toString();
         name = generateMethodName(name);
 
         ServiceMetadata serviceMetadata = new ServiceMetadata(request.getParams());
-        serviceMetadata.setTitle("title");
+        serviceMetadata.setMethodName("title");
         servers.put(name, manager);
         services.add(serviceMetadata);
 
         JSONObject result = new JSONObject();
         result.put("serviceRegistered", "true");
         result.put("methodName", name);
-        manager.sendResponse(new JsonRpcResponse(result, request.getID()));
+        manager.sendResponse(new JsonRpcResponse(result, request.getId()));
+    }
+
+    String registerService(Service service) {
+        String name = service.getServiceMetadata().getMethodName();
+        name = generateMethodName(name);
+
+        service.getServiceMetadata().setMethodName(name);
+        brokerServices.put(name, service);
+        services.add(service.getServiceMetadata());
+
+        return name;
     }
 
     void deleteService(JsonRpcRequest request) {
-        String name = request.getParams().get("title");
+        String name = request.getParams().get("title").toString();
 
         services.remove(name);
     }
 
-    void handleServicesListRequest(JsonRpcRequest request,JsonRpcManager manager) throws InvalidRequestException {
-        JSONObject j = request.getParams().get("searchStrategy");
+    void handleServicesListRequest(JsonRpcRequest request, JsonRpcManager manager) {
+        JSONObject j = (JSONObject) request.getParams().get("searchStrategy");
         List<ServiceMetadata> list;
 
         if (j.isEmpty()) list = getServicesList();
         else {
             SearchStrategy searchStrategy = SearchStrategy.create(j);
             if (searchStrategy == null) {
-                manager.sendError(new Error(-32602,"SearchStrategy is ill-formed"),request.getID());
+                manager.sendError(new Error("-32602", "SearchStrategy is ill-formed"), request.getId());
                 return;
             }
 
@@ -77,7 +93,7 @@ public class Broker {
         JSONArray result = new JSONArray();
         result.addAll(list);
 
-        manager.sendResponse(new JsonRpcResponse(result,request.getID()));
+        manager.sendResponse(new JsonRpcResponse(result, request.getId()));
     }
 
     List<ServiceMetadata> getServicesList() {
@@ -92,7 +108,7 @@ public class Broker {
         if (request.isNotification()) {
             switch (request.getMethod()) {
                 case "deleteService":
-                    deleteService(request, manager);
+                    deleteService(request);
                     return false;
             }
         } else {
@@ -101,7 +117,7 @@ public class Broker {
                     registerService(request, manager);
                     return false;
                 case "getServicesList":
-                    handleServicesListRequest(request,manager);
+                    handleServicesListRequest(request, manager);
                     return false;
             }
         }
@@ -127,24 +143,28 @@ public class Broker {
 
                 m.sendResponse(res);
             } else {
-                return m.sendError("method not found", r.getID());
+                return m.sendError(new Error("-32601","method not found"), r.getId());
             }
         }
 
     }
 
-    Broker(IConnectionManager connectionManager){
-        this.connectionManager=connectionManager;
+    Broker(IConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
 
 
     }
 
 
-    void exec() {
+    void close(){
+        isClosed=true;
+    }
 
-        while (true) {
+    void start() {
+        isClosed=false;
+        while (!isClosed) {
 
-            IConnection c = connectionManager.getIncomingConnection();
+            IConnection c = connectionManager.acceptConnection();
 
             JsonRpcManager j = new JsonRpcManager(c);
 
@@ -158,6 +178,7 @@ public class Broker {
                     throw new RuntimeException("InterruptedException caught in lambda", e);
                 }
             });
+            t1.start();
         }
     }
 }
