@@ -22,15 +22,10 @@ public class JsonRpcManager {
         this.parser = new JSONParser();
     }
 
-    public JsonRpcRequest getRequest(){
+    public JsonRpcRequest getRequest() throws ParseException {
         JSONObject json;
         do {
-            Object o = null;
-            try {
-                o = parser.parse(connection.read());
-            } catch (ParseException e) {
-                e.printStackTrace(); //string is not json
-            }
+            Object o = parser.parse(connection.read());
             json = (JSONObject) o;
             if(json == null)
                 connection.consume();
@@ -61,11 +56,14 @@ public class JsonRpcManager {
         return new JsonRpcResponse();
     }
 
-    public void sendResponse(JsonRpcResponse response){
-        connection.send(response.toJsonRpcString());
-    }
-    public void sendRequest(JsonRpcRequest request){
-        connection.send(request.toJsonRpcString());
+    public void sendResponse(JsonRpcResponse response){ connection.send(response.toString()); }
+    public void sendRequest(JsonRpcRequest request){ connection.send(request.toString()); }
+
+    public void sendNotification(String method, JSONObject params){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("jsonrpc",jsonRpcVersion);
+        jsonObject.put("method", method);
+        jsonObject.put("params",params);
     }
 
 }

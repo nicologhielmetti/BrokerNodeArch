@@ -47,24 +47,22 @@ public abstract class JsonRpcMessage {
     }
 
     private static boolean isJsonRpc(JSONObject jsonObject){
-        return (isResponse(jsonObject) || isError(jsonObject)) ^ (isRequest(jsonObject) || isNotification(jsonObject));
+        return (isResponse(jsonObject) ^ isError(jsonObject)) ^ (isRequest(jsonObject) ^ isNotification(jsonObject));
     }
 
-    public static JSONObject toJsonRpcObject(String jsonString){
-        try {
-            JSONObject jsonObject = (JSONObject) parser.parse(jsonString);
-            if(isJsonRpc(jsonObject))
-                return jsonObject;
-        } catch (ParseException e) {
-            return null;
-        }
+    public static JsonRpcMessage toJsonRpcObject(String jsonString) throws ParseException, InvalidJsonRpcException {
+        JSONObject jsonObject = (JSONObject) parser.parse(jsonString);
+        if(isRequest(jsonObject))
+            return new JsonRpcRequest();
+        else
+            throw new InvalidJsonRpcException();
     }
 
     public JSONObject getJsonRpc() {
         return json;
     }
 
-    public String getJsonRpcString(){
+    public String toString(){
         return json.toJSONString();
     }
 }
