@@ -7,7 +7,7 @@ public class DummyServer {
     public static void main(String[] args) {
 
         // Create node obj
-        ZeroMQConnectionFactory connectionFactory = new ZeroMQConnectionFactory();
+        ZeroMQConnectionFactory connectionFactory = new ZeroMQConnectionFactory("tcp://localhost:5555");
         Node node = new Node(connectionFactory);
 
         // Provide a service
@@ -25,7 +25,7 @@ public class DummyServer {
         node.provideService(service);
 
         // Delete an own service
-        node.deleteService(service.getServiceMetadata().getTitle());
+        node.deleteService(service.getServiceMetadata().getMethodName());
     }
 
 }

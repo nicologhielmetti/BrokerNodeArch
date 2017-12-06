@@ -13,7 +13,7 @@ public class Service {
         this.serviceMetadata = serviceMetadata;
     }
 
-    public JSONObject processRequest(JsonRpcRequest request) {
+    public JSONObject processRequest(JSONObject request) {
         JSONObject result = this.function.run(null);
         return result;
     }

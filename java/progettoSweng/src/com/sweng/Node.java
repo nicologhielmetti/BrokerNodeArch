@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Iterator;
-import com.jsonrpc.*;
 import org.json.simple.parser.ParseException;
+
+import com.jsonrpc.*;
 
 
 public class Node {
 
-    private Map<String, Triple<Service, JsonRpcManager, Thread>> ownServices;
+    private Map<String, RunningService> ownServices;
     private IConnectionFactory connectionFactory;
     private int id;
 
@@ -33,7 +33,7 @@ public class Node {
     public void provideService(Service service) {
         IConnection  connection = this.connectionFactory.createConnection();
         JsonRpcManager manager = new JsonRpcManager(connection);
-        JsonRpcRequest request = new JsonRpcRequest("registerService", service.getServiceMetadata().toJson(), 0);
+        JsonRpcRequest request = new JsonRpcRequest("registerService", service.getServiceMetadata().toJson(), this.generateNewId());
         manager.sendRequest(request);
         JsonRpcResponse response = null;
         try {
@@ -41,6 +41,7 @@ public class Node {
         } catch (ParseException | NullPointerException e) {
             e.printStackTrace();
         }
+
         // Read response from Broker
         JSONObject result = response.getResult();
         boolean serviceRegistered = (boolean) result.get("serviceRegistered");
@@ -52,23 +53,30 @@ public class Node {
         }
         // Thread creation
         Thread thread = new Thread(() -> {
-            try {
-                // Wait request
-                JsonRpcRequest receivedRequest = null;
+            while (true) {
                 try {
-                    receivedRequest = manager.listenRequest();
-                } catch (ParseException | NullPointerException e) {
-                    e.printStackTrace();
+                    // Wait request
+                    JsonRpcRequest receivedRpcRequest = null;
+                    try {
+                        receivedRpcRequest = manager.listenRequest();
+                    } catch (ParseException | NullPointerException e) {
+                        e.printStackTrace();
+                    }
+                    JSONObject parameters = receivedRpcRequest.getParams();
+                    //Check service signature
+                    //Execute request
+                    JSONObject serviceResult = service.processRequest(parameters);
+                    // Send response
+                    JsonRpcResponse generatedResponse = new JsonRpcResponse(serviceResult, receivedRpcRequest.getId());
+                    manager.sendResponse(generatedResponse);
+                } catch (RuntimeException e) {
+                    throw new RuntimeException("Provide service thread");
                 }
-                JSONObject json = service.processRequest(receivedRequest);
-                // Send response
-            } catch (RuntimeException e) {
-                throw new RuntimeException("Provide service thread");
             }
         });
         thread.start();
 
-        ownServices.put(service.getServiceMetadata().getMethodName(), new Triple<>(service,manager, thread));
+        ownServices.put(service.getServiceMetadata().getMethodName(), new RunningService(service, manager, thread));
     }
 
     public void deleteService(String method) { // missed in uml class diagram
@@ -76,6 +84,9 @@ public class Node {
         JsonRpcManager manager = new JsonRpcManager(connection);
         manager.sendNotification("deleteService");
 
+        // Delete service
+        RunningService availableService = this.ownServices.get(method);
+        availableService.delete();
         this.ownServices.remove(method);
     }
 
@@ -90,10 +101,7 @@ public class Node {
 
     public JsonRpcResponse requestService(String method, JSONObject parameters) {
         JsonRpcManager manager = new JsonRpcManager(this.connectionFactory.createConnection());
-        JsonRpcRequest request = new JsonRpcRequest(method,parameters,generateNewId());
-        request.setId(generateNewId());
-        request.setMethod(method);
-        request.setParams(parameters);
+        JsonRpcRequest request = new JsonRpcRequest(method, parameters, generateNewId());
         manager.sendRequest(request);
         JsonRpcResponse response = null;
         try {

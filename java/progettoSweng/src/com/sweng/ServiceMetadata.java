@@ -20,7 +20,7 @@ public class ServiceMetadata {
     private String signature; // change to Json string
 
     public ServiceMetadata(String methodName, String owner) {
-        this.keywords.clear();
+        this.keywords = new ArrayList<>();
         this.methodName = methodName;
         this.owner = owner;
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
