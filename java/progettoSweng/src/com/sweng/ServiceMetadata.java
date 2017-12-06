@@ -11,7 +11,7 @@ import java.util.Iterator;
 
 public class ServiceMetadata {
 
-    private String title;
+    private String methodName;
     private String owner;
     private String applicationField;
     private ArrayList<String> keywords;
@@ -19,9 +19,9 @@ public class ServiceMetadata {
     private String activationDate;
     private String signature; // change to Json string
 
-    public ServiceMetadata(String title, String owner) {
+    public ServiceMetadata(String methodName, String owner) {
         this.keywords.clear();
-        this.title = title;
+        this.methodName = methodName;
         this.owner = owner;
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
@@ -29,7 +29,7 @@ public class ServiceMetadata {
     }
 
     public ServiceMetadata(JSONObject json) {
-        this.title = (String) json.get("title");
+        this.methodName= (String) json.get("methodName");
         this.owner = (String) json.get("owner");
         this.activationDate = (String) json.get("activationDate");
         this.description = (String) json.get("description");
@@ -44,7 +44,7 @@ public class ServiceMetadata {
 
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
-        json.put("title", this.title);
+        json.put("methodName", this.methodName);
         json.put("owner", this.owner);
         json.put("activationDate", this.activationDate);
         json.put("description", this.description);
@@ -58,7 +58,7 @@ public class ServiceMetadata {
 
     public void setApplicationField(String applicationField) { this.applicationField = applicationField; }
 
-    public void setTitle(String title) { this.title = title; }
+    public void setMethodName(String methodName) { this.methodName = methodName; }
 
     public void setDescription(String description) { this.description = description; }
 
@@ -78,7 +78,7 @@ public class ServiceMetadata {
 
     public String getSignature() { return signature; }
 
-    public String getTitle() { return title; }
+    public String getMethodName() { return methodName; }
 
     public void addKeyword(String keyword) { this.keywords.add(keyword); }
 }

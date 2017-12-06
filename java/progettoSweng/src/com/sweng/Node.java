@@ -14,6 +14,7 @@ public class Node {
 
     private Map<String, Triple<Service, JsonRpcManager, Thread>> ownServices;
     private IConnectionFactory connectionFactory;
+    private int id;
 
     // Start of Service handler functionality
 
@@ -23,6 +24,7 @@ public class Node {
      */
 
     public Node(IConnectionFactory connectionFactory) {
+        this.id = 0;
         this.connectionFactory = connectionFactory;
         ownServices = new HashMap<>();
     }
@@ -33,24 +35,34 @@ public class Node {
         JsonRpcRequest request = new JsonRpcRequest("registerService", service.getServiceMetadata().toJson(), 0);
         manager.sendRequest(request);
         JsonRpcResponse response = manager.getResponse();
+        // Read response from Broker
+        JSONObject result = response.getResult();
+        boolean serviceRegistered = (boolean) result.get("serviceRegistered");
+        if (serviceRegistered) {
+            String newMethodName = (String) result.get("methodName");
+            service.getServiceMetadata().setMethodName(newMethodName);
+        } else {
+            // Exeption
+        }
         // Thread creation
         Thread thread = new Thread(() -> {
             try {
                 // Wait request
-                service.processRequest(null);
+                JsonRpcRequest receivedRequest = manager.listenRequest();
+                JSONObject json = service.processRequest(receivedRequest);
                 // Send response
             } catch (RuntimeException e) {
                 throw new RuntimeException("Provide service thread");
             }
         });
+        thread.start();
 
-        ownServices.put(service.getServiceMetadata().getTitle(), new Triple<Service,JsonRpcManager,Thread>(service,manager, thread));
+        ownServices.put(service.getServiceMetadata().getMethodName(), new Triple<>(service,manager, thread));
     }
 
     public void deleteService(String method) { // missed in uml class diagram
         IConnection connection = this.connectionFactory.createConnection();
         JsonRpcManager manager = new JsonRpcManager(connection);
-
         manager.sendNotification();
 
         this.ownServices.remove(method);
@@ -66,18 +78,21 @@ public class Node {
 
 
     public JsonRpcResponse requestService(String method, JSONObject parameters) {
-
+        JsonRpcManager manager = new JsonRpcManager(this.connectionFactory.createConnection());
+        JsonRpcRequest request = new JsonRpcRequest();
+        request.setId(generateNewId());
+        request.setMethod(method);
+        request.setParams(parameters);
+        manager.sendRequest(request);
+        JsonRpcResponse response = manager.getResponse();
+        return response;
     }
 
     public ArrayList<ServiceMetadata> requestServiceList(SearchStrategy searchStrategy) {
         ArrayList<ServiceMetadata> list = new ArrayList<ServiceMetadata>();
         list.clear();
 
-        IConnection connection = this.connectionFactory.createConnection();
-        JsonRpcManager manager = new JsonRpcManager();
-        JsonRpcRequest request = new JsonRpcRequest("searchStrategy", searchStrategy.toJson(), 0);
-        manager.sendRequest(request);
-        JsonRpcResponse response = manager.getResponse();
+        JsonRpcResponse response = this.requestService("searchStrategy", searchStrategy.toJson());
 
         JSONObject json = response.getJsonRpc();
         JSONArray array = (JSONArray) json.get("result");
@@ -85,10 +100,12 @@ public class Node {
         while (iterator.hasNext()) {
             list.add(new ServiceMetadata(iterator.next()));
         }
-
         return list;
     }
 
+    private int generateNewId() {
+        return this.id;
+    }
 
     // End of Service requester functionality
 
