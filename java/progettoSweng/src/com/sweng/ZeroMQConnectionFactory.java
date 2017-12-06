@@ -4,7 +4,7 @@ import org.zeromq.ZMQ;
 
 public class ZeroMQConnectionFactory implements IConnectionFactory {
     ZMQ.Context context;
-    String address
+    String address;
 
     ZeroMQConnectionFactory(String address){ //eg:"tcp://localhost:5555"
         context = ZMQ.context(1);

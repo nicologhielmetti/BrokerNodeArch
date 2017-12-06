@@ -10,6 +10,8 @@ import com.jsonrpc.*;
 import com.jsonrpc.Error;
 
 import com.google.gson.*;
+import org.json.simple.parser.ParseException;
+
 
 //todo handle broker services as Service(s) (now they are hard-coded)
 //todo change get__ to listen__ where necessary
@@ -70,7 +72,7 @@ public class Broker {
     }
 
     void deleteService(JsonRpcRequest request) {
-        String name = request.getParams().get("title").toString();
+        String name = request.getParams().get("title").toString();//todo non gestire con il nome ma con il riferimento alla connessione
 
         services.remove(name);
     }
@@ -90,8 +92,11 @@ public class Broker {
             list = getServicesList(searchStrategy);
         }
 
-        JSONArray result = new JSONArray();
-        result.addAll(list);
+        JSONObject result=new JSONObject();
+        JSONArray l = new JSONArray();
+        l.addAll(list);
+
+        result.put("servicesList",l);
 
         manager.sendResponse(new JsonRpcResponse(result, request.getId()));
     }
@@ -127,7 +132,14 @@ public class Broker {
 
     void connectionThread(JsonRpcManager m) {
 
-        JsonRpcRequest r = m.getRequest();
+
+        JsonRpcRequest r = null;
+        try {
+            r = m.getRequest();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
 
         if (!filterRequest(r, m)) return;
 
@@ -135,7 +147,7 @@ public class Broker {
             //todo gestire le notifiche
         } else {
 
-            JsonRpcManager server = services.get(r.getMethod());
+            JsonRpcManager server = servers.get(r.getMethod());
 
             if (server != null) {
                 server.sendRequest(r);
