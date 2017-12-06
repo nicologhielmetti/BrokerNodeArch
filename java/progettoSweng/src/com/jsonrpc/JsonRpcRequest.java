@@ -4,8 +4,14 @@ import org.json.simple.JSONObject;
 
 public class JsonRpcRequest extends JsonRpcMessage {
 
-    public JsonRpcRequest(JSONObject jsonObject) {
+    protected JsonRpcRequest(JSONObject jsonObject) {
         json = jsonObject;
+    }
+
+    public JsonRpcRequest(String method,JSONObject params, int id){
+        json.put("method",method);
+        json.put("params",params);
+        json.put("id",id);
     }
 
     public void setMethod(String method){

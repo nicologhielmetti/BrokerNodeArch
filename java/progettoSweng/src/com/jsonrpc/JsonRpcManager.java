@@ -22,38 +22,26 @@ public class JsonRpcManager {
         this.parser = new JSONParser();
     }
 
-    public JsonRpcRequest getRequest() throws ParseException {
-        JSONObject json;
+    public JsonRpcRequest listenRequest() throws ParseException,NullPointerException {
+        JSONObject jsonObject;
         do {
-            Object o = parser.parse(connection.read());
-            json = (JSONObject) o;
-            if(json == null)
-                connection.consume();
-        } while(json == null || !(json.containsKey("method") && json.containsKey("id") && json.containsKey("jsonrpc")));
+            jsonObject = (JSONObject) parser.parse(connection.read());
+            if(jsonObject == null)
+                throw new NullPointerException();
+        } while(!(JsonRpcMessage.isRequest(jsonObject) ^ JsonRpcMessage.isError(jsonObject))); // ^ --> exclusive or
         connection.consume();
-        return new JsonRpcRequest();
+        return new JsonRpcRequest(jsonObject);
     }
 
-    public JsonRpcResponse getResponse(){
-        JSONObject json;
+    public JsonRpcResponse listenResponse() throws ParseException,NullPointerException {
+        JSONObject jsonObject;
         do {
-            Object o = null;
-            try {
-                o = parser.parse(connection.read());
-            } catch (ParseException e) {
-                e.printStackTrace(); //string is not json
-            }
-            json = (JSONObject) o;
-            if(json == null)
-                connection.consume();
-        }while (json == null || !((json.containsKey("result") ^ json.containsKey("error")) && json.containsKey(""))); // ^ --> exclusive or
+            jsonObject = (JSONObject) parser.parse(connection.read());
+            if(jsonObject == null)
+                throw new NullPointerException();
+        }while (!(JsonRpcMessage.isResponse(jsonObject) ^ JsonRpcMessage.isNotification(jsonObject))); // ^ --> exclusive or
         connection.consume();
-        if(json.containsKey("result")){ //if it is a response
-
-        } else if(json.containsKey("error")){ //if it is an error
-
-        }
-        return new JsonRpcResponse();
+        return new JsonRpcResponse(jsonObject);
     }
 
     public void sendResponse(JsonRpcResponse response){ connection.send(response.toString()); }
@@ -64,6 +52,22 @@ public class JsonRpcManager {
         jsonObject.put("jsonrpc",jsonRpcVersion);
         jsonObject.put("method", method);
         jsonObject.put("params",params);
+        sendRequest(new JsonRpcRequest(jsonObject));
+    }
+
+    public void sendNotification(String method){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("jsonrpc",jsonRpcVersion);
+        jsonObject.put("method", method);
+        sendRequest(new JsonRpcRequest(jsonObject));
+    }
+
+    public void sendError(Error error, int id){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("jsonrpc",jsonRpcVersion);
+        jsonObject.put("error",error);
+        jsonObject.put("id",id);
+        sendResponse(new JsonRpcResponse(jsonObject));
     }
 
 }

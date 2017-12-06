@@ -4,6 +4,10 @@ import org.json.simple.JSONObject;
 
 public class JsonRpcResponse extends JsonRpcMessage {
 
+    protected JsonRpcResponse(JSONObject jsonObject){
+        this.json = jsonObject;
+    }
+
     public JsonRpcResponse(Error error, int id) {
         json.put("error",error);
         json.put("id", id);

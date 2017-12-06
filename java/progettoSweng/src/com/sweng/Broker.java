@@ -151,7 +151,12 @@ public class Broker {
 
             if (server != null) {
                 server.sendRequest(r);
-                JsonRpcResponse res = server.listenResponse();
+                JsonRpcResponse res = null;
+                try {
+                    res = server.listenResponse();
+                } catch (ParseException | NullPointerException e) {
+                    e.printStackTrace();
+                }
 
                 m.sendResponse(res);
             } else {

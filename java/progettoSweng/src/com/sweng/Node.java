@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
 import com.jsonrpc.*;
+import org.json.simple.parser.ParseException;
 
 
 public class Node {
@@ -34,7 +35,12 @@ public class Node {
         JsonRpcManager manager = new JsonRpcManager(connection);
         JsonRpcRequest request = new JsonRpcRequest("registerService", service.getServiceMetadata().toJson(), 0);
         manager.sendRequest(request);
-        JsonRpcResponse response = manager.getResponse();
+        JsonRpcResponse response = null;
+        try {
+            response = manager.listenResponse();
+        } catch (ParseException | NullPointerException e) {
+            e.printStackTrace();
+        }
         // Read response from Broker
         JSONObject result = response.getResult();
         boolean serviceRegistered = (boolean) result.get("serviceRegistered");
@@ -48,7 +54,12 @@ public class Node {
         Thread thread = new Thread(() -> {
             try {
                 // Wait request
-                JsonRpcRequest receivedRequest = manager.listenRequest();
+                JsonRpcRequest receivedRequest = null;
+                try {
+                    receivedRequest = manager.listenRequest();
+                } catch (ParseException | NullPointerException e) {
+                    e.printStackTrace();
+                }
                 JSONObject json = service.processRequest(receivedRequest);
                 // Send response
             } catch (RuntimeException e) {
@@ -63,7 +74,7 @@ public class Node {
     public void deleteService(String method) { // missed in uml class diagram
         IConnection connection = this.connectionFactory.createConnection();
         JsonRpcManager manager = new JsonRpcManager(connection);
-        manager.sendNotification();
+        manager.sendNotification("deleteService");
 
         this.ownServices.remove(method);
     }
@@ -79,12 +90,17 @@ public class Node {
 
     public JsonRpcResponse requestService(String method, JSONObject parameters) {
         JsonRpcManager manager = new JsonRpcManager(this.connectionFactory.createConnection());
-        JsonRpcRequest request = new JsonRpcRequest();
+        JsonRpcRequest request = new JsonRpcRequest(method,parameters,generateNewId());
         request.setId(generateNewId());
         request.setMethod(method);
         request.setParams(parameters);
         manager.sendRequest(request);
-        JsonRpcResponse response = manager.getResponse();
+        JsonRpcResponse response = null;
+        try {
+            response = manager.listenResponse();
+        } catch (ParseException | NullPointerException e) {
+            e.printStackTrace();
+        }
         return response;
     }
 
@@ -104,7 +120,7 @@ public class Node {
     }
 
     private int generateNewId() {
-        return this.id;
+        return this.id++;
     }
 
     // End of Service requester functionality

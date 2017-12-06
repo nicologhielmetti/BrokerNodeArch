@@ -46,16 +46,17 @@ public abstract class JsonRpcMessage {
                 !jsonObject.containsKey("id"));
     }
 
-    private static boolean isJsonRpc(JSONObject jsonObject){
-        return (isResponse(jsonObject) ^ isError(jsonObject)) ^ (isRequest(jsonObject) ^ isNotification(jsonObject));
+    public static boolean isJsonRpc(JSONObject jsonObject){
+        return (isResponse(jsonObject) || isError(jsonObject)) ^ (isRequest(jsonObject) ^ isNotification(jsonObject));
     }
 
     public static JsonRpcMessage toJsonRpcObject(String jsonString) throws ParseException, InvalidJsonRpcException {
         JSONObject jsonObject = (JSONObject) parser.parse(jsonString);
-        if(isRequest(jsonObject))
-            return new JsonRpcRequest();
-        else
-            throw new InvalidJsonRpcException();
+        if(isRequest(jsonObject) ^ isNotification(jsonObject))
+            return new JsonRpcRequest(jsonObject);
+        else if (isResponse(jsonObject)|| isError(jsonObject))
+            return new JsonRpcResponse(jsonObject);
+        throw new InvalidJsonRpcException();
     }
 
     public JSONObject getJsonRpc() {
@@ -65,4 +66,12 @@ public abstract class JsonRpcMessage {
     public String toString(){
         return json.toJSONString();
     }
+
+    public static JsonRpcResponse createJsonRpcResponse(JSONObject jsonObject){
+        if(isResponse(jsonObject))
+            return new JsonRpcResponse(jsonObject);
+        else
+            return null;
+    }
+
 }
