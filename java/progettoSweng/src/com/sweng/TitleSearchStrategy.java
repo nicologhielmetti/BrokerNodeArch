@@ -11,7 +11,7 @@ public class TitleSearchStrategy extends SearchStrategy {
 
     @Override
     boolean filter(ServiceMetadata service) {
-        return service.getTitle()==title;
+        return service.getMethodName()==title;
     }
 
     @Override

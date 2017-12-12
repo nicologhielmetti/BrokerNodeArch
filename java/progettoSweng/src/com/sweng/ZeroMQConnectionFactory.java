@@ -20,7 +20,7 @@ public class ZeroMQConnectionFactory implements IConnectionFactory {
     //todo handle ObjectPool
     public IConnection createConnection() {
         ZMQ.Socket socket = context.socket(ZMQ.REQ);
-        socket.connect("tcp://localhost:5555");
+        socket.connect(address);
         return new ZeroMQConnection(socket);
     }
 

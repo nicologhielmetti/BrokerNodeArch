@@ -9,6 +9,7 @@ public class JsonRpcRequest extends JsonRpcMessage {
     }
 
     public JsonRpcRequest(String method,JSONObject params, int id){
+        json=new JSONObject();
         json.put("method",method);
         json.put("params",params);
         json.put("id",id);

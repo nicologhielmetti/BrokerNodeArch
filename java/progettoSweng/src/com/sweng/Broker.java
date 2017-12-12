@@ -132,6 +132,7 @@ public class Broker {
 
     void connectionThread(JsonRpcManager m) {
 
+        if(verbose)System.out.println("connectionThread begin");
 
         JsonRpcRequest r = null;
         try {
@@ -140,6 +141,7 @@ public class Broker {
             e.printStackTrace();
         }
 
+        if(verbose)System.out.println("connectionThread: request="+r.toString());
 
         if (!filterRequest(r, m)) return;
 
@@ -167,6 +169,32 @@ public class Broker {
 
     }
 
+    void handleRequest(JsonRpcRequest request, JsonRpcManager manager){
+        if (!filterRequest(request, manager)) return;
+
+        if (request.isNotification()) {
+            //todo gestire le notifiche
+        } else {
+
+            JsonRpcManager server = servers.get(request.getMethod());
+
+            if (server != null) {
+                server.sendRequest(request);
+                JsonRpcResponse res = null;
+                try {
+                    res = server.listenResponse();
+                } catch (ParseException | NullPointerException e) {
+                    e.printStackTrace();
+                }
+
+                manager.sendResponse(res);
+            } else {
+                manager.sendError(new Error("-32601","method not found"), request.getId());
+                return;
+            }
+        }
+    }
+
     Broker(IConnectionManager connectionManager) {
         this.connectionManager = connectionManager;
 
@@ -178,9 +206,13 @@ public class Broker {
         isClosed=true;
     }
 
+    final boolean verbose=true;
+
     void start() {
         isClosed=false;
         while (!isClosed) {
+
+            if(verbose)System.out.println("Broker waiting for incoming connection...");
 
             IConnection c = connectionManager.acceptConnection();
 
@@ -188,9 +220,12 @@ public class Broker {
 
             //new thread(connectionThread,j);
 
+            if(verbose)System.out.println("Broker handling the request");
+
             Thread t1 = new Thread(() -> {
                 try {
                     connectionThread(j);
+                    if(verbose)System.out.println("Broker handled the request");
                 } catch (Exception e) {
                     // handle: log or throw in a wrapped RuntimeException
                     throw new RuntimeException("InterruptedException caught in lambda", e);

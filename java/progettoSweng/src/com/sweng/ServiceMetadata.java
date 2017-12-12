@@ -14,7 +14,7 @@ public class ServiceMetadata {
     private String methodName;
     private String owner;
     private String applicationField;
-    private ArrayList<String> keywords;
+    private ArrayList<String> keywords=new ArrayList<>();
     private String description;
     private String activationDate;
     private String signature; // change to Json string
