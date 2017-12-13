@@ -1,43 +1,70 @@
 package com.jsonrpc;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class JsonRpcRequest extends JsonRpcMessage {
 
-    protected JsonRpcRequest(JSONObject jsonObject) {
-        json = jsonObject;
+    JSONObject jsonObject;
+
+    public void setJsonRpcVersion(String jsonRpc){
+        jsonObject.put("jsonrpc",jsonRpc);
     }
 
-    public JsonRpcRequest(String method,JSONObject params, int id){
-        json=new JSONObject();
-        json.put("method",method);
-        json.put("params",params);
-        json.put("id",id);
-        json.put("jsonrpc","2.0");
+    public String getJsonRpcVersion(){
+        return (String) jsonObject.get("jsonrpc");
+    }
+
+    public void setId(ID id){
+        jsonObject.put("id",id);
+    }
+
+    public ID getId(){
+        return (ID) jsonObject.get("id");
+    }
+
+    protected JsonRpcRequest(JSONObject jsonObject) {
+        this.jsonObject = jsonObject;
+    }
+
+    public JSONObject getJsonRpc() {
+        return jsonObject;
+    }
+
+    public String toString(){
+        return jsonObject.toJSONString();
+    }
+
+    public JsonRpcRequest(String method, JSONObject params, ID id){
+        this.jsonObject=new JSONObject();
+        this.jsonObject.put("method",method);
+        this.jsonObject.put("params",params);
+        this.jsonObject.put("id",id);
+        this.jsonObject.put("jsonrpc","2.0");
     }
 
     public void setMethod(String method){
-        json.put("method", method);
+        this.jsonObject.put("method", method);
     }
 
     public void setParams(JSONObject params){
-        json.put("params", params);
+        this.jsonObject.put("params", params);
     }
 
     public JSONObject getParams(){
-        return (JSONObject) json.get("params");
+        return (JSONObject) this.jsonObject.get("params");
     }
 
     public String getMethod(){
-        return (String) json.get("method");
+        return (String) this.jsonObject.get("method");
     }
 
     public void setNotification(){
-        if(json.containsKey("id"))
-            json.remove("id");
+        if(this.jsonObject.containsKey("id"))
+            this.jsonObject.remove("id");
     }
 
     public boolean isNotification(){
-        return json.containsKey("id");
+        return !this.jsonObject.containsKey("id");
     }
 }

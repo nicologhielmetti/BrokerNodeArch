@@ -3,38 +3,58 @@ package com.jsonrpc;
 import org.json.simple.JSONObject;
 
 public class JsonRpcResponse extends JsonRpcMessage {
-
+    private JSONObject jsonObject;
     protected JsonRpcResponse(JSONObject jsonObject){
-        this.json = jsonObject;
+        this.jsonObject = jsonObject;
     }
 
-    public JsonRpcResponse(Error error, int id) {
-        json.put("error",error);
-        json.put("id", id);
+    public void setJsonRpcVersion(String jsonRpc){
+        jsonObject.put("jsonrpc",jsonRpc);
     }
 
-    public JsonRpcResponse(JSONObject result, int id) {
-        json.put("result",result);
-        json.put("id",id);
+    public String getJsonRpcVersion(){
+        return (String) jsonObject.get("jsonrpc");
+    }
+
+    public void setId(ID id){
+        jsonObject.put("id",id);
+    }
+
+    public ID getId(){
+        return (ID) jsonObject.get("id");
+    }
+
+    public JsonRpcResponse(Error error, ID id) {
+        jsonObject.put("error",error);
+        jsonObject.put("id", id);
+    }
+
+    public JsonRpcResponse(JSONObject result, ID id) {
+        jsonObject.put("result",result);
+        jsonObject.put("id",id);
     }
 
     public void setError(Error error) {
-        json.put("error",error);
+        jsonObject.put("error",error);
     }
 
     public Error getError() {
-        return (Error) json.get("error");
+        return (Error) jsonObject.get("error");
     }
 
     public boolean isError(){
-        return(json.containsKey("error"));
+        return(jsonObject.containsKey("error"));
     }
 
     public JSONObject getResult() {
-        return (JSONObject) json.get("result");
+        return (JSONObject) jsonObject.get("result");
+    }
+
+    public JSONObject getJsonRpc() {
+        return jsonObject;
     }
 
     public void setResult(JSONObject result){
-        json.put("result",result);
+        jsonObject.put("result",result);
     }
 }
