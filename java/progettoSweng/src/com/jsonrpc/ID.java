@@ -1,6 +1,8 @@
 package com.jsonrpc;
 
-public class ID {
+import org.json.simple.JSONObject;
+
+public class ID extends JSONObject {
 
     private Object id;
 
@@ -9,7 +11,7 @@ public class ID {
     public ID(String id) { this.id = id; }
 
     public ID (Integer id) { this.id = id; }
-    
+
     public void set(String id) { this.id = id; }
 
     public void set(Integer id) { this.id = id; }
