@@ -6,6 +6,7 @@ import org.json.simple.JSONObject;
 public class JsonRpcRequest extends JsonRpcMessage {
 
     JSONObject jsonObject;
+    ID id;
 
     public void setJsonRpcVersion(String jsonRpc){
         jsonObject.put("jsonrpc",jsonRpc);
@@ -16,13 +17,14 @@ public class JsonRpcRequest extends JsonRpcMessage {
     }
 
     public void setId(ID id){
+        this.id=id;
         if(id==null)jsonObject.put("id",null);
         else if(id.isString())this.jsonObject.put("id",id.toString());
         else if(id.isInt())this.jsonObject.put("id",((Integer)id.getId()).intValue());
     }
 
     public ID getId(){
-        return new ID(jsonObject.get("id"));
+        return id;//new ID(jsonObject.get("id"));
     }
 
     protected JsonRpcRequest(JSONObject jsonObject) {
@@ -35,11 +37,14 @@ public class JsonRpcRequest extends JsonRpcMessage {
         return jsonObject;
     }
 
+    @Override
     public String toString(){
         return jsonObject.toJSONString();
     }
 
     public JsonRpcRequest(String method, JSONObject params, ID id){
+        this.id=id;
+
         this.jsonObject=new JSONObject();
         this.jsonObject.put("method",method);
         this.jsonObject.put("params",params);

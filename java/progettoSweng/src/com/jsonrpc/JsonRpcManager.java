@@ -49,7 +49,7 @@ public class JsonRpcManager {
             jsonObject = (JSONObject) parser.parse(connection.read());
             if(jsonObject == null)
                 throw new NullPointerException();
-        }while (!(JsonRpcMessage.isResponse(jsonObject) ^ JsonRpcMessage.isNotification(jsonObject))); // ^ --> exclusive or
+        }while (!(JsonRpcMessage.isResponse(jsonObject) ^ JsonRpcMessage.isError(jsonObject))); // ^ --> exclusive or
         connection.consume();
         return new JsonRpcResponse(jsonObject);
     }

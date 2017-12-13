@@ -107,12 +107,14 @@ public class Broker {
             list = getServicesList(searchStrategy);
         }
 
-        JSONObject result=new JSONObject();
-        JSONArray l = new JSONArray();
-        l.addAll(list);
+        //JSONObject result=new JSONObject();
+        JSONArray result = new JSONArray();
+        result.addAll(list);
 
-        result.put("servicesList",l);
+        //result.put("servicesList",l);
 
+        if(verbose)System.out.println("generated list (result):"+result.toJSONString());
+        if(verbose)System.out.println("id:"+request.getId());
         manager.sendResponse(new JsonRpcResponse(result, request.getId()));
     }
 
@@ -205,7 +207,7 @@ public class Broker {
 
                 manager.sendResponse(res);
             } else {
-                manager.sendError(new Error("-32601","method not found"), request.getId());
+                manager.sendError(new Error("-32601","method not found"), request.getId());//todo change to static method (JsonRpcDefaultError)
                 return;
             }
         }

@@ -37,8 +37,11 @@ public class JsonRpcResponse extends JsonRpcMessage {
         jsonObject=new JSONObject();
         jsonObject.put("result",result);
         if(id==null)jsonObject.put("id",null);
-        else if(id.isString())this.jsonObject.put("id",id.toString());
-        else if(id.isInt())this.jsonObject.put("id",((Integer)id.getId()).intValue());
+        else if(id.isString())jsonObject.put("id",id.toString());
+        else if(id.isInt())jsonObject.put("id",((Integer)id.getId()).intValue());
+        else jsonObject.put("id",null);
+
+        System.out.println(jsonObject.toJSONString());
     }
 
     public JsonRpcResponse(JSONArray result, ID id){
@@ -72,4 +75,10 @@ public class JsonRpcResponse extends JsonRpcMessage {
     public void setResult(JSONObject result){
         jsonObject.put("result",result);
     }
+
+    @Override
+    public String toString(){
+        return jsonObject.toJSONString();
+    }
+
 }
