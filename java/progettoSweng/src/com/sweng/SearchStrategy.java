@@ -1,7 +1,6 @@
 package com.sweng;
 import org.json.simple.JSONObject;
 
-
 public abstract class SearchStrategy {
 
     public java.util.List<ServiceMetadata> filterList(java.util.List<ServiceMetadata> services){

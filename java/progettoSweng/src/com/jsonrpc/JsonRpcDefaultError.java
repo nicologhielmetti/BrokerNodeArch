@@ -22,7 +22,7 @@ public class JsonRpcDefaultError {
         return response;
     }
 
-    public static JsonRpcResponse InvalidRequest(ID id) {
+    public static JsonRpcResponse InvalidParameters(ID id) {
         Error error = new Error("-32602", "Invalid params");
         JsonRpcResponse response = new JsonRpcResponse(error, id);
         return response;
