@@ -16,16 +16,20 @@ public class JsonRpcRequest extends JsonRpcMessage {
     }
 
     public void setId(ID id){
-        jsonObject.put("id",id);
+        if(id==null)jsonObject.put("id",null);
+        else if(id.isString())this.jsonObject.put("id",id.toString());
+        else if(id.isInt())this.jsonObject.put("id",((Integer)id.getId()).intValue());
     }
 
     public ID getId(){
-        return (ID) jsonObject.get("id");
+        return new ID(jsonObject.get("id"));
     }
 
     protected JsonRpcRequest(JSONObject jsonObject) {
         this.jsonObject = jsonObject;
     }
+
+
 
     public JSONObject getJsonRpc() {
         return jsonObject;
@@ -39,7 +43,10 @@ public class JsonRpcRequest extends JsonRpcMessage {
         this.jsonObject=new JSONObject();
         this.jsonObject.put("method",method);
         this.jsonObject.put("params",params);
-        this.jsonObject.put("id",id);
+        if(id==null)jsonObject.put("id",null);
+        else if(id.isString())this.jsonObject.put("id",id.toString());
+        else if(id.isInt())this.jsonObject.put("id",((Integer)id.getId()).intValue());
+
         this.jsonObject.put("jsonrpc","2.0");
     }
 

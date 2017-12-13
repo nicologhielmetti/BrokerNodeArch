@@ -18,26 +18,35 @@ public class JsonRpcResponse extends JsonRpcMessage {
     }
 
     public void setId(ID id){
-        jsonObject.put("id",id);
+        if(id==null)jsonObject.put("id",null);
+        else if(id.isString())this.jsonObject.put("id",id.toString());
+        else if(id.isInt())this.jsonObject.put("id",((Integer)id.getId()).intValue());
     }
 
     public ID getId(){
-        return (ID) jsonObject.get("id");
+        return new ID(jsonObject.get("id"));
     }
 
     public JsonRpcResponse(Error error, ID id) {
+        jsonObject=new JSONObject();
         jsonObject.put("error",error);
         jsonObject.put("id", id);
     }
 
     public JsonRpcResponse(JSONObject result, ID id) {
+        jsonObject=new JSONObject();
         jsonObject.put("result",result);
-        jsonObject.put("id",id);
+        if(id==null)jsonObject.put("id",null);
+        else if(id.isString())this.jsonObject.put("id",id.toString());
+        else if(id.isInt())this.jsonObject.put("id",((Integer)id.getId()).intValue());
     }
 
     public JsonRpcResponse(JSONArray result, ID id){
+        jsonObject=new JSONObject();
         jsonObject.put("result",result);
-        jsonObject.put("id",id);
+        if(id==null)jsonObject.put("id",null);
+        else if(id.isString())this.jsonObject.put("id",id.toString());
+        else if(id.isInt())this.jsonObject.put("id",((Integer)id.getId()).intValue());
     }
 
     public void setError(Error error) {

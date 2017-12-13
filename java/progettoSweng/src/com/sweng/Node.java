@@ -44,7 +44,7 @@ public class Node {
 
         // Read response from Broker
         JSONObject result = response.getResult();
-        boolean serviceRegistered = (boolean) result.get("serviceRegistered");
+        boolean serviceRegistered = (boolean)result.get("serviceRegistered");
         if (serviceRegistered) {
             String newMethodName = (String) result.get("methodName");
             service.getServiceMetadata().setMethodName(newMethodName);
@@ -116,7 +116,7 @@ public class Node {
         ArrayList<ServiceMetadata> list = new ArrayList<ServiceMetadata>();
         list.clear();
 
-        JsonRpcResponse response = this.requestService("searchStrategy", searchStrategy.toJson());
+        JsonRpcResponse response = this.requestService("getServicesList", searchStrategy.toJson());
 
         JSONObject json = response.getJsonRpc();
         JSONArray array = (JSONArray) json.get("result");
@@ -127,8 +127,8 @@ public class Node {
         return list;
     }
 
-    private int generateNewId() {
-        return this.id++;
+    private ID generateNewId() {
+        return new ID(this.id++);
     }
 
     // End of Service requester functionality

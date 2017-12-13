@@ -2,7 +2,7 @@ package com.jsonrpc;
 
 import org.json.simple.JSONObject;
 
-public class ID extends JSONObject {
+public class ID {
 
     private Object id;
 
@@ -11,6 +11,8 @@ public class ID extends JSONObject {
     public ID(String id) { this.id = id; }
 
     public ID (Integer id) { this.id = id; }
+
+    public ID(Object id){ this.id=id; }
 
     public void set(String id) { this.id = id; }
 
@@ -25,6 +27,13 @@ public class ID extends JSONObject {
     public boolean isString() { return (this.id instanceof String); }
 
     public boolean isNull() { return (this.id == null); }
+
+    public String toString(){
+        if(isInt())return String.valueOf((Integer) id);
+        if(isString())return (String) id;
+        if(isNull())return "null";
+        return "";
+    }
 
     @Override
     public boolean equals(Object id) {

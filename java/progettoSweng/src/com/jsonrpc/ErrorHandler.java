@@ -8,19 +8,21 @@ public class ErrorHandler {
         for(JSONObject jsonObject : (JSONObject[]) jsonArray.toArray()){
 
         }
+        return null;
     }
 
     public Error handleWrongRequest(JSONObject jsonObject){
-
+        return null;
     }
 
     public Error handleWrongResponse(JSONObject jsonObject){
-
+        return null;
     }
 
     public JSONArray handleWrongBatchRequest(JSONArray jsonArray){
         for(JSONObject jsonObject : (JSONObject[]) jsonArray.toArray()){
-            if(!JsonRpcMessage.isRequest(jsonObject))
+            //if(!JsonRpcMessage.isRequest(jsonObject))
         }
+        return null;
     }
 }

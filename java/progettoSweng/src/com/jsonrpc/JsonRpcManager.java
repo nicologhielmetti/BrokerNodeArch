@@ -5,13 +5,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.util.ArrayList;
-
 public class JsonRpcManager {
     private IConnection connection;
     private JSONParser parser;
     private static String jsonRpcVersion = "2.0";
-    private ErrorHandler errorHandler;
 
     public static void setJsonRpcVersion(String jsonRpcVersion) {
         JsonRpcManager.jsonRpcVersion = jsonRpcVersion;
@@ -26,29 +23,24 @@ public class JsonRpcManager {
         this.parser = new JSONParser();
     }
 
-
     public JsonRpcRequest listenRequest() throws ParseException,NullPointerException {
-        while(true) {
-            Object obj = parser.parse(connection.read());
-            if(obj == null)
-                throw new NullPointerException();
-            if(obj instanceof JSONArray) {
-                JSONArray jsonArray = (JSONArray) obj;
-                if(JsonRpcMessage.isRequestBatch(jsonArray)) //handle batches
-                    return new JsonRpcRequest(jsonArray);
-                else
-                    handleWrongBatch(jsonArray); //handle wrong messages
-            } else if(obj instanceof JSONObject){
-                //todo handle single Request
-            } else {
-                //todo handle non-json Request
+        JSONObject jsonObject;
+        JSONArray jsonArray;
+        do {
+            Object obj=parser.parse(connection.read());
+            jsonObject = (JSONObject) obj;
+            if(jsonObject == null){
+                jsonArray= (JSONArray) obj;
+                if(jsonArray!=null){
+                    //Batch
+                }else throw new NullPointerException();
             }
-            if (JsonRpcMessage.isRequest(jsonObject) ^ JsonRpcMessage.isNotification(jsonObject)) {
-                connection.consume();
-                return new JsonRpcRequest(jsonObject);
-            } else
-                handleError(jsonObject);
-        }
+
+            System.out.println("listenRequest(): jsonObject = "+jsonObject.toJSONString());
+        } while(!(JsonRpcMessage.isRequest(jsonObject) || JsonRpcMessage.isError(jsonObject))); // ^ --> exclusive or
+
+        connection.consume();
+        return new JsonRpcRequest(jsonObject);
     }
 
     public JsonRpcResponse listenResponse() throws ParseException,NullPointerException {
@@ -57,25 +49,13 @@ public class JsonRpcManager {
             jsonObject = (JSONObject) parser.parse(connection.read());
             if(jsonObject == null)
                 throw new NullPointerException();
-        }while (JsonRpcMessage.isResponse(jsonObject) == JsonRpcMessage.isNotification(jsonObject));
+        }while (!(JsonRpcMessage.isResponse(jsonObject) ^ JsonRpcMessage.isNotification(jsonObject))); // ^ --> exclusive or
         connection.consume();
         return new JsonRpcResponse(jsonObject);
     }
 
     public void sendResponse(JsonRpcResponse response){ connection.send(response.toString()); }
     public void sendRequest(JsonRpcRequest request){ connection.send(request.toString()); }
-
-    public void sendBatchResponse(ArrayList<JsonRpcResponse> responses){
-        JSONArray jsonArray = new JSONArray();
-        jsonArray.addAll(responses);
-        connection.send(jsonArray.toJSONString());
-    }
-
-    public void sendBatchRequest(ArrayList<JsonRpcRequest> requests){
-        JSONArray jsonArray = new JSONArray();
-        jsonArray.addAll(requests);
-        connection.send(jsonArray.toJSONString());
-    }
 
     public void sendNotification(String method, JSONObject params){
         JSONObject jsonObject = new JSONObject();
@@ -92,7 +72,7 @@ public class JsonRpcManager {
         sendRequest(new JsonRpcRequest(jsonObject));
     }
 
-    public void sendError(Error error, int id){
+    public void sendError(Error error, ID id){
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("jsonrpc",jsonRpcVersion);
         jsonObject.put("error",error);
