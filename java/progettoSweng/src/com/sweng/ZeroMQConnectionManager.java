@@ -46,8 +46,8 @@ public class ZeroMQConnectionManager implements IConnectionManager {
         if (sockets == null) {
             sockets = new Pair<>(context.socket(ZMQ.REQ),context.socket(ZMQ.REP));
 
-            sockets.getValue().connect("ipc://local"+ index +".ipc");
-            sockets.getKey().connect("ipc://local"+ index++ +".ipc");
+            sockets.getValue().connect("inproc://local"+ index );
+            sockets.getKey().bind("inproc://local"+ index++ );
 
 
             connections.put(backend.recvStr(), sockets);
