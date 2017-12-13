@@ -80,14 +80,17 @@ public class Node {
     }
 
     public void deleteService(String method) { // missed in uml class diagram
-        IConnection connection = this.connectionFactory.createConnection();
-        JsonRpcManager manager = new JsonRpcManager(connection);
-        manager.sendNotification("deleteService");
-
-        // Delete service
-        RunningService availableService = this.ownServices.get(method);
-        availableService.delete();
-        this.ownServices.remove(method);
+        if (this.ownServices.containsKey(method)) {
+            IConnection connection = this.connectionFactory.createConnection();
+            JsonRpcManager manager = new JsonRpcManager(connection);
+            manager.sendNotification("deleteService");
+            // Delete service
+            RunningService availableService = this.ownServices.get(method);
+            availableService.delete();
+            this.ownServices.remove(method);
+        } else {
+            throw new RuntimeException("There is no service named " + method);
+        }
     }
 
     public void setConncetionFactory(IConnectionFactory connectionFactory) {
