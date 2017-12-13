@@ -28,7 +28,8 @@ public class JsonRpcManager {
             jsonObject = (JSONObject) parser.parse(connection.read());
             if(jsonObject == null)
                 throw new NullPointerException();
-        } while(!(JsonRpcMessage.isRequest(jsonObject) ^ JsonRpcMessage.isError(jsonObject))); // ^ --> exclusive or
+            System.out.println("listenRequest(): jsonObject = "+jsonObject.toJSONString());
+        } while(!(JsonRpcMessage.isRequest(jsonObject)));//|| JsonRpcMessage.isError(jsonObject))); // ^ --> exclusive or
         connection.consume();
         return new JsonRpcRequest(jsonObject);
     }

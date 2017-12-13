@@ -13,6 +13,7 @@ public class JsonRpcRequest extends JsonRpcMessage {
         json.put("method",method);
         json.put("params",params);
         json.put("id",id);
+        json.put("jsonrpc","2.0");
     }
 
     public void setMethod(String method){

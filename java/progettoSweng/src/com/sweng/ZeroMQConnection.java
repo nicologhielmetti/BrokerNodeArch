@@ -39,6 +39,7 @@ public class ZeroMQConnection implements IConnection {
             //String identity=socket.recvStr();
             do{
                 head=socket.recvStr();
+                System.out.println("ZeroMQConnection head = "+head);
             }while(socket.hasReceiveMore());
             //head=socket.recvStr();
             System.out.println("ZeroMQConnection received : \""+head+"\"");
@@ -59,6 +60,7 @@ public class ZeroMQConnection implements IConnection {
     public void send(String msg) {
         System.out.println("Sending : "+msg);
         if(sender==null){
+            socket.sendMore("");
             socket.send(msg);
         }else{
             sender.sendMore(identity);
