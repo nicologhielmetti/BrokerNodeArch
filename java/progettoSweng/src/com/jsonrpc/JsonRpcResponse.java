@@ -1,5 +1,6 @@
 package com.jsonrpc;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class JsonRpcResponse extends JsonRpcMessage {
@@ -30,6 +31,11 @@ public class JsonRpcResponse extends JsonRpcMessage {
     }
 
     public JsonRpcResponse(JSONObject result, ID id) {
+        jsonObject.put("result",result);
+        jsonObject.put("id",id);
+    }
+
+    public JsonRpcResponse(JSONArray result, ID id){
         jsonObject.put("result",result);
         jsonObject.put("id",id);
     }
