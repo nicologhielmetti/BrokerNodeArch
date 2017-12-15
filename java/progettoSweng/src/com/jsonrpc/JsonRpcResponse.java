@@ -9,6 +9,8 @@ public class JsonRpcResponse extends JsonRpcMessage {
         this.jsonObject = jsonObject;
     }
 
+    protected JsonRpcResponse(){} //empty response used for a particular case (batch == [])
+
     public void setJsonRpcVersion(String jsonRpc){
         jsonObject.put("jsonrpc",jsonRpc);
     }
@@ -26,16 +28,20 @@ public class JsonRpcResponse extends JsonRpcMessage {
     }
 
     public JsonRpcResponse(Error error, ID id) {
+        jsonObject = new JSONObject();
+        jsonObject.put("jsonrpc", getJsonRpcVersion() );
         jsonObject.put("error",error);
         jsonObject.put("id", id);
     }
 
     public JsonRpcResponse(JSONObject result, ID id) {
+        jsonObject.put("jsonrpc", getJsonRpcVersion() );
         jsonObject.put("result",result);
         jsonObject.put("id",id);
     }
 
     public JsonRpcResponse(JSONArray result, ID id){
+        jsonObject.put("jsonrpc", getJsonRpcVersion() );
         jsonObject.put("result",result);
         jsonObject.put("id",id);
     }
@@ -62,5 +68,10 @@ public class JsonRpcResponse extends JsonRpcMessage {
 
     public void setResult(JSONObject result){
         jsonObject.put("result",result);
+    }
+
+    @Override
+    public String toString() {
+        return jsonObject.toJSONString();
     }
 }

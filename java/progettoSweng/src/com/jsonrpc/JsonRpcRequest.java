@@ -43,6 +43,14 @@ public class JsonRpcRequest extends JsonRpcMessage {
         this.jsonObject.put("jsonrpc","2.0");
     }
 
+    public JsonRpcRequest() {
+        jsonObject = new JSONObject();
+    }
+
+    public boolean isEmpty(){
+        return (jsonObject.isEmpty());
+    }
+
     public void setMethod(String method){
         this.jsonObject.put("method", method);
     }

@@ -17,28 +17,45 @@ public abstract class JsonRpcMessage {
         return true;
     }
 
+    public boolean isBatch(){
+        return ((this instanceof JsonRpcBatchResponse) || (this instanceof JsonRpcBatchRequest));
+    }
+
     public static boolean isRequestBatch(JSONArray jsonArray){
-        JsonRpcRequest[] requests = (JsonRpcRequest[]) jsonArray.toArray();
-        for(JsonRpcRequest r : requests)
-            if(isRequest(r.getJsonRpc()) == isNotification(r.getJsonRpc()))
-                return false;
-        return true;
+        if(jsonArray.size() == 0) return false;
+        try {
+            JSONObject[] requests = (JSONObject[]) jsonArray.toArray(new JSONObject[jsonArray.size()]);
+            for(JSONObject r : requests)
+                if(isRequest(r) == isNotification(r))
+                    return false;
+            return true;
+        } catch (ArrayStoreException e){
+            return false;
+        }
     }
 
     public static boolean isResponse(JSONObject jsonObject){
-        return (jsonObject.containsKey("jsonrpc") &&
-                (jsonObject.containsKey("result") ^ jsonObject.containsKey("error")) ||
-                jsonObject.containsKey("id"));
+        return ((jsonObject.containsKey("jsonrpc") &&
+                jsonObject.containsKey("result") &&
+                jsonObject.containsKey("id")) && jsonObject.size() == 3);
     }
 
     public static boolean isError(JSONObject jsonObject){
-        return (isResponse(jsonObject) && jsonObject.containsKey("error"));
+        return ((jsonObject.containsKey("jsonrpc") &&
+                jsonObject.containsKey("error") &&
+                jsonObject.containsKey("id")) && jsonObject.size() == 3);
     }
 
     public static boolean isRequest(JSONObject jsonObject){
-        return (jsonObject.containsKey("jsonrpc") &&
+        return (((jsonObject.containsKey("jsonrpc") &&
                 jsonObject.containsKey("method")  &&
-                jsonObject.containsKey("id"));
+                jsonObject.containsKey("id")) && jsonObject.size() == 3)
+        ||
+                ((jsonObject.containsKey("jsonrpc") &&
+                jsonObject.containsKey("method")  &&
+                jsonObject.containsKey("id")  &&
+                jsonObject.containsKey("params")) && jsonObject.size() == 4)
+        );
     }
 
     public static boolean isNotification(JSONObject jsonObject){
