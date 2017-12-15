@@ -28,11 +28,6 @@ public class Broker {
     private Map<String, JsonRpcManager> servers=new HashMap<>();
     private List<ServiceMetadata> services=new LinkedList<>();
 
-
-    void log(String msg){
-        if(!verbose)return;
-        System.out.println(Thread.currentThread().toString()+"  :  "+msg);
-    }
     /**
      * Generate a method name to identify unequivocally a Service.
      *
@@ -63,29 +58,21 @@ public class Broker {
 
         name = generateMethodName(name);
 
-        log("registerService generated name = "+name);
+        if(verbose)System.out.println("registerService generated name = "+name);
 
         ServiceMetadata serviceMetadata = new ServiceMetadata(request.getParams());
         serviceMetadata.setMethodName("title");
         servers.put(name, manager);
         services.add(serviceMetadata);
 
-        log("registerService service registered - communicating to node");
+        if(verbose)System.out.println("registerService service registered - communicating to node");
 
         JSONObject result = new JSONObject();
         result.put("serviceRegistered", true);
         result.put("methodName", name);
         manager.sendResponse(new JsonRpcResponse(result, request.getId()));
 
-        try {
-            request = manager.listenRequest();
-            assert (request.isNotification());
-            System.out.println("Server is ready to receive");
-        }catch (ParseException e){
-            e.printStackTrace();
-        }
-
-        log("registerService done");
+        if(verbose)System.out.println("registerService done");
     }
 
     String registerService(Service service) {
@@ -100,7 +87,7 @@ public class Broker {
     }
 
     void deleteService(JsonRpcRequest request) {
-        String name = (String) request.getParams().get("title");//todo non gestire con il nome ma con il riferimento alla connessione
+        String name = request.getParams().get("title").toString();//todo non gestire con il nome ma con il riferimento alla connessione
 
         services.remove(name);
     }
@@ -109,8 +96,6 @@ public class Broker {
         JSONObject j = (JSONObject) request.getParams();
         List<ServiceMetadata> list;
 
-        if(getServicesList().isEmpty())log("no service registered");
-
         if (j.isEmpty()) list = getServicesList();
         else {
             SearchStrategy searchStrategy = SearchStrategy.create(j);
@@ -118,9 +103,8 @@ public class Broker {
                 manager.sendError(new Error("-32602", "SearchStrategy is ill-formed"), request.getId());
                 return;
             }
-            log("SearchStrategy parsed:  "+searchStrategy.toJson());
+
             list = getServicesList(searchStrategy);
-            if(list.isEmpty())log("list is empty");
         }
 
         //JSONObject result=new JSONObject();
@@ -129,8 +113,8 @@ public class Broker {
 
         //result.put("servicesList",l);
 
-        log("generated list (result):"+result.toJSONString());
-        log("id:"+request.getId());
+        if(verbose)System.out.println("generated list (result):"+result.toJSONString());
+        if(verbose)System.out.println("id:"+request.getId());
         manager.sendResponse(new JsonRpcResponse(result, request.getId()));
     }
 
@@ -152,7 +136,7 @@ public class Broker {
         } else {
             switch (request.getMethod()) {
                 case "registerService":
-                    log("registerService request");
+                    if(verbose)System.out.println("registerService request");
                     registerService(request, manager);
                     return false;
                 case "getServicesList":
@@ -166,7 +150,7 @@ public class Broker {
 
     void connectionThread(JsonRpcManager m) {
 
-        log("connectionThread begin");
+        if(verbose)System.out.println("connectionThread begin");
 
         JsonRpcRequest r = null;
         try {
@@ -175,7 +159,7 @@ public class Broker {
             e.printStackTrace();
         }
 
-        log("connectionThread: methodName=\""+r.getMethod()+"\"\trequest="+r.toString());
+        if(verbose)System.out.println("connectionThread: methodName=\""+r.getMethod()+"\"\trequest="+r.toString());
 
         if (!filterRequest(r, m)) return;
 
@@ -246,7 +230,7 @@ public class Broker {
         isClosed=false;
         while (!isClosed) {
 
-            log("Broker waiting for incoming connection...");
+            if(verbose)System.out.println("Broker waiting for incoming connection...");
 
             IConnection c = connectionManager.acceptConnection();
 
@@ -254,12 +238,12 @@ public class Broker {
 
             //new thread(connectionThread,j);
 
-            log("Broker handling the request");
+            if(verbose)System.out.println("Broker handling the request");
 
             Thread t1 = new Thread(() -> {
                 try {
                     connectionThread(j);
-                    log("Broker handled the request");
+                    if(verbose)System.out.println("Broker handled the request");
                 } catch (Exception e) {
                     // handle: log or throw in a wrapped RuntimeException
                     throw new RuntimeException("InterruptedException caught in lambda", e);
