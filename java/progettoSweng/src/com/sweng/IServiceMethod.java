@@ -1,9 +1,10 @@
 package com.sweng;
 
-import org.json.simple.JSONObject;
+import com.jsonrpc.JsonRpcResponse;
+import com.jsonrpc.JsonRpcRequest;
 
 public interface IServiceMethod {
 
-    JSONObject run(JSONObject parameters) throws RuntimeException;
+    JsonRpcResponse run(JsonRpcRequest parameters) throws RuntimeException;
 
 }

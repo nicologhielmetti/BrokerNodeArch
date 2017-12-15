@@ -2,6 +2,8 @@ package com.sweng;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -13,14 +15,22 @@ import com.jsonrpc.*;
 
 public class Node {
 
-    private Map<String, RunningService> ownServices;
+    private Map<String, Service> ownServices;
     private IConnectionFactory connectionFactory;
     private int id;
 
     // Start of Service handler functionality
 
     /**
-     * Node is the constructor of the Node class
+     * Dictionary:
+     * - Server ---> DummyServer.java
+     * - Client ---> DummyClient.java
+     */
+
+    /**
+     * Node is the constructor of the Node class.
+     * The IConncetionFactory parameter is used to define which is used to define
+     * the connection that this object have to use.
      * @param connectionFactory
      */
 
@@ -30,53 +40,37 @@ public class Node {
         ownServices = new HashMap<>();
     }
 
-    public void provideService(Service service) {
+    /**
+     * provideService is public method that allow the application layer (servers) to provide
+     * an own service to all clients connected in the system. With this method the server send
+     * to the broker a request of adding service ("registerService") and the broker if the operation
+     * is successful a response is return with the correct method name in order not to have duplicated
+     * method identifier.
+     * When the service is correctly published this method start a thread that wait requests from clients.
+     * This
+     * @param service
+     */
+
+    public boolean provideService(Service service) {
         IConnection  connection = this.connectionFactory.createConnection();
         JsonRpcManager manager = new JsonRpcManager(connection);
-        JsonRpcRequest request = new JsonRpcRequest("registerService", service.getServiceMetadata().toJson(), this.generateNewId());
-        manager.sendRequest(request);
-        JsonRpcResponse response = null;
-        try {
-            response = manager.listenResponse();
-        } catch (ParseException | NullPointerException e) {
-            e.printStackTrace();
-        }
+        JsonRpcRequest registerServiceRequest = new JsonRpcRequest("registerService", service.getServiceMetadata().toJson(), this.generateNewId());
+        manager.sendRequest(registerServiceRequest);
+        JsonRpcResponse registerServiceResponse = (JsonRpcResponse) manager.listenResponse();
 
         // Read response from Broker
-        JSONObject result = response.getResult();
-        boolean serviceRegistered = (boolean)result.get("serviceRegistered");
+        JSONObject result = registerServiceResponse.getResult();
+        boolean serviceRegistered = (boolean) result.get("serviceRegistered");
         if (serviceRegistered) {
             String newMethodName = (String) result.get("methodName");
             service.getServiceMetadata().setMethodName(newMethodName);
         } else {
-            // Exeption
+            // Timeout
         }
-        // Thread creation
-        Thread thread = new Thread(() -> {
-            while (true) {
-                try {
-                    // Wait request
-                    JsonRpcRequest receivedRpcRequest = null;
-                    try {
-                        receivedRpcRequest = manager.listenRequest();
-                    } catch (ParseException | NullPointerException e) {
-                        e.printStackTrace();
-                    }
-                    JSONObject parameters = receivedRpcRequest.getParams();
-                    //Check service signature
-                    //Execute request
-                    JSONObject serviceResult = service.processRequest(parameters);
-                    // Send response
-                    JsonRpcResponse generatedResponse = new JsonRpcResponse(serviceResult, receivedRpcRequest.getId());
-                    manager.sendResponse(generatedResponse);
-                } catch (RuntimeException e) {
-                    throw new RuntimeException("Provide service thread");
-                }
-            }
-        });
-        thread.start();
-
-        ownServices.put(service.getServiceMetadata().getMethodName(), new RunningService(service, manager, thread));
+        // Start new service
+        service.start();
+        ownServices.put(service.getServiceMetadata().getMethodName(), service);
+        return true;
     }
 
     public void deleteService(String method) { // missed in uml class diagram
@@ -85,7 +79,8 @@ public class Node {
             JsonRpcManager manager = new JsonRpcManager(connection);
             manager.sendNotification("deleteService");
             // Delete service
-            RunningService availableService = this.ownServices.get(method);
+            Service availableService = this.ownServices.get(method);
+            availableService.interrupt();
             availableService.delete();
             this.ownServices.remove(method);
         } else {
@@ -106,21 +101,14 @@ public class Node {
         JsonRpcManager manager = new JsonRpcManager(this.connectionFactory.createConnection());
         JsonRpcRequest request = new JsonRpcRequest(method, parameters, generateNewId());
         manager.sendRequest(request);
-        JsonRpcResponse response = null;
-        try {
-            response = manager.listenResponse();
-        } catch (ParseException | NullPointerException e) {
-            e.printStackTrace();
-        }
+        JsonRpcResponse response = (JsonRpcResponse) manager.listenResponse();
         return response;
     }
 
     public ArrayList<ServiceMetadata> requestServiceList(SearchStrategy searchStrategy) {
-        ArrayList<ServiceMetadata> list = new ArrayList<ServiceMetadata>();
+        ArrayList<ServiceMetadata> list = new ArrayList<>();
         list.clear();
-
         JsonRpcResponse response = this.requestService("getServicesList", searchStrategy.toJson());
-
         JSONObject json = response.getJsonRpc();
         JSONArray array = (JSONArray) json.get("result");
         Iterator<JSONObject> iterator = array.iterator();
