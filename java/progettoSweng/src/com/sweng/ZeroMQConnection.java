@@ -66,25 +66,32 @@ public class ZeroMQConnection implements IConnection {
     }
     @Override
     public void send(String msg) {
-        System.out.println("Sending : "+msg);
+        System.out.println("ZeroMQConnection Sending : "+msg);
+        boolean ok;
         if(sender==null){
             //socket.sendMore("");
             //socket.send(msg);
             ZMsg z=new ZMsg();
             z.push(msg);
 
-            z.send(socket);
+            System.out.println("sending : "+z.toString());
+
+            ok=z.send(socket);
         }else{
             ZMsg z=new ZMsg();
             z.push(msg);
-            z.push(identity);
+            //z.push("");
+            z.push(identity.duplicate());
 
-            z.send(sender);
+            System.out.println("sending : "+z.toString());
+
+            ok=z.send(sender);
 
 //            sender.sendMore(identity);
 //            sender.sendMore("");
 //            sender.send(msg);
         }
+        System.out.println("message send ("+ok+")");
     }
 
 }
