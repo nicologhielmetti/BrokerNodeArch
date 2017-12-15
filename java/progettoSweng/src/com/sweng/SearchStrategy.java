@@ -1,7 +1,6 @@
 package com.sweng;
 import org.json.simple.JSONObject;
 
-
 public abstract class SearchStrategy {
 
     public java.util.List<ServiceMetadata> filterList(java.util.List<ServiceMetadata> services){
@@ -16,11 +15,11 @@ public abstract class SearchStrategy {
     static public SearchStrategy create(JSONObject j){
         switch (j.get("type").toString()){
             case "TitleSearchStrategy":
-                return new TitleSearchStrategy(j.get("title").toString());
+                return new TitleSearchStrategy((String)j.get("title"));
             case "OwnerSearchStrategy":
-                return new OwnerSearchStrategy(j.get("owner").toString());
+                return new OwnerSearchStrategy((String)j.get("owner"));
             case "KeywordSearchStrategy":
-                return new KeywordSearchStrategy(j.get("keyword").toString());
+                return new KeywordSearchStrategy((String)j.get("keyword"));
         }
         //search strategy not implemented
         return null;

@@ -1,22 +1,25 @@
 package com.sweng;
 
 import com.jsonrpc.IConnection;
+import org.zeromq.ZFrame;
 import org.zeromq.ZMQ;
+import org.zeromq.ZMQ.Socket;
+import org.zeromq.ZMsg;
 
 public class ZeroMQConnection implements IConnection {
 
-    ZMQ.Socket socket,sender;
-    String identity;
+    Socket socket,sender;
+    ZFrame identity;
 
     String head;
     boolean unset=true;
 
 
-    ZeroMQConnection(ZMQ.Socket socket){
+    ZeroMQConnection(Socket socket){
         this.socket=socket;
     }
 
-    ZeroMQConnection(ZMQ.Socket receiver, ZMQ.Socket sender,String identity){
+    ZeroMQConnection(Socket receiver, Socket sender,ZFrame identity){
         this.socket=receiver;
         this.sender=sender;
         this.identity=identity;
@@ -36,12 +39,17 @@ public class ZeroMQConnection implements IConnection {
     @Override
     public String read() {
         if(unset){
+            System.out.println("ZeroMQConnection waiting for messages ( read() )");
             //String identity=socket.recvStr();
-            do{
-                head=socket.recvStr();
-                System.out.println("ZeroMQConnection head = "+head);
-            }while(socket.hasReceiveMore());
+//            do{
+//                head=socket.recvStr();
+//                System.out.println("ZeroMQConnection head = "+head);
+//            }while(socket.hasReceiveMore());
             //head=socket.recvStr();
+            ZMsg msg=ZMsg.recvMsg(socket);
+            do{
+                head=msg.popString();
+            }while(!msg.isEmpty());
             System.out.println("ZeroMQConnection received : \""+head+"\"");
 
             unset=false;
@@ -60,12 +68,22 @@ public class ZeroMQConnection implements IConnection {
     public void send(String msg) {
         System.out.println("Sending : "+msg);
         if(sender==null){
-            socket.sendMore("");
-            socket.send(msg);
+            //socket.sendMore("");
+            //socket.send(msg);
+            ZMsg z=new ZMsg();
+            z.push(msg);
+
+            z.send(socket);
         }else{
-            sender.sendMore(identity);
-            sender.sendMore("");
-            sender.send(msg);
+            ZMsg z=new ZMsg();
+            z.push(msg);
+            z.push(identity);
+
+            z.send(sender);
+
+//            sender.sendMore(identity);
+//            sender.sendMore("");
+//            sender.send(msg);
         }
     }
 

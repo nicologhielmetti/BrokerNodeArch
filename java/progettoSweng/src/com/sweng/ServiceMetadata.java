@@ -17,13 +17,12 @@ public class ServiceMetadata {
     private ArrayList<String> keywords=new ArrayList<>();
     private String description;
     private String activationDate;
-    private String signature; // change to Json string
 
     public ServiceMetadata(String methodName, String owner) {
         this.keywords = new ArrayList<>();
         this.methodName = methodName;
         this.owner = owner;
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date();
         activationDate = dateFormat.format(date);
     }
@@ -33,8 +32,8 @@ public class ServiceMetadata {
         this.owner = (String) json.get("owner");
         this.activationDate = (String) json.get("activationDate");
         this.description = (String) json.get("description");
+
         this.applicationField = (String) json.get("applicationField");
-        this.signature = (String) json.get("signature");
         JSONArray jsonKeywords = (JSONArray) json.get("keywords");
         Iterator<String> iterator = jsonKeywords.iterator();
         while (iterator.hasNext()) {
@@ -49,7 +48,6 @@ public class ServiceMetadata {
         json.put("activationDate", this.activationDate);
         json.put("description", this.description);
         json.put("applicationField", this.applicationField);
-        json.put("signature", this.signature);
         JSONArray jsonKeywords = new JSONArray();
         jsonKeywords.addAll(keywords);
         json.put("keywords", jsonKeywords);
@@ -64,8 +62,6 @@ public class ServiceMetadata {
 
     public void setKeywords(ArrayList<String> keywords) { this.keywords = keywords; }
 
-    public void setSignature(String signature) { this.signature = signature; }
-
     public ArrayList<String> getKeywords() { return keywords; }
 
     public String getActivationDate() { return activationDate; }
@@ -75,8 +71,6 @@ public class ServiceMetadata {
     public String getDescription() { return description; }
 
     public String getOwner() { return owner; }
-
-    public String getSignature() { return signature; }
 
     public String getMethodName() { return methodName; }
 

@@ -3,6 +3,8 @@ package com.sweng;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,10 +23,10 @@ public class Broker {
     private IConnectionManager connectionManager;
     private boolean isClosed;
 
-    private Map<String, Service> brokerServices;
+    private Map<String, Service> brokerServices=new HashMap<>();
 
-    private Map<String, JsonRpcManager> servers;
-    private List<ServiceMetadata> services;
+    private Map<String, JsonRpcManager> servers=new HashMap<>();
+    private List<ServiceMetadata> services=new LinkedList<>();
 
     /**
      * Generate a method name to identify unequivocally a Service.
@@ -46,18 +48,31 @@ public class Broker {
     }
 
     void registerService(JsonRpcRequest request, JsonRpcManager manager) {
-        String name = request.getParams().get("title").toString();
+        JSONObject params= request.getParams();
+
+        if(params==null)throw new RuntimeException("failed to register a service: title not found");
+
+        String name=(String)params.get("methodName");
+        if(name.isEmpty())throw new RuntimeException("failed to register a service: title not found");
+
+
         name = generateMethodName(name);
+
+        if(verbose)System.out.println("registerService generated name = "+name);
 
         ServiceMetadata serviceMetadata = new ServiceMetadata(request.getParams());
         serviceMetadata.setMethodName("title");
         servers.put(name, manager);
         services.add(serviceMetadata);
 
+        if(verbose)System.out.println("registerService service registered - communicating to node");
+
         JSONObject result = new JSONObject();
-        result.put("serviceRegistered", "true");
+        result.put("serviceRegistered", true);
         result.put("methodName", name);
         manager.sendResponse(new JsonRpcResponse(result, request.getId()));
+
+        if(verbose)System.out.println("registerService done");
     }
 
     String registerService(Service service) {
@@ -78,7 +93,7 @@ public class Broker {
     }
 
     void handleServicesListRequest(JsonRpcRequest request, JsonRpcManager manager) {
-        JSONObject j = (JSONObject) request.getParams().get("searchStrategy");
+        JSONObject j = (JSONObject) request.getParams();
         List<ServiceMetadata> list;
 
         if (j.isEmpty()) list = getServicesList();
@@ -92,12 +107,14 @@ public class Broker {
             list = getServicesList(searchStrategy);
         }
 
-        JSONObject result=new JSONObject();
-        JSONArray l = new JSONArray();
-        l.addAll(list);
+        //JSONObject result=new JSONObject();
+        JSONArray result = new JSONArray();
+        result.addAll(list);
 
-        result.put("servicesList",l);
+        //result.put("servicesList",l);
 
+        if(verbose)System.out.println("generated list (result):"+result.toJSONString());
+        if(verbose)System.out.println("id:"+request.getId());
         manager.sendResponse(new JsonRpcResponse(result, request.getId()));
     }
 
@@ -119,6 +136,7 @@ public class Broker {
         } else {
             switch (request.getMethod()) {
                 case "registerService":
+                    if(verbose)System.out.println("registerService request");
                     registerService(request, manager);
                     return false;
                 case "getServicesList":
@@ -141,7 +159,7 @@ public class Broker {
             e.printStackTrace();
         }
 
-        if(verbose)System.out.println("connectionThread: request="+r.toString());
+        if(verbose)System.out.println("connectionThread: methodName=\""+r.getMethod()+"\"\trequest="+r.toString());
 
         if (!filterRequest(r, m)) return;
 
@@ -189,7 +207,7 @@ public class Broker {
 
                 manager.sendResponse(res);
             } else {
-                manager.sendError(new Error("-32601","method not found"), request.getId());
+                manager.sendError(new Error("-32601","method not found"), request.getId());//todo change to static method (JsonRpcDefaultError)
                 return;
             }
         }
