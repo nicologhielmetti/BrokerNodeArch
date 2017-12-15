@@ -1,7 +1,7 @@
 package com.sweng;
 
 import com.jsonrpc.*;
-import org.json.simple.JSONObject;
+import com.jsonrpc.Error;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -28,12 +28,9 @@ public class Service extends Thread {
                 for (Iterator<JsonRpcRequest> i = requests.iterator(); i.hasNext();) {
                     JsonRpcRequest request = i.next();
                     if (!request.isEmpty()) {
-                        if (request.isNotification()) {
-                            this.processRequest(request);
-                        } else {
-                            JsonRpcResponse serviceResult = this.processRequest(request);
+                        JsonRpcResponse serviceResult = this.processRequest(request);
+                        if (!request.isNotification()) // if is a notification no response is generated
                             responses.add(serviceResult);
-                        }
                     }
                 }
                 JsonRpcBatchResponse batchResponse = new JsonRpcBatchResponse();
@@ -42,20 +39,24 @@ public class Service extends Thread {
             } else { // else if is a single JsonRpcRequest
                 JsonRpcRequest request = (JsonRpcRequest) receivedRpcRequest;
                 if (!request.isEmpty()) {
-                    if (request.isNotification()) {
-                        this.processRequest(request);
-                    } else {
-                        //Execute request
-                        JsonRpcResponse serviceResult = this.processRequest(request);
+                    //Execute request
+                    JsonRpcResponse serviceResult = this.processRequest(request);
+                    if (!request.isNotification()) // if is a notification no response return is generated
                         // Send response
                         this.manager.sendResponse(serviceResult);
-                    }
                 }
             }
         }
     }
 
-    private JsonRpcResponse processRequest(JsonRpcRequest request) { return this.function.run(request); }
+    private JsonRpcResponse processRequest(JsonRpcRequest request) {
+        try {
+            return this.function.run(request);
+        } catch(RuntimeException e) {
+            System.err.println("Runtime exeption in IServiceMethod implementation");
+            return new JsonRpcResponse(new Error("-32604", "Internal service Error"), request.getId());
+        }
+    }
 
     public ServiceMetadata getServiceMetadata() {
         return this.serviceMetadata;
