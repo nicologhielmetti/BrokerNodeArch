@@ -1,90 +1,70 @@
 package com.jsonrpc;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+
 
 public class JsonRpcRequest extends JsonRpcMessage {
 
-    JSONObject jsonObject;
-    ID id;
+    private JsonObject json = null;
 
-    public void setJsonRpcVersion(String jsonRpc){
-        jsonObject.put("jsonrpc",jsonRpc);
+    private JsonRpcRequest(JsonObject json) {
+        this.json = json;
     }
 
-    public String getJsonRpcVersion(){
-        return (String) jsonObject.get("jsonrpc");
+    private JsonRpcRequest(String method, JsonElement params) {
+        json = new JsonObject();
+        json.addProperty("jsonrpc", "2.0");
+        json.addProperty("method", method);
+        if (params != null) json.add("params", params);
     }
 
-    public void setId(ID id){
-        this.id=id;
-        if(id==null)jsonObject.put("id",null);
-        else if(id.isString())this.jsonObject.put("id",id.toString());
-        else if(id.isInt())this.jsonObject.put("id",((Integer)id.getId()).intValue());
+    public JsonRpcRequest(String method, JsonElement params, int id) {
+        this(method, params);
+        json.addProperty("id", id);
     }
 
-    public ID getId(){
-        return id;//new ID(jsonObject.get("id"));
+    public JsonRpcRequest(String method, JsonElement params, String id) {
+        this(method, params);
+        json.addProperty("id", id);
     }
 
-    protected JsonRpcRequest(JSONObject jsonObject) {
-        this.jsonObject = jsonObject;
+    public static JsonRpcRequest notification(String method, JsonElement params) {
+        JsonRpcRequest r = new JsonRpcRequest(method, params);
+        return r;
     }
 
-
-
-    public JSONObject getJsonRpc() {
-        return jsonObject;
+    public JsonPrimitive getID() {
+        return json.getAsJsonPrimitive("id");
     }
 
-    @Override
-    public String toString(){
-        return jsonObject.toJSONString();
+    public JsonObject getParams() {
+        return json.getAsJsonObject("params");
     }
 
-    public JsonRpcRequest(String method, JSONObject params, ID id){
-        this.id=id;
-
-        this.jsonObject=new JSONObject();
-        this.jsonObject.put("method",method);
-        this.jsonObject.put("params",params);
-        if(id==null)jsonObject.put("id",null);
-        else if(id.isString())this.jsonObject.put("id",id.toString());
-        else if(id.isInt())this.jsonObject.put("id",((Integer)id.getId()).intValue());
-
-        this.jsonObject.put("jsonrpc","2.0");
+    public boolean isNotification() {
+        return !json.has("id");
     }
 
-    public JsonRpcRequest() {
-        jsonObject = new JSONObject();
+    public String toString() {
+        return toJson();
     }
 
-    public boolean isEmpty(){
-        return (jsonObject.isEmpty());
+    public String toJson() {
+        return json.toString();
     }
 
-    public void setMethod(String method){
-        this.jsonObject.put("method", method);
-    }
-
-    public void setParams(JSONObject params){
-        this.jsonObject.put("params", params);
-    }
-
-    public JSONObject getParams(){
-        return (JSONObject) this.jsonObject.get("params");
-    }
-
-    public String getMethod(){
-        return (String) this.jsonObject.get("method");
-    }
-
-    public void setNotification(){
-        if(this.jsonObject.containsKey("id"))
-            this.jsonObject.remove("id");
-    }
-
-    public boolean isNotification(){
-        return !this.jsonObject.containsKey("id");
+    public static JsonRpcRequest fromJson(String str) {
+        JsonObject json = (new Gson()).fromJson(str, JsonObject.class);
+        if (json == null) return null;
+        if (json.get("jsonrpc") == null || !json.get("jsonrpc").getAsString().equals("2.0") || !json.has("method"))
+            return null; // jsonrpc and method MUST be included
+        int fields = 0;
+        if (json.has("id")) fields++;     //params MAY be omitted -> notification
+        if (json.has("params")) fields++; //params MAY be omitted
+        if (fields + 2 != json.size()) return null; //there are other fields -> is not a well-formed Json-RPC Request
+        return new JsonRpcRequest(json);
     }
 }

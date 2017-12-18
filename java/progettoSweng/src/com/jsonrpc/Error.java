@@ -1,18 +1,31 @@
 package com.jsonrpc;
 
-import org.json.simple.JSONObject;
+import com.google.gson.JsonObject;
 
-public class Error extends JSONObject {
-    public Error(String code, String message) {
-        put("code",code);
-        put("message",message);
+public class Error {
+    int code;
+    String message;
+    JsonObject data = null;
+
+    public Error(int code, String message) {
+        this.code = code;
+        this.message = message;
     }
 
-    public String getCode(){
-        return (String) get("code");
+    public Error(int code, String message, JsonObject data) {
+        this(code, message);
+        this.data = data;
     }
 
-    public String getMessage(){
-        return (String) get("message");
+    public int getCode() {
+        return code;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public JsonObject getData() {
+        return data;
     }
 }

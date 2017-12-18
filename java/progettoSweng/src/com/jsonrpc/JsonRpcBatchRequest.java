@@ -1,31 +1,60 @@
 package com.jsonrpc;
 
-import org.json.simple.JSONArray;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 public class JsonRpcBatchRequest extends JsonRpcMessage {
-    private JSONArray jsonArray;
+    List<JsonRpcRequest> batch = new ArrayList<>();
 
-    protected JsonRpcBatchRequest(JSONArray jsonArray){
-        this.jsonArray = jsonArray;
+    public JsonRpcBatchRequest() {
     }
 
-    public void addRequest(JsonRpcRequest request){
-        jsonArray.add(request);
+    public void add(JsonRpcRequest request) throws NullPointerException {
+        if (request == null) throw new NullPointerException();
+        batch.add(request);
     }
 
-    public void addRequests(ArrayList<JsonRpcRequest> requests){
-        jsonArray.addAll(requests);
+    public void add(List<JsonRpcRequest> requests) {
+        for (JsonRpcRequest r : requests) {
+            if (r == null) throw new NullPointerException();
+        }
+        batch.addAll(requests);
     }
 
-    @Override
     public String toString() {
-        return jsonArray.toJSONString();
+        return toJson();
     }
 
-    public ArrayList<JsonRpcRequest> getRequests(){
-        return new ArrayList<> (Arrays.asList((JsonRpcRequest[])jsonArray.toArray()));
+    public String toJson() {
+        String str = "[ ";
+        for (JsonRpcRequest r : batch) {
+            if (r != null) str += r.toJson() + ",";
+        }
+        return str.substring(0, str.length() - 1) + "]";
+    }
+
+    public static JsonRpcBatchRequest fromJson(String str) {
+        JsonArray array = (new Gson()).fromJson(str, JsonArray.class);
+        if (array == null) return null;
+        JsonRpcBatchRequest batch = new JsonRpcBatchRequest();
+        for (JsonElement e : array) {
+            JsonRpcRequest r = JsonRpcRequest.fromJson(e.toString());
+            if (r == null) return null;
+            batch.add(r);
+        }
+        if (batch.isEmpty()) return null;
+        return batch;
+    }
+
+    public List<JsonRpcRequest> get() {
+        return batch;
+    }
+
+    public boolean isEmpty() {
+        return batch.isEmpty();
     }
 }

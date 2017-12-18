@@ -1,39 +1,61 @@
 package com.jsonrpc;
 
-import org.json.simple.JSONArray;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 public class JsonRpcBatchResponse extends JsonRpcMessage {
-    private JSONArray jsonArray;
-
-    protected JsonRpcBatchResponse(JSONArray jsonArray){
-        this.jsonArray = jsonArray;
-    }
+    List<JsonRpcResponse> batch = new ArrayList<>();
 
     public JsonRpcBatchResponse() {
-        jsonArray = new JSONArray();
     }
 
-    public void addResponse(JsonRpcResponse response){
-        jsonArray.add(response);
+    public void add(JsonRpcResponse response) throws NullPointerException {
+        if (response == null) throw new NullPointerException();
+        batch.add(response);
     }
 
-    public void addResponses(ArrayList<JsonRpcResponse> responses){
-        jsonArray.addAll(responses);
+    public void add(List<JsonRpcResponse> responses) {
+        for (JsonRpcResponse r : responses) {
+            if (r == null) throw new NullPointerException();
+        }
+        batch.addAll(responses);
     }
 
-    public void addResponseAt(JsonRpcResponse response, int index){
-        jsonArray.add(index,response);
-    }
-
-    @Override
     public String toString() {
-        return jsonArray.toJSONString();
+        return toJson();
     }
 
-    public ArrayList<JsonRpcResponse> getResponses(){
-        return new ArrayList<> (Arrays.asList((JsonRpcResponse[])jsonArray.toArray()));
+    public String toJson() {
+        String str = "[ ";
+        for (JsonRpcResponse r : batch) {
+            if (r != null) str += r.toJson() + ",";
+        }
+        return str.substring(0, str.length() - 1) + "]";
+    }
+
+    public static JsonRpcBatchResponse fromJson(String str) {
+        JsonArray array = (new Gson()).fromJson(str, JsonArray.class);
+        if (array == null) return null;
+        JsonRpcBatchResponse batch = new JsonRpcBatchResponse();
+        for (JsonElement e : array) {
+            JsonRpcResponse r = JsonRpcResponse.fromJson(e.toString());
+            if (r == null) return null;
+            batch.add(r);
+        }
+        if (batch.isEmpty()) return null;
+        return batch;
+
+    }
+
+    public List<JsonRpcResponse> get() {
+        return batch;
+    }
+
+    public boolean isEmpty() {
+        return batch.isEmpty();
     }
 }
