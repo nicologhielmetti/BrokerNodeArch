@@ -41,7 +41,12 @@ public class ServiceMetadata {
         }
     }
 
-    public String toJson() {
+    public String toJsonString() {
+        JsonObject json = this.toJson();
+        return json.toString();
+    }
+
+    public JsonObject toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("methodName", this.methodName);
         json.addProperty("owner", this.owner);
@@ -53,7 +58,7 @@ public class ServiceMetadata {
             jsonKeywords.add(k);
         }
         json.add("keywords", jsonKeywords);
-        return json.toString();
+        return json;
     }
 
     public void setApplicationField(String applicationField) { this.applicationField = applicationField; }

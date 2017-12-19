@@ -1,9 +1,10 @@
 package com.sweng;
 
+import com.google.gson.JsonObject;
 import com.jsonrpc.JsonRpcRequest;
 import com.jsonrpc.JsonRpcResponse;
 import com.jsonrpc.Error;
-import org.json.simple.JSONObject;
+import com.google.gson.JsonElement;
 
 public class DummyServer {
 
@@ -22,7 +23,7 @@ public class DummyServer {
                 JsonRpcResponse response = null;
                 try {
                     System.out.println("Service is running...");
-                    JSONObject parameters = request.getParams();
+                    JsonObject parameters = request.getParams();
                     int num1 = Integer.parseInt(parameters.get("num1").toString());
                     int num2 = Integer.parseInt(parameters.get("num2").toString());
                     int result = num1 + num2;
@@ -31,13 +32,13 @@ public class DummyServer {
                     if (request.isNotification()) {
                         response = null;
                     } else {
-                        JSONObject resultJsonObject = new JSONObject();
-                        resultJsonObject.put("result", Integer.toString(result));
-                        response = new JsonRpcResponse(resultJsonObject, request.getId());
+                        JsonObject resultJsonObject = new JsonObject();
+                        resultJsonObject.addProperty("result", result);
+                        response = new JsonRpcResponse(resultJsonObject, request.getID());
                     }
                 }
                 catch (IllegalArgumentException e) {
-                    response = new JsonRpcResponse(new Error("-32603", "Wrong parameters received"), request.getId());
+                    response = JsonRpcResponse.error(new Error(-32603, "Wrong parameters received"), request.getID());
                     System.err.println("Wrong JSON-RPC Request received, a JSON-RPC Error is returned to requester");
                 }
                 finally {

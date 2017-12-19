@@ -82,7 +82,7 @@ public class Broker {
     }
 
     void deleteService(JsonRpcRequest request) {
-        String name = request.getParams().get("title").toString();//todo non gestire con il nome ma con il riferimento alla connessione
+        String name = request.getParams().get("method").toString();//todo non gestire con il nome ma con il riferimento alla connessione
 
         services.remove(name);
     }
@@ -104,7 +104,7 @@ public class Broker {
         //JSONObject result=new JSONObject();
         JsonArray result = new JsonArray();
         for(ServiceMetadata s:list){
-            result.add(s.toJson());
+            result.add(s.toJsonString());
         }
 
         //result.put("servicesList",l);

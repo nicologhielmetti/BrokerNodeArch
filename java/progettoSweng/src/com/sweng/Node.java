@@ -1,7 +1,8 @@
 package com.sweng;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import org.json.simple.parser.ParseException;
 
 import com.jsonrpc.*;
 
+// todo timer on response
 
 public class Node {
 
@@ -55,14 +57,14 @@ public class Node {
         IConnection  connection = this.connectionFactory.createConnection();
         JsonRpcManager manager = new JsonRpcManager(connection);
         JsonRpcRequest registerServiceRequest = new JsonRpcRequest("registerService", service.getServiceMetadata().toJson(), this.generateNewId());
-        manager.sendRequest(registerServiceRequest);
-        JsonRpcResponse registerServiceResponse = (JsonRpcResponse) manager.listenResponse();
+        manager.send(registerServiceRequest);
+        JsonRpcResponse registerServiceResponse = manager.listenResponse();
 
         // Read response from Broker
-        JSONObject result = registerServiceResponse.getResult();
-        boolean serviceRegistered = (boolean) result.get("serviceRegistered");
+        JsonObject result = registerServiceResponse.getResult();
+        boolean serviceRegistered = result.get("serviceRegistered").getAsBoolean();
         if (serviceRegistered) {
-            String newMethodName = (String) result.get("methodName");
+            String newMethodName = result.get("methodName").getAsString();
             service.getServiceMetadata().setMethodName(newMethodName);
         } else {
             // Timeout
@@ -77,7 +79,12 @@ public class Node {
         if (this.ownServices.containsKey(method)) {
             IConnection connection = this.connectionFactory.createConnection();
             JsonRpcManager manager = new JsonRpcManager(connection);
-            manager.sendNotification("deleteService");
+
+            JsonObject jsonMethod = new JsonObject();
+            jsonMethod.addProperty("method", method);
+
+            JsonRpcRequest request = JsonRpcRequest.notification("deleteService", jsonMethod);
+            manager.send(request);
             // Delete service
             Service availableService = this.ownServices.get(method);
             availableService.interrupt();
@@ -97,11 +104,11 @@ public class Node {
     // Begin of Service requester functionality
 
 
-    public JsonRpcResponse requestService(String method, JSONObject parameters) {
+    public JsonRpcResponse requestService(String method, JsonObject parameters) {
         JsonRpcManager manager = new JsonRpcManager(this.connectionFactory.createConnection());
         JsonRpcRequest request = new JsonRpcRequest(method, parameters, generateNewId());
-        manager.sendRequest(request);
-        JsonRpcResponse response = (JsonRpcResponse) manager.listenResponse();
+        manager.send(request);
+        JsonRpcResponse response = manager.listenResponse();
         return response;
     }
 
@@ -109,11 +116,11 @@ public class Node {
         ArrayList<ServiceMetadata> list = new ArrayList<>();
         list.clear();
         JsonRpcResponse response = this.requestService("getServicesList", searchStrategy.toJson());
-        JSONObject json = response.getJsonRpc();
-        JSONArray array = (JSONArray) json.get("result");
-        Iterator<JSONObject> iterator = array.iterator();
+        JsonObject json = response.getResult();
+        JsonArray array = (JsonArray) json.get("result");
+        Iterator<JsonElement> iterator = array.iterator();
         while (iterator.hasNext()) {
-            list.add(new ServiceMetadata(iterator.next()));
+            list.add(new ServiceMetadata(iterator.next().getAsJsonObject()));
         }
         return list;
     }
