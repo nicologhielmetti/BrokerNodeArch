@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 
+
 public class JsonRpcRequest extends JsonRpcMessage {
 
     private JsonObject json = null;
@@ -21,28 +22,39 @@ public class JsonRpcRequest extends JsonRpcMessage {
         if (params != null) json.add("params", params);
     }
 
-    public JsonRpcRequest(String method, JsonElement params, int id) {
+    public JsonRpcRequest(String method, JsonElement params, ID id) {
         this(method, params);
-        json.addProperty("id", id);
+        if(id!=null && !id.isNull()){
+            if(id.isString())json.addProperty("id", id.getAsString());
+            else json.addProperty("id",id.getAsInt());
+        }
     }
 
-    public JsonRpcRequest(String method, JsonElement params, String id) {
-        this(method, params);
-        json.addProperty("id", id);
-    }
 
     public static JsonRpcRequest notification(String method, JsonElement params) {
         JsonRpcRequest r = new JsonRpcRequest(method, params);
         return r;
     }
 
-    public JsonPrimitive getID() {
-        return json.getAsJsonPrimitive("id");
+
+
+    public ID getID() {
+        JsonPrimitive j=json.getAsJsonPrimitive("id");
+        if(j==null)return null;
+        if(j.isString())return new ID(j.getAsString());
+        if(j.isNumber())return new ID(j.getAsInt());
+        if(j.isJsonNull())return new ID();
+        return null; //invalid id
     }
 
     public JsonObject getParams() {
         return json.getAsJsonObject("params");
     }
+    public String getMethod() {
+        return json.get("method").getAsString();
+    }
+
+
 
     public boolean isNotification() {
         return !json.has("id");

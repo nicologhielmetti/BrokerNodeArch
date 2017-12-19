@@ -14,10 +14,7 @@ public class OwnerSearchStrategy extends SearchStrategy {
         return service.getOwner()==owner;
     }
     @Override
-    public JSONObject toJson(){
-        JSONObject o=new JSONObject();
-        o.put("type","OwnerSearchStrategy");
-        o.put("owner",owner);
-        return o;
+    public String toJson(){
+        return "{\"type\"=\"OwnerSearchStrategy\",\"owner=\""+owner+"\"}";
     }
 }

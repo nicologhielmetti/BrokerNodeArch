@@ -2,23 +2,32 @@ package com.sweng;
 
 import org.json.simple.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class KeywordSearchStrategy extends SearchStrategy {
-    private String keyword;
+    private List<String> keywords=new ArrayList<>();
 
     public KeywordSearchStrategy(String keyword){
-        this.keyword=keyword;
+        this.keywords.add(keyword);
+    }
+    public KeywordSearchStrategy(List<String> keywords){
+        this.keywords.addAll(keywords);
     }
 
     @Override
     boolean filter(ServiceMetadata service) {
-        return service.getKeywords().contains(keyword);
+        for(String k:keywords) {
+            if (service.getKeywords().contains(k)) return true;
+        }
+        return false;
     }
 
     @Override
-    public JSONObject toJson(){
-        JSONObject o=new JSONObject();
-        o.put("type","KeywordSearchStrategy");
-        o.put("keyword",keyword);
-        return o;
+    public String toJson(){
+        String s="{\"type\"=\"KeywordSearchStrategy\",\"keywords=[ ";
+        for(String k:keywords)s+="\""+k+"\",";
+        s=s.substring(0,s.length()-1)+"]}";
+        return s;
     }
 }

@@ -15,10 +15,7 @@ public class TitleSearchStrategy extends SearchStrategy {
     }
 
     @Override
-    public JSONObject toJson(){
-        JSONObject o=new JSONObject();
-        o.put("type","TitleSearchStrategy");
-        o.put("title",title);
-        return o;
+    public String toJson(){
+        return "{\"type\"=\"TitleSearchStrategy\",\"title=\""+title+"\"}";
     }
 }

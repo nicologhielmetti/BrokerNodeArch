@@ -1,5 +1,12 @@
 package com.sweng;
-import org.json.simple.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public abstract class SearchStrategy {
 
@@ -10,16 +17,22 @@ public abstract class SearchStrategy {
         return result;
     }
     abstract boolean filter(ServiceMetadata service);
-    abstract JSONObject toJson();
+    abstract String toJson();
 
-    static public SearchStrategy create(JSONObject j){
-        switch (j.get("type").toString()){
+    static public SearchStrategy fromJson(String str){
+        JsonObject j=(new Gson()).fromJson(str,JsonObject.class);
+        switch (j.get("type").getAsString()){
             case "TitleSearchStrategy":
-                return new TitleSearchStrategy((String)j.get("title"));
+                return new TitleSearchStrategy(j.get("title").getAsString());
             case "OwnerSearchStrategy":
-                return new OwnerSearchStrategy((String)j.get("owner"));
-            case "KeywordSearchStrategy":
-                return new KeywordSearchStrategy((String)j.get("keyword"));
+                return new OwnerSearchStrategy(j.get("owner").getAsString());
+            case "KeywordSearchStrategy":{
+                List<String> keywords=new ArrayList<>();
+                JsonArray ja=j.get("keywords").getAsJsonArray();
+                for(JsonElement k:ja)keywords.add(k.getAsString());
+                return new KeywordSearchStrategy(keywords);
+            }
+
         }
         //search strategy not implemented
         return null;
@@ -29,11 +42,11 @@ public abstract class SearchStrategy {
         boolean ok=true;
         SearchStrategy s;
 
-        s=SearchStrategy.create((new TitleSearchStrategy("sum")).toJson());
+        s=SearchStrategy.fromJson((new TitleSearchStrategy("sum")).toJson());
         if(!(s instanceof TitleSearchStrategy))ok=false;
-        s=SearchStrategy.create((new OwnerSearchStrategy("me")).toJson());
+        s=SearchStrategy.fromJson((new OwnerSearchStrategy("me")).toJson());
         if(!(s instanceof OwnerSearchStrategy))ok=false;
-        s=SearchStrategy.create((new KeywordSearchStrategy("math")).toJson());
+        s=SearchStrategy.fromJson((new KeywordSearchStrategy("math")).toJson());
         if(!(s instanceof KeywordSearchStrategy))ok=false;
 
         if(ok)System.out.println("SearchStrategy...ok!");

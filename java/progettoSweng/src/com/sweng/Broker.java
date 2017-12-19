@@ -1,18 +1,13 @@
 package com.sweng;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import com.jsonrpc.*;
-import com.jsonrpc.Error;
-
 import com.google.gson.*;
-import org.json.simple.parser.ParseException;
+import com.jsonrpc.Error;
 
 
 //todo handle broker services as Service(s) (now they are hard-coded)
@@ -48,11 +43,11 @@ public class Broker {
     }
 
     void registerService(JsonRpcRequest request, JsonRpcManager manager) {
-        JSONObject params= request.getParams();
+        JsonObject params= request.getParams();
 
         if(params==null)throw new RuntimeException("failed to register a service: title not found");
 
-        String name=(String)params.get("methodName");
+        String name=params.get("methodName").getAsString();
         if(name.isEmpty())throw new RuntimeException("failed to register a service: title not found");
 
 
@@ -67,10 +62,10 @@ public class Broker {
 
         if(verbose)System.out.println("registerService service registered - communicating to node");
 
-        JSONObject result = new JSONObject();
-        result.put("serviceRegistered", true);
-        result.put("methodName", name);
-        manager.sendResponse(new JsonRpcResponse(result, request.getId()));
+        JsonObject result = new JsonObject();
+        result.addProperty("serviceRegistered", true);
+        result.addProperty("methodName", name);
+        manager.send(new JsonRpcResponse(result, request.getID()));
 
         if(verbose)System.out.println("registerService done");
     }
@@ -93,29 +88,30 @@ public class Broker {
     }
 
     void handleServicesListRequest(JsonRpcRequest request, JsonRpcManager manager) {
-        JSONObject j = (JSONObject) request.getParams();
+        JsonObject j = request.getParams();
         List<ServiceMetadata> list;
 
-        if (j.isEmpty()) list = getServicesList();
+        if (j==null) list = getServicesList();
         else {
-            SearchStrategy searchStrategy = SearchStrategy.create(j);
+            SearchStrategy searchStrategy = SearchStrategy.fromJson(j.toString());
             if (searchStrategy == null) {
-                manager.sendError(new Error("-32602", "SearchStrategy is ill-formed"), request.getId());
+                manager.send(JsonRpcResponse.error(new Error(-32602, "SearchStrategy is ill-formed"), request.getID()));
                 return;
             }
-
             list = getServicesList(searchStrategy);
         }
 
         //JSONObject result=new JSONObject();
-        JSONArray result = new JSONArray();
-        result.addAll(list);
+        JsonArray result = new JsonArray();
+        for(ServiceMetadata s:list){
+            result.add(s.toJson());
+        }
 
         //result.put("servicesList",l);
 
-        if(verbose)System.out.println("generated list (result):"+result.toJSONString());
-        if(verbose)System.out.println("id:"+request.getId());
-        manager.sendResponse(new JsonRpcResponse(result, request.getId()));
+        if(verbose)System.out.println("generated list (result):"+result.toString());
+        if(verbose)System.out.println("id:"+request.getID());
+        manager.send(new JsonRpcResponse(result, request.getID()));
     }
 
     List<ServiceMetadata> getServicesList() {
@@ -152,37 +148,47 @@ public class Broker {
 
         if(verbose)System.out.println("connectionThread begin");
 
-        JsonRpcRequest r = null;
+        JsonRpcMessage r = null;
         try {
             r = m.listenRequest();
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        if(verbose)System.out.println("connectionThread: methodName=\""+r.getMethod()+"\"\trequest="+r.toString());
 
-        if (!filterRequest(r, m)) return;
+        if(r instanceof JsonRpcRequest) {
+            JsonRpcRequest request = (JsonRpcRequest) r;
 
-        if (r.isNotification()) {
-            //todo gestire le notifiche
-        } else {
+            if (verbose)
+                System.out.println("connectionThread: methodName=\"" + request.getMethod() + "\"\trequest=" + request.toString());
 
-            JsonRpcManager server = servers.get(r.getMethod());
+            if (!filterRequest(request, m)) return;
 
-            if (server != null) {
-                server.sendRequest(r);
-                JsonRpcResponse res = null;
-                try {
-                    res = server.listenResponse();
-                } catch (ParseException | NullPointerException e) {
-                    e.printStackTrace();
-                }
-
-                m.sendResponse(res);
+            if (request.isNotification()) {
+                //todo gestire le notifiche
             } else {
-                m.sendError(new Error("-32601","method not found"), r.getId());
-                return;
+
+                JsonRpcManager server = servers.get(request.getMethod());
+
+                if (server != null) {
+                    server.send(request);
+                    JsonRpcMessage res = null;
+                    try {
+                        res = server.listenResponse();
+                    } catch (ParseException | NullPointerException e) {
+                        e.printStackTrace();
+                    }
+
+                    m.send(res);
+                } else {
+                    m.send(JsonRpcDefaultError.methodNotFound(request.getID()));
+                    return;
+                }
             }
+        }else if(r instanceof JsonRpcBatchRequest){
+
+        }else{
+            //error
         }
 
     }
@@ -197,17 +203,17 @@ public class Broker {
             JsonRpcManager server = servers.get(request.getMethod());
 
             if (server != null) {
-                server.sendRequest(request);
-                JsonRpcResponse res = null;
+                server.send(request);
+                JsonRpcMessage res = null;
                 try {
                     res = server.listenResponse();
                 } catch (ParseException | NullPointerException e) {
                     e.printStackTrace();
                 }
 
-                manager.sendResponse(res);
+                manager.send(res);
             } else {
-                manager.sendError(new Error("-32601","method not found"), request.getId());//todo change to static method (JsonRpcDefaultError)
+                manager.send(JsonRpcDefaultError.methodNotFound(request.getID()));
                 return;
             }
         }

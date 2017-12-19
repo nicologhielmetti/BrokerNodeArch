@@ -1,13 +1,15 @@
 package com.sweng;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Iterator;
 
 public class ServiceMetadata {
 
@@ -27,31 +29,31 @@ public class ServiceMetadata {
         activationDate = dateFormat.format(date);
     }
 
-    public ServiceMetadata(JSONObject json) {
-        this.methodName= (String) json.get("methodName");
-        this.owner = (String) json.get("owner");
-        this.activationDate = (String) json.get("activationDate");
-        this.description = (String) json.get("description");
-
-        this.applicationField = (String) json.get("applicationField");
-        JSONArray jsonKeywords = (JSONArray) json.get("keywords");
-        Iterator<String> iterator = jsonKeywords.iterator();
-        while (iterator.hasNext()) {
-            this.keywords.add(iterator.next());
+    public ServiceMetadata(JsonObject json) {
+        this.methodName=  json.get("methodName").getAsString();
+        this.owner =  json.get("owner").getAsString();
+        this.activationDate =  json.get("activationDate").getAsString();
+        this.description =  json.get("description").getAsString();
+        this.applicationField = json.get("applicationField").getAsString();
+        JsonArray jsonKeywords = json.getAsJsonArray("keywords");
+        for(JsonElement j:jsonKeywords){
+            this.keywords.add(json.getAsString());
         }
     }
 
-    public JSONObject toJson() {
-        JSONObject json = new JSONObject();
-        json.put("methodName", this.methodName);
-        json.put("owner", this.owner);
-        json.put("activationDate", this.activationDate);
-        json.put("description", this.description);
-        json.put("applicationField", this.applicationField);
-        JSONArray jsonKeywords = new JSONArray();
-        jsonKeywords.addAll(keywords);
-        json.put("keywords", jsonKeywords);
-        return json;
+    public String toJson() {
+        JsonObject json = new JsonObject();
+        json.addProperty("methodName", this.methodName);
+        json.addProperty("owner", this.owner);
+        json.addProperty("activationDate", this.activationDate);
+        json.addProperty("description", this.description);
+        json.addProperty("applicationField", this.applicationField);
+        JsonArray jsonKeywords = new JsonArray();
+        for (String k:keywords) {
+            jsonKeywords.add(k);
+        }
+        json.add("keywords", jsonKeywords);
+        return json.toString();
     }
 
     public void setApplicationField(String applicationField) { this.applicationField = applicationField; }

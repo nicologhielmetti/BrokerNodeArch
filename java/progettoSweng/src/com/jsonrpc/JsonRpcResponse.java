@@ -15,36 +15,37 @@ public class JsonRpcResponse extends JsonRpcMessage {
         this.json = json;
     }
 
-    private JsonRpcResponse(JsonPrimitive id) {
+    private JsonRpcResponse(ID id) {
         json = new JsonObject();
         json.addProperty("jsonrpc", "2.0");
-        json.add("id", id);
+        if(id!=null && !id.isNull()){
+            if(id.isString())json.addProperty("id", id.getAsString());
+            else json.addProperty("id",id.getAsInt());
+        }
     }
 
-    public JsonRpcResponse(JsonElement result, JsonPrimitive id) {
+    public JsonRpcResponse(JsonElement result, ID id) {
         this(id);
         json.add("result", result);
     }
 
-    public JsonRpcResponse(Error e, JsonPrimitive id) {
+    private JsonRpcResponse(Error e, ID id) {
         this(id);
         json.addProperty("error", (new Gson()).toJson(e));
     }
 
-    public JsonRpcResponse(JsonElement result, int id) {
-        this(result, new JsonPrimitive(id));
-    }
 
-    public JsonRpcResponse(JsonElement result, String id) {
-        this(result, new JsonPrimitive(id));
-    }
-
-    public static JsonRpcResponse error(Error e, JsonPrimitive id) {
+    public static JsonRpcResponse error(Error e, ID id) {
         return new JsonRpcResponse(e, id);
     }
 
-    public JsonPrimitive getID() {
-        return json.getAsJsonPrimitive("id");
+    public ID getID() {
+        JsonPrimitive j=json.getAsJsonPrimitive("id");
+        if(j==null)return null;
+        if(j.isString())return new ID(j.getAsString());
+        if(j.isNumber())return new ID(j.getAsInt());
+        if(j.isJsonNull())return new ID();
+        return null; //invalid id
     }
 
     public boolean isError() {
