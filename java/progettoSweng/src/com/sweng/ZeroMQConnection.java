@@ -51,7 +51,6 @@ public class ZeroMQConnection implements IConnection {
                 head=msg.popString();
             }while(!msg.isEmpty());
             System.out.println("ZeroMQConnection received : \""+head+"\"");
-
             unset=false;
         }
         return head;
