@@ -4,5 +4,5 @@ import com.jsonrpc.IConnection;
 
 public interface IConnectionManager {
 
-    public IConnection acceptConnection();
+    IConnection acceptConnection();
 }
