@@ -14,16 +14,16 @@ import java.text.SimpleDateFormat;
 
 public class ServiceMetadata {
 
-    private String methodName;
+    private String method;
     private String owner;
     private String applicationField;
-    private ArrayList<String> keywords=new ArrayList<>();
+    private ArrayList<String> keywords = new ArrayList<>();
     private String description;
     private String activationDate;
 
-    public ServiceMetadata(String methodName, String owner) {
+    public ServiceMetadata(String method, String owner) {
         this.keywords = new ArrayList<>();
-        this.methodName = methodName;
+        this.method = method;
         this.owner = owner;
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date();
@@ -31,7 +31,9 @@ public class ServiceMetadata {
     }
 
     static public ServiceMetadata fromJson(JsonObject json) {
-        return (new Gson()).fromJson(json.toString(),ServiceMetadata.class);
+        //return (new Gson()).fromJson(json.getAs,ServiceMetadata.class);
+        Gson gson = new Gson();
+        return gson.fromJson(json, ServiceMetadata.class);
         /*
         this.methodName=  json.get("methodName").getAsString();
         this.owner =  json.get("owner").getAsString();
@@ -64,7 +66,7 @@ public class ServiceMetadata {
 
     public void setApplicationField(String applicationField) { this.applicationField = applicationField; }
 
-    public void setMethodName(String methodName) { this.methodName = methodName; }
+    public void setMethodName(String method) { this.method = method; }
 
     public void setDescription(String description) { this.description = description; }
 
@@ -80,7 +82,7 @@ public class ServiceMetadata {
 
     public String getOwner() { return owner; }
 
-    public String getMethodName() { return methodName; }
+    public String getMethodName() { return method; }
 
     public void addKeyword(String keyword) { this.keywords.add(keyword); }
 

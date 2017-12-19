@@ -24,7 +24,7 @@ public class DummyClient {
         }
 
         for (ServiceMetadata s:serviceList) {
-            System.out.println(s.toString());
+            System.out.println(s.toJson());
         }
 
         // Invoke a service

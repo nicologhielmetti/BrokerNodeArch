@@ -21,7 +21,5 @@ public class JsonRpcCustomError {
         return new Error(-32002, "Internal service Error");
     }
 
-    public static Error wrongParametersReceived() {
-        return new Error(-32603, "Wrong parameters received");
-    }
+    public static Error wrongParametersReceived() { return new Error(-32603, "Wrong parameters received"); }
 }

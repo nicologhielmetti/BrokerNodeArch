@@ -49,10 +49,10 @@ public class DummyServer {
                 }
             }
         };
-        Service service = new Service(serviceMetadata, serviceMethod, new JsonRpcManager(connectionFactory.createConnection()));
+        //Service service = new Service(serviceMetadata, serviceMethod);
         System.out.println("Service created");
 
-        node.provideService(service);
+        node.provideService(serviceMetadata, serviceMethod);
 
         // Delete an own service
         //node.deleteService(service.getServiceMetadata().getMethodName());

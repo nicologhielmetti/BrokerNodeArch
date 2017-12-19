@@ -53,13 +53,14 @@ public class Node {
      * method identifier.
      * When the service is correctly published this method start a thread that wait requests from clients.
      * This
-     * @param service
+     * @param metadata, function
      */
 
-    public boolean provideService(Service service) {
-        IConnection  connection = this.connectionFactory.createConnection();
-        JsonRpcManager manager = new JsonRpcManager(connection);
-        JsonRpcRequest registerServiceRequest = new JsonRpcRequest("registerService", service.getServiceMetadata().toJson(), this.generateNewId());
+    public boolean provideService(ServiceMetadata metadata, IServiceMethod function) {
+        JsonRpcManager manager = new JsonRpcManager(this.connectionFactory.createConnection());
+        Service service = new Service(metadata, function, manager);
+
+        JsonRpcRequest registerServiceRequest = new JsonRpcRequest("registerService", metadata.toJson(), this.generateNewId());
         manager.send(registerServiceRequest);
         JsonRpcResponse registerServiceResponse = null;
         try {
@@ -72,14 +73,14 @@ public class Node {
         JsonObject result = registerServiceResponse.getResult().getAsJsonObject();
         boolean serviceRegistered = result.get("serviceRegistered").getAsBoolean();
         if (serviceRegistered) {
-            String newMethodName = result.get("methodName").getAsString();
-            service.getServiceMetadata().setMethodName(newMethodName);
+            String newMethodName = result.get("method").getAsString();
+            metadata.setMethodName(newMethodName);
         } else {
             // Timeout
         }
         // Start new service
         service.start();
-        ownServices.put(service.getServiceMetadata().getMethodName(), service);
+        ownServices.put(metadata.getMethodName(), service);
         return true;
     }
 

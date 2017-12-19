@@ -13,11 +13,11 @@ public class OwnerSearchStrategy extends SearchStrategy {
 
     @Override
     boolean filter(ServiceMetadata service) {
-        return service.getOwner() == owner;
+        return service.getOwner().equals(owner);
     }
 
     @Override
     public JsonElement toJsonElement() {
-        return (new Gson()).fromJson("{\"type\":\"OwnerSearchStrategy\",\"owner\":" + owner + "\"}", JsonElement.class);
+        return (new Gson()).fromJson("{\"type\":\"OwnerSearchStrategy\",\"owner\":" + owner + "}", JsonElement.class);
     }
 }

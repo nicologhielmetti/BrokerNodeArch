@@ -10,8 +10,8 @@ import java.util.List;
 
 public abstract class SearchStrategy {
 
-    public java.util.List<ServiceMetadata> filterList(java.util.List<ServiceMetadata> services){
-        java.util.List<ServiceMetadata> result=new java.util.ArrayList<>();
+    public List<ServiceMetadata> filterList(List<ServiceMetadata> services){
+        List<ServiceMetadata> result=new ArrayList<>();
         for (ServiceMetadata s:services)
             if (filter(s)) result.add(s);
         return result;
@@ -23,7 +23,7 @@ public abstract class SearchStrategy {
         JsonObject j=(new Gson()).fromJson(str,JsonObject.class);
         switch (j.get("type").getAsString()){
             case "TitleSearchStrategy":
-                return new TitleSearchStrategy(j.get("title").getAsString());
+                return new TitleSearchStrategy(j.get("methodName").getAsString());
             case "OwnerSearchStrategy":
                 return new OwnerSearchStrategy(j.get("owner").getAsString());
             case "KeywordSearchStrategy":{

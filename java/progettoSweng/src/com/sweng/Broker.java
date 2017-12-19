@@ -47,7 +47,7 @@ public class Broker {
 
         if(params==null)throw new RuntimeException("failed to register a service: title not found");
 
-        String name=params.get("methodName").getAsString();
+        String name=params.get("method").getAsString();
         if(name.isEmpty())throw new RuntimeException("failed to register a service: title not found");
 
 
@@ -56,7 +56,7 @@ public class Broker {
         if(verbose)System.out.println("registerService generated name = "+name);
 
         ServiceMetadata serviceMetadata = ServiceMetadata.fromJson(request.getParams().getAsJsonObject());
-        serviceMetadata.setMethodName("title");
+        serviceMetadata.setMethodName(name);
         servers.put(name, manager);
         services.add(serviceMetadata);
 
@@ -64,7 +64,7 @@ public class Broker {
 
         JsonObject result = new JsonObject();
         result.addProperty("serviceRegistered", true);
-        result.addProperty("methodName", name);
+        result.addProperty("method", name);
         manager.send(new JsonRpcResponse(result, request.getID()));
 
         if(verbose)System.out.println("registerService done");
@@ -160,7 +160,7 @@ public class Broker {
             JsonRpcRequest request = (JsonRpcRequest) r;
 
             if (verbose)
-                System.out.println("connectionThread: methodName=\"" + request.getMethod() + "\"\trequest=" + request.toString());
+                System.out.println("connectionThread: method=\"" + request.getMethod() + "\"\trequest=" + request.toString());
 
             if (!filterRequest(request, m)) return;
 
@@ -230,7 +230,7 @@ public class Broker {
         isClosed=true;
     }
 
-    final boolean verbose=true;
+    private final boolean verbose=true;
 
     void start() {
         isClosed=false;
