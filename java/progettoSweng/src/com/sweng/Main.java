@@ -7,6 +7,7 @@ public class Main {
     public static void main(String[] args) {
         SearchStrategy.test();
         ID.test();
+        ServiceMetadata.test();
         /*
         System.out.println("Hello world!");
 

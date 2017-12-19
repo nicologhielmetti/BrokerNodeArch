@@ -11,7 +11,8 @@ public class DummyServer {
     public static void main(String[] args) {
 
         // Create node obj
-        ZeroMQConnectionFactory connectionFactory = new ZeroMQConnectionFactory("tcp://192.168.43.214:6789");
+        //ZeroMQConnectionFactory connectionFactory = new ZeroMQConnectionFactory("tcp://192.168.43.214:6789");
+        ZeroMQConnectionFactory connectionFactory = new ZeroMQConnectionFactory("tcp://localhost:6789");
         Node node = new Node(connectionFactory);
 
         // Provide a service
@@ -23,7 +24,7 @@ public class DummyServer {
                 JsonRpcResponse response = null;
                 try {
                     System.out.println("Service is running...");
-                    JsonObject parameters = request.getParams();
+                    JsonObject parameters = request.getParams().getAsJsonObject();
                     int num1 = Integer.parseInt(parameters.get("num1").toString());
                     int num2 = Integer.parseInt(parameters.get("num2").toString());
                     int result = num1 + num2;

@@ -18,9 +18,9 @@ public class JsonRpcResponse extends JsonRpcMessage {
     private JsonRpcResponse(ID id) {
         json = new JsonObject();
         json.addProperty("jsonrpc", "2.0");
-        if(id!=null && !id.isNull()){
-            if(id.isString())json.addProperty("id", id.getAsString());
-            else json.addProperty("id",id.getAsInt());
+        if (id != null && !id.isNull()) {
+            if (id.isString()) json.addProperty("id", id.getAsString());
+            else json.addProperty("id", id.getAsInt());
         }
     }
 
@@ -40,11 +40,11 @@ public class JsonRpcResponse extends JsonRpcMessage {
     }
 
     public ID getID() {
-        JsonPrimitive j=json.getAsJsonPrimitive("id");
-        if(j==null)return null;
-        if(j.isString())return new ID(j.getAsString());
-        if(j.isNumber())return new ID(j.getAsInt());
-        if(j.isJsonNull())return new ID();
+        JsonPrimitive j = json.getAsJsonPrimitive("id");
+        if (j == null) return null;
+        if (j.isString()) return new ID(j.getAsString());
+        if (j.isNumber()) return new ID(j.getAsInt());
+        if (j.isJsonNull()) return new ID();
         return null; //invalid id
     }
 
@@ -57,8 +57,8 @@ public class JsonRpcResponse extends JsonRpcMessage {
         return (new Gson()).fromJson(json.get("error"), Error.class);
     }
 
-    public JsonObject getResult() {
-        return json.get("result").getAsJsonObject();
+    public JsonElement getResult() {
+        return json.get("result");
     }
 
     public String toString() {

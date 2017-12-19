@@ -1,5 +1,7 @@
 package com.sweng;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
@@ -24,10 +26,10 @@ public class KeywordSearchStrategy extends SearchStrategy {
     }
 
     @Override
-    public String toJson(){
-        String s="{\"type\"=\"KeywordSearchStrategy\",\"keywords=[ ";
+    public JsonElement toJsonElement(){
+        String s="{\"type\":\"KeywordSearchStrategy\",\"keywords\":[ ";
         for(String k:keywords)s+="\""+k+"\",";
         s=s.substring(0,s.length()-1)+"]}";
-        return s;
+        return (new Gson()).fromJson(s,JsonElement.class);
     }
 }

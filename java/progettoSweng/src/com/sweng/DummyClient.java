@@ -11,7 +11,8 @@ public class DummyClient {
     public static void main(String[] args) {
 
         // Create new node obj
-        IConnectionFactory connectionFactory = new ZeroMQConnectionFactory("tcp://192.168.43.214:6789");
+        //IConnectionFactory connectionFactory = new ZeroMQConnectionFactory("tcp://192.168.43.214:6789");
+        IConnectionFactory connectionFactory = new ZeroMQConnectionFactory("tcp://localhost:6789");
         Node node = new Node(connectionFactory);
 
         // Get list of available services from broker

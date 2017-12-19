@@ -16,8 +16,8 @@ public abstract class SearchStrategy {
             if (filter(s)) result.add(s);
         return result;
     }
-    abstract boolean filter(ServiceMetadata service);
-    abstract String toJson();
+    abstract  boolean filter(ServiceMetadata service);
+    abstract public JsonElement toJsonElement();
 
     static public SearchStrategy fromJson(String str){
         JsonObject j=(new Gson()).fromJson(str,JsonObject.class);
@@ -42,11 +42,11 @@ public abstract class SearchStrategy {
         boolean ok=true;
         SearchStrategy s;
 
-        s=SearchStrategy.fromJson((new TitleSearchStrategy("sum")).toJson());
+        s=SearchStrategy.fromJson((new TitleSearchStrategy("sum")).toJsonElement().toString());
         if(!(s instanceof TitleSearchStrategy))ok=false;
-        s=SearchStrategy.fromJson((new OwnerSearchStrategy("me")).toJson());
+        s=SearchStrategy.fromJson((new OwnerSearchStrategy("me")).toJsonElement().toString());
         if(!(s instanceof OwnerSearchStrategy))ok=false;
-        s=SearchStrategy.fromJson((new KeywordSearchStrategy("math")).toJson());
+        s=SearchStrategy.fromJson((new KeywordSearchStrategy("math")).toJsonElement().toString());
         if(!(s instanceof KeywordSearchStrategy))ok=false;
 
         if(ok)System.out.println("SearchStrategy...ok!");

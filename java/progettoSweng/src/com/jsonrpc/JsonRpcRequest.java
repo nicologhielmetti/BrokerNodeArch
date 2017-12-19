@@ -47,8 +47,8 @@ public class JsonRpcRequest extends JsonRpcMessage {
         return null; //invalid id
     }
 
-    public JsonObject getParams() {
-        return json.getAsJsonObject("params");
+    public JsonElement getParams() {
+        return json.get("params");
     }
     public String getMethod() {
         return json.get("method").getAsString();

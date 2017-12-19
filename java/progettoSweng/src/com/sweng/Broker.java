@@ -43,7 +43,7 @@ public class Broker {
     }
 
     void registerService(JsonRpcRequest request, JsonRpcManager manager) {
-        JsonObject params= request.getParams();
+        JsonObject params= request.getParams().getAsJsonObject();
 
         if(params==null)throw new RuntimeException("failed to register a service: title not found");
 
@@ -55,7 +55,7 @@ public class Broker {
 
         if(verbose)System.out.println("registerService generated name = "+name);
 
-        ServiceMetadata serviceMetadata = new ServiceMetadata(request.getParams());
+        ServiceMetadata serviceMetadata = ServiceMetadata.fromJson(request.getParams().getAsJsonObject());
         serviceMetadata.setMethodName("title");
         servers.put(name, manager);
         services.add(serviceMetadata);
@@ -82,13 +82,13 @@ public class Broker {
     }
 
     void deleteService(JsonRpcRequest request) {
-        String name = request.getParams().get("method").toString();//todo non gestire con il nome ma con il riferimento alla connessione
+        String name = request.getParams().getAsJsonObject().get("method").toString();//todo non gestire con il nome ma con il riferimento alla connessione
 
         services.remove(name);
     }
 
     void handleServicesListRequest(JsonRpcRequest request, JsonRpcManager manager) {
-        JsonObject j = request.getParams();
+        JsonObject j = request.getParams().getAsJsonObject();
         List<ServiceMetadata> list;
 
         if (j==null) list = getServicesList();
@@ -104,7 +104,7 @@ public class Broker {
         //JSONObject result=new JSONObject();
         JsonArray result = new JsonArray();
         for(ServiceMetadata s:list){
-            result.add(s.toJsonString());
+            result.add(s.toJson());
         }
 
         //result.put("servicesList",l);

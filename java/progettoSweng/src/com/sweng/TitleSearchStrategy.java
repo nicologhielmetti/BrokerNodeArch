@@ -1,5 +1,7 @@
 package com.sweng;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import org.json.simple.JSONObject;
 
 public class TitleSearchStrategy extends SearchStrategy {
@@ -15,7 +17,7 @@ public class TitleSearchStrategy extends SearchStrategy {
     }
 
     @Override
-    public String toJson(){
-        return "{\"type\"=\"TitleSearchStrategy\",\"title=\""+title+"\"}";
+    public JsonElement toJsonElement(){
+        return (new Gson()).fromJson("{\"type\":\"TitleSearchStrategy\",\"title\":"+title+"\"}",JsonElement.class);
     }
 }

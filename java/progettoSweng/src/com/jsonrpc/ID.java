@@ -82,6 +82,8 @@ public class ID {
         assert(!a.equals("1"));
         assert(!a.equals(1));
         assert(a.equals(null));
+
+        System.out.println("ID...ok!");
     }
 
 

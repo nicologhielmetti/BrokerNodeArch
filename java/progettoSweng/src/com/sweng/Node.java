@@ -4,13 +4,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonArray;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
-import org.json.simple.parser.ParseException;
-
 import com.jsonrpc.*;
 
 // todo timer on response
@@ -58,10 +55,16 @@ public class Node {
         JsonRpcManager manager = new JsonRpcManager(connection);
         JsonRpcRequest registerServiceRequest = new JsonRpcRequest("registerService", service.getServiceMetadata().toJson(), this.generateNewId());
         manager.send(registerServiceRequest);
-        JsonRpcResponse registerServiceResponse = manager.listenResponse();
+
+        JsonRpcResponse registerServiceResponse = null;
+        try {
+            registerServiceResponse = (JsonRpcResponse) manager.listenResponse();
+        } catch (com.jsonrpc.ParseException e) {
+            //e.printStackTrace();
+        }
 
         // Read response from Broker
-        JsonObject result = registerServiceResponse.getResult();
+        JsonObject result = registerServiceResponse.getResult().getAsJsonObject();
         boolean serviceRegistered = result.get("serviceRegistered").getAsBoolean();
         if (serviceRegistered) {
             String newMethodName = result.get("methodName").getAsString();
@@ -104,23 +107,27 @@ public class Node {
     // Begin of Service requester functionality
 
 
-    public JsonRpcResponse requestService(String method, JsonObject parameters) {
+    public JsonRpcResponse requestService(String method, JsonElement parameters) {
         JsonRpcManager manager = new JsonRpcManager(this.connectionFactory.createConnection());
         JsonRpcRequest request = new JsonRpcRequest(method, parameters, generateNewId());
         manager.send(request);
-        JsonRpcResponse response = manager.listenResponse();
+        JsonRpcResponse response = null;
+        try {
+            response = (JsonRpcResponse)manager.listenResponse();
+        }catch (com.jsonrpc.ParseException e){
+
+        }
         return response;
     }
 
     public ArrayList<ServiceMetadata> requestServiceList(SearchStrategy searchStrategy) {
         ArrayList<ServiceMetadata> list = new ArrayList<>();
         list.clear();
-        JsonRpcResponse response = this.requestService("getServicesList", searchStrategy.toJson());
-        JsonObject json = response.getResult();
-        JsonArray array = (JsonArray) json.get("result");
+        JsonRpcResponse response = this.requestService("getServicesList", searchStrategy.toJsonElement());
+        JsonArray array = response.getResult().getAsJsonArray();
         Iterator<JsonElement> iterator = array.iterator();
         while (iterator.hasNext()) {
-            list.add(new ServiceMetadata(iterator.next().getAsJsonObject()));
+            list.add(ServiceMetadata.fromJson(iterator.next().getAsJsonObject()));
         }
         return list;
     }

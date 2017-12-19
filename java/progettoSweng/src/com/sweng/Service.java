@@ -21,7 +21,12 @@ public class Service extends Thread {
     public void run() {
         while (true) {
             // Wait request
-            JsonRpcMessage receivedRpcRequest = this.manager.listenRequest();
+            JsonRpcMessage receivedRpcRequest = null;
+            try {
+                receivedRpcRequest = this.manager.listenRequest();
+            }catch(ParseException e){
+
+            }
             if (receivedRpcRequest.isBatch()) { //if is a batch request
                 JsonRpcBatchRequest batch = (JsonRpcBatchRequest) receivedRpcRequest;
                 List<JsonRpcRequest> requests = batch.get();
