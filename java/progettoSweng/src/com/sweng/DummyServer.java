@@ -39,7 +39,7 @@ public class DummyServer {
                     }
                 }
                 catch (IllegalArgumentException e) {
-                    response = JsonRpcResponse.error(new Error(-32603, "Wrong parameters received"), request.getID());
+                    response = JsonRpcResponse.error(JsonRpcCustomError.wrongParametersReceived(), request.getID());
                     System.err.println("Wrong JSON-RPC Request received, a JSON-RPC Error is returned to requester");
                 }
                 finally {

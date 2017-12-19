@@ -4,10 +4,16 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonArray;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
+import com.jsonrpc.Error;
+
+import com.oracle.javafx.jmx.json.impl.JSONMessages;
+import org.json.simple.parser.ParseException;
+
 import com.jsonrpc.*;
 
 // todo timer on response
@@ -55,12 +61,11 @@ public class Node {
         JsonRpcManager manager = new JsonRpcManager(connection);
         JsonRpcRequest registerServiceRequest = new JsonRpcRequest("registerService", service.getServiceMetadata().toJson(), this.generateNewId());
         manager.send(registerServiceRequest);
-
         JsonRpcResponse registerServiceResponse = null;
         try {
             registerServiceResponse = (JsonRpcResponse) manager.listenResponse();
         } catch (com.jsonrpc.ParseException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
 
         // Read response from Broker
@@ -113,14 +118,15 @@ public class Node {
         manager.send(request);
         JsonRpcResponse response = null;
         try {
-            response = (JsonRpcResponse)manager.listenResponse();
-        }catch (com.jsonrpc.ParseException e){
-
+            response = (JsonRpcResponse) manager.listenResponse();
+        } catch (com.jsonrpc.ParseException e) {
+            System.err.println("Local parse exeption: " + request.toString());
+            response = JsonRpcResponse.error(JsonRpcCustomError.localParseError(), ID.Null());
         }
         return response;
     }
 
-    public ArrayList<ServiceMetadata> requestServiceList(SearchStrategy searchStrategy) {
+   public ArrayList<ServiceMetadata> requestServiceList(SearchStrategy searchStrategy) {
         ArrayList<ServiceMetadata> list = new ArrayList<>();
         list.clear();
         JsonRpcResponse response = this.requestService("getServicesList", searchStrategy.toJsonElement());

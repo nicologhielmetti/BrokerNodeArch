@@ -24,8 +24,9 @@ public class Service extends Thread {
             JsonRpcMessage receivedRpcRequest = null;
             try {
                 receivedRpcRequest = this.manager.listenRequest();
-            }catch(ParseException e){
-
+            } catch (ParseException e) {
+                System.err.println("Parse exeption");
+                this.manager.send(JsonRpcDefaultError.parseError());
             }
             if (receivedRpcRequest.isBatch()) { //if is a batch request
                 JsonRpcBatchRequest batch = (JsonRpcBatchRequest) receivedRpcRequest;
@@ -60,7 +61,7 @@ public class Service extends Thread {
             return this.function.run(request);
         } catch(RuntimeException e) {
             System.err.println("Runtime exeption in IServiceMethod implementation");
-            return JsonRpcResponse.error(new Error(-32604, "Internal service Error"), request.getID());
+            return JsonRpcResponse.error(JsonRpcCustomError.internalServiceError(), request.getID());
         }
     }
 

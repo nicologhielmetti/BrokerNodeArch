@@ -95,7 +95,7 @@ public class Broker {
         else {
             SearchStrategy searchStrategy = SearchStrategy.fromJson(j.toString());
             if (searchStrategy == null) {
-                manager.send(JsonRpcResponse.error(new Error(-32602, "SearchStrategy is ill-formed"), request.getID()));
+                manager.send(JsonRpcResponse.error(JsonRpcCustomError.wrongSerchStrategy(), request.getID()));
                 return;
             }
             list = getServicesList(searchStrategy);
