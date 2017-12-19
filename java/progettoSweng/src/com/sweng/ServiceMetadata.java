@@ -41,11 +41,6 @@ public class ServiceMetadata {
         }
     }
 
-    public String toJsonString() {
-        JsonObject json = this.toJson();
-        return json.toString();
-    }
-
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("methodName", this.methodName);
