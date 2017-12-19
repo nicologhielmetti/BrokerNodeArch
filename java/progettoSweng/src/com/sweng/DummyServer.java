@@ -1,6 +1,7 @@
 package com.sweng;
 
 import com.google.gson.JsonObject;
+import com.jsonrpc.JsonRpcManager;
 import com.jsonrpc.JsonRpcRequest;
 import com.jsonrpc.JsonRpcResponse;
 import com.jsonrpc.Error;
@@ -48,7 +49,7 @@ public class DummyServer {
                 }
             }
         };
-        Service service = new Service(serviceMetadata, serviceMethod);
+        Service service = new Service(serviceMetadata, serviceMethod, new JsonRpcManager(connectionFactory.createConnection()));
         System.out.println("Service created");
 
         node.provideService(service);

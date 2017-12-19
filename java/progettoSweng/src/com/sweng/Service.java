@@ -13,9 +13,10 @@ public class Service extends Thread {
     private JsonRpcManager manager;
     private IServiceMethod function;
 
-    public Service(ServiceMetadata serviceMetadata, IServiceMethod function) {
+    public Service(ServiceMetadata serviceMetadata, IServiceMethod function, JsonRpcManager manager) {
         this.serviceMetadata = serviceMetadata;
         this.function = function;
+        this.manager = manager;
     }
 
     public void run() {
