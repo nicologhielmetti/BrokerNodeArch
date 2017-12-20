@@ -42,7 +42,7 @@ public class JsonRpcManager {
             //error
 
         }else {
-            JsonRpcRequest.fromJson(input);
+            msg = JsonRpcRequest.fromJson(input);
             if (msg != null) return msg;
             msg = JsonRpcResponse.fromJson(input);
             if (msg != null) return msg;

@@ -105,13 +105,10 @@ public class Broker {
             list = getServicesList(searchStrategy);
         }
 
-        //JSONObject result=new JSONObject();
         JsonArray result = new JsonArray();
         for(ServiceMetadata s:list){
             result.add(s.toJson());
         }
-
-        //result.put("servicesList",l);
 
         if(verbose)System.out.println("generated list (result):"+result.toString());
         if(verbose)System.out.println("id:"+request.getID());
@@ -156,9 +153,10 @@ public class Broker {
         try {
             r = m.listenRequest();
         } catch (ParseException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            m.send(JsonRpcDefaultError.parseError());
+            return;
         }
-
 
         if(r instanceof JsonRpcRequest) {
             JsonRpcRequest request = (JsonRpcRequest) r;
@@ -190,15 +188,28 @@ public class Broker {
                 }
             }
         }else if(r instanceof JsonRpcBatchRequest){
+            JsonRpcBatchRequest requestBatch = (JsonRpcBatchRequest) r;
+            JsonRpcBatchResponse responseBatch = new JsonRpcBatchResponse();
+
+            for(JsonRpcRequest request:requestBatch.get()){
+                if(request.isValid()){
+                    JsonRpcResponse response=handleRequest(request,m);
+                    if(response!=null)responseBatch.add(response);
+                }else{
+                    responseBatch.add(JsonRpcDefaultError.invalidRequest());
+                }
+            }
+            m.send(responseBatch);
 
         }else{
             //error
+            m.send(JsonRpcDefaultError.invalidRequest());
         }
 
     }
 
-  /*  void handleRequest(JsonRpcRequest request, JsonRpcManager manager){
-        if (!filterRequest(request, manager)) return;
+    JsonRpcResponse handleRequest(JsonRpcRequest request, JsonRpcManager manager){
+        if (!filterRequest(request, manager)) return null;
 
         if (request.isNotification()) {
             //todo gestire le notifiche
@@ -217,11 +228,12 @@ public class Broker {
 
                 manager.send(res);
             } else {
-                manager.send(JsonRpcDefaultError.methodNotFound(request.getID()));
-                return;
+                return JsonRpcDefaultError.methodNotFound(request.getID());
             }
+
         }
-    }*/
+        return null;
+    }
 
     Broker(IConnectionManager connectionManager) {
         this.connectionManager = connectionManager;
@@ -246,7 +258,6 @@ public class Broker {
 
             JsonRpcManager j = new JsonRpcManager(c);
 
-            //new thread(connectionThread,j);
 
             if(verbose)System.out.println("Broker handling the request");
 

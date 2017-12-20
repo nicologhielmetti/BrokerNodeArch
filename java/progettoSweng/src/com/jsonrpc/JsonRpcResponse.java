@@ -36,14 +36,14 @@ public class JsonRpcResponse extends JsonRpcMessage {
         return new JsonRpcResponse(e, id);
     }
 
- /*   public ID getID() {
+    public ID getID() {
         JsonPrimitive j = json.getAsJsonPrimitive("id");
         if (j == null) return null;
         if (j.isString()) return new ID(j.getAsString());
         if (j.isNumber()) return new ID(j.getAsInt());
         if (j.isJsonNull()) return new ID();
         return null; //invalid id
-    }*/
+    }
 
     public boolean isError() {
         return json.has("error");
@@ -55,7 +55,7 @@ public class JsonRpcResponse extends JsonRpcMessage {
     }
 
     public JsonElement getResult() {
-        return json.get("result");
+        return json.has("result")?json.get("result"):null;
     }
 
     public String toString() {
