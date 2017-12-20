@@ -7,6 +7,8 @@ import com.jsonrpc.JsonRpcResponse;
 import com.jsonrpc.Error;
 import com.google.gson.JsonElement;
 
+import java.util.concurrent.TimeUnit;
+
 public class DummyServer {
 
     public static void main(String[] args) {
@@ -54,8 +56,13 @@ public class DummyServer {
 
         node.provideService(serviceMetadata, serviceMethod);
 
+        try {
+            TimeUnit.SECONDS.sleep(120);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         // Delete an own service
-        //node.deleteService(service.getServiceMetadata().getMethodName());
+        node.deleteService(serviceMetadata.getMethodName());
     }
 
 }

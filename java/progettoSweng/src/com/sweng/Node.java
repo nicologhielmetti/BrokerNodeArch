@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.HashMap;
 import com.jsonrpc.Error;
 
-import com.oracle.javafx.jmx.json.impl.JSONMessages;
-import org.json.simple.parser.ParseException;
 
 import com.jsonrpc.*;
 
@@ -78,6 +76,7 @@ public class Node {
         } else {
             // Timeout
         }
+        System.out.println("Service registered!");
         // Start new service
         service.start();
         ownServices.put(metadata.getMethodName(), service);

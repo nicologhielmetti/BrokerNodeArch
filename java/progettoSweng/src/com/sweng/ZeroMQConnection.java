@@ -40,12 +40,6 @@ public class ZeroMQConnection implements IConnection {
     public String read() {
         if(unset){
             System.out.println("ZeroMQConnection waiting for messages ( read() )");
-            //String identity=socket.recvStr();
-//            do{
-//                head=socket.recvStr();
-//                System.out.println("ZeroMQConnection head = "+head);
-//            }while(socket.hasReceiveMore());
-            //head=socket.recvStr();
             ZMsg msg=ZMsg.recvMsg(socket);
             do{
                 head=msg.popString();
@@ -67,8 +61,6 @@ public class ZeroMQConnection implements IConnection {
     public void send(String msg) {
         System.out.println("Sending : "+msg);
         if(sender==null){
-            //socket.sendMore("");
-            //socket.send(msg);
             ZMsg z=new ZMsg();
             z.push(msg);
 
@@ -76,13 +68,9 @@ public class ZeroMQConnection implements IConnection {
         }else{
             ZMsg z=new ZMsg();
             z.push(msg);
-            z.push(identity);
+            z.push(identity.duplicate());
 
             z.send(sender);
-
-//            sender.sendMore(identity);
-//            sender.sendMore("");
-//            sender.send(msg);
         }
     }
 
