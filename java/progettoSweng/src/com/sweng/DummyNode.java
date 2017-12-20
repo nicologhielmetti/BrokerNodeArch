@@ -17,9 +17,9 @@ public class DummyNode {
     private static Node node;
     private static Scanner keyboard = new Scanner(System.in);
     private static IServiceMethod methodSum;
-    private static IServiceMethod methodSub;
+    private static IServiceMethod methodMul;
     private static ServiceMetadata metadataSum;
-    private static ServiceMetadata metadataSub;
+    private static ServiceMetadata metadataMul;
 
     public static void main(String[] args) {
 
@@ -94,7 +94,6 @@ public class DummyNode {
         String method = keyboard.next();
         System.out.print("Insert params (property:value) comma separated (leave empty if no parameters needed) : ");
         String params = keyboard.next();
-        System.out.println(params);
         List<String> parameters = new ArrayList<>(Arrays.asList(params.split(",")));
         JsonObject jsonParameters = new JsonObject();
         for (String s: parameters){
@@ -107,13 +106,13 @@ public class DummyNode {
 
     // Provide a own service (Server side function)
     private static void provideService() {
-        System.out.print("Please insert the name of the service you want to add (sum or sub) > ");
+        System.out.print("Please insert the name of the service you want to add (sum or mul) > ");
         String option = keyboard.next();
         if (option.equals("sum")) {
             node.provideService(metadataSum, methodSum);
         }
-        else if (option.equals("sub")) {
-            node.provideService(metadataSub, methodSub);
+        else if (option.equals("mul")) {
+            node.provideService(metadataMul, methodMul);
         }
     }
 
@@ -129,7 +128,7 @@ public class DummyNode {
         metadataSum = new ServiceMetadata("sum", "DummyNode");
         metadataSum.setKeywords(new ArrayList<>(Arrays.asList("somma", "sum", "sommatoria")));
         metadataSum.setApplicationField("math");
-        metadataSum.setDescription("input (num1:value,...,numN:value)");
+        metadataSum.setDescription("input (num1:int_value,...,numN:int_value)");
         // Set all metadata through setter methods
         methodSum = new IServiceMethod() {
             @Override
@@ -164,22 +163,22 @@ public class DummyNode {
         System.out.println("Service created");
 
 
-        // sub service
-        metadataSub = new ServiceMetadata("sub", "DummyNode");
-        metadataSub.setKeywords(new ArrayList<>(Arrays.asList("sottrazione", "sub", "subtract")));
-        metadataSub.setApplicationField("math");
-        metadataSub.setDescription("input (num1:value,...,numN:value)");
+        // mul service
+        metadataMul = new ServiceMetadata("mul", "DummyNode");
+        metadataMul.setKeywords(new ArrayList<>(Arrays.asList("moltiplicazione", "mul")));
+        metadataMul.setApplicationField("math");
+        metadataMul.setDescription("input (num1:int_value,...,numN:int_value)");
         // Set all metadata through setter methods
-        methodSub = new IServiceMethod() {
+        methodMul = new IServiceMethod() {
             @Override
             public JsonRpcResponse run(JsonRpcRequest request) {
                 JsonRpcResponse response = null;
                 try {
                     System.out.println("Service is running...");
                     JsonObject parameters = request.getParams().getAsJsonObject();
-                    int result = 0;
+                    int result = 1;
                     for (int i = 1; i <= parameters.size(); i++) {
-                        result += parameters.get("num" + String.valueOf(i)).getAsInt();
+                        result *= parameters.get("num" + String.valueOf(i)).getAsInt();
                     }
                     System.out.println(result);
 
