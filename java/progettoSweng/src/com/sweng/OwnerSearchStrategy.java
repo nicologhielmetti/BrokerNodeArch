@@ -13,7 +13,7 @@ public class OwnerSearchStrategy extends SearchStrategy {
 
     @Override
     boolean filter(ServiceMetadata service) {
-        return service.getOwner().equals(owner);
+        return service.getOwner().contains(owner);
     }
 
     @Override

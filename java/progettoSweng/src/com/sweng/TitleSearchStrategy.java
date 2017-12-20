@@ -12,7 +12,7 @@ public class TitleSearchStrategy extends SearchStrategy {
     }
 
     @Override
-    boolean filter(ServiceMetadata service) { return service.getMethodName().equals(title); }
+    boolean filter(ServiceMetadata service) { return service.getMethodName().contains(title); }
 
     @Override
     public JsonElement toJsonElement(){

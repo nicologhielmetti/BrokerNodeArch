@@ -1,12 +1,17 @@
 package com.sweng;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.jsonrpc.JsonRpcManager;
 import com.jsonrpc.JsonRpcRequest;
 import com.jsonrpc.JsonRpcResponse;
 import com.jsonrpc.Error;
 import com.google.gson.JsonElement;
+import javafx.util.Pair;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public class DummyServer {
@@ -20,6 +25,9 @@ public class DummyServer {
 
         // Provide a service
         ServiceMetadata serviceMetadata = new ServiceMetadata("sum", "owner");
+        serviceMetadata.setKeywords(new ArrayList<String>(Arrays.asList("somma", "sum", "sommatoria")));
+        serviceMetadata.setApplicationField("math");
+        serviceMetadata.setDescription("input (num1:value,...,numN:value)");
         // Set all metadata through setter methods
         IServiceMethod serviceMethod = new IServiceMethod() {
             @Override
@@ -28,17 +36,17 @@ public class DummyServer {
                 try {
                     System.out.println("Service is running...");
                     JsonObject parameters = request.getParams().getAsJsonObject();
-                    int num1 = Integer.parseInt(parameters.get("num1").toString());
-                    int num2 = Integer.parseInt(parameters.get("num2").toString());
-                    int result = num1 + num2;
+                    int result = 0;
+                    for (int i = 1; i <= parameters.size(); i++) {
+                        result += parameters.get("num" + String.valueOf(i)).getAsInt();
+                    }
                     System.out.println(result);
 
                     if (request.isNotification()) {
                         response = null;
                     } else {
-                        JsonObject resultJsonObject = new JsonObject();
-                        resultJsonObject.addProperty("result", result);
-                        response = new JsonRpcResponse(resultJsonObject, request.getID());
+                        JsonPrimitive resultJson = new JsonPrimitive(result);
+                        response = new JsonRpcResponse(resultJson, request.getID());
                     }
                 }
                 catch (IllegalArgumentException e) {
@@ -55,14 +63,14 @@ public class DummyServer {
         System.out.println("Service created");
 
         node.provideService(serviceMetadata, serviceMethod);
-
+/*
         try {
             TimeUnit.SECONDS.sleep(120);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         // Delete an own service
-        node.deleteService(serviceMetadata.getMethodName());
+        node.deleteService(serviceMetadata.getMethodName());*/
     }
 
 }
