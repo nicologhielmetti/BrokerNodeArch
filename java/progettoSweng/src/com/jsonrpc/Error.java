@@ -3,29 +3,33 @@ package com.jsonrpc;
 import com.google.gson.JsonObject;
 
 public class Error {
-    int code;
-    String message;
-    JsonObject data = null;
+    JsonObject jsonObject;
 
     public Error(int code, String message) {
-        this.code = code;
-        this.message = message;
+        this.jsonObject = new JsonObject();
+        jsonObject.addProperty("code",code);
+        jsonObject.addProperty("message", message);
     }
 
     public Error(int code, String message, JsonObject data) {
         this(code, message);
-        this.data = data;
+        this.jsonObject.addProperty("data", data.toString());
     }
 
     public int getCode() {
-        return code;
+        return this.jsonObject.get("code").getAsInt();
     }
 
     public String getMessage() {
-        return message;
+        return this.jsonObject.get("message").getAsString();
     }
 
     public JsonObject getData() {
-        return data;
+        return this.jsonObject.get("data").getAsJsonObject();
     }
+
+    protected JsonObject getJsonObject(){
+        return jsonObject;
+    }
+
 }

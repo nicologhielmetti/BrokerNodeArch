@@ -1,9 +1,6 @@
 package com.jsonrpc;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -31,7 +28,7 @@ public class JsonRpcResponse extends JsonRpcMessage {
 
     private JsonRpcResponse(Error e, ID id) {
         this(id);
-        json.addProperty("error", (new Gson()).toJson(e));
+        json.add("error", e.getJsonObject());
     }
 
 
@@ -39,14 +36,14 @@ public class JsonRpcResponse extends JsonRpcMessage {
         return new JsonRpcResponse(e, id);
     }
 
-    public ID getID() {
+ /*   public ID getID() {
         JsonPrimitive j = json.getAsJsonPrimitive("id");
         if (j == null) return null;
         if (j.isString()) return new ID(j.getAsString());
         if (j.isNumber()) return new ID(j.getAsInt());
         if (j.isJsonNull()) return new ID();
         return null; //invalid id
-    }
+    }*/
 
     public boolean isError() {
         return json.has("error");

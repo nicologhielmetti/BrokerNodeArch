@@ -193,7 +193,7 @@ public class Broker {
 
     }
 
-    void handleRequest(JsonRpcRequest request, JsonRpcManager manager){
+  /*  void handleRequest(JsonRpcRequest request, JsonRpcManager manager){
         if (!filterRequest(request, manager)) return;
 
         if (request.isNotification()) {
@@ -217,7 +217,7 @@ public class Broker {
                 return;
             }
         }
-    }
+    }*/
 
     Broker(IConnectionManager connectionManager) {
         this.connectionManager = connectionManager;

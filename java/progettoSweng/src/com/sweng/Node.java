@@ -5,10 +5,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonArray;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
+
 import com.jsonrpc.Error;
 
 
@@ -120,7 +118,22 @@ public class Node {
         try {
             response = (JsonRpcResponse) manager.listenResponse();
         } catch (com.jsonrpc.ParseException e) {
-            System.err.println("Local parse exeption: " + request.toString());
+            System.err.println("Local parse exeption: " + response.toString());
+            response = JsonRpcResponse.error(JsonRpcCustomError.localParseError(), ID.Null());
+        }
+        return response;
+    }
+
+    public JsonRpcMessage requestService(List<JsonRpcRequest> requests) {
+        JsonRpcManager manager = new JsonRpcManager(this.connectionFactory.createConnection());
+        JsonRpcBatchRequest batchRequest = new JsonRpcBatchRequest();
+        batchRequest.add(requests);
+        manager.send(batchRequest);
+        JsonRpcMessage response;
+        try {
+            response = manager.listenResponse();
+        } catch (com.jsonrpc.ParseException e) {
+            System.err.println("Local parse exeption: " + e.getCause().toString());
             response = JsonRpcResponse.error(JsonRpcCustomError.localParseError(), ID.Null());
         }
         return response;
