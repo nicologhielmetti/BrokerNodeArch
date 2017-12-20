@@ -83,7 +83,7 @@ public class Node {
         return true;
     }
 
-    public void deleteService(String method) { // missed in uml class diagram
+    public void deleteService(String method) {
         if (this.ownServices.containsKey(method)) {
             IConnection connection = this.connectionFactory.createConnection();
             JsonRpcManager manager = new JsonRpcManager(connection);
@@ -99,7 +99,7 @@ public class Node {
             availableService.delete();
             this.ownServices.remove(method);
         } else {
-            throw new RuntimeException("There is no service named " + method);
+            System.err.println("There is no service named " + method);
         }
     }
 
@@ -138,10 +138,12 @@ public class Node {
         return list;
     }
 
+    // End of Service requester functionality
+
     private ID generateNewId() {
         return new ID(this.id++);
     }
 
-    // End of Service requester functionality
+
 
 }

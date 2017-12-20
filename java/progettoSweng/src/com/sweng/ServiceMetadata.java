@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,7 +18,7 @@ public class ServiceMetadata {
     private String method;
     private String owner;
     private String applicationField;
-    private ArrayList<String> keywords = new ArrayList<>();
+    private ArrayList<String> keywords;
     private String description;
     private String activationDate;
 
@@ -31,37 +32,13 @@ public class ServiceMetadata {
     }
 
     static public ServiceMetadata fromJson(JsonObject json) {
-        //return (new Gson()).fromJson(json.getAs,ServiceMetadata.class);
         Gson gson = new Gson();
         return gson.fromJson(json, ServiceMetadata.class);
-        /*
-        this.methodName=  json.get("methodName").getAsString();
-        this.owner =  json.get("owner").getAsString();
-        this.activationDate =  json.get("activationDate").getAsString();
-        this.description =  json.getAsJsonPrimitive("description").isString()?json.getAsJsonPrimitive("description").getAsString():null;
-        this.applicationField = json.get("applicationField").getAsString();
-        JsonArray jsonKeywords = json.getAsJsonArray("keywords");
-        for(JsonElement j:jsonKeywords){
-            this.keywords.add(json.getAsString());
-        }*/
     }
 
     public JsonObject toJson() {
         Gson gson=new Gson();
         return gson.fromJson(gson.toJson(this),JsonObject.class);
-        /*
-        JsonObject json = new JsonObject();
-        json.addProperty("methodName", this.methodName);
-        json.addProperty("owner", this.owner);
-        json.addProperty("activationDate", this.activationDate);
-        json.addProperty("description", this.description);
-        json.addProperty("applicationField", this.applicationField);
-        JsonArray jsonKeywords = new JsonArray();
-        for (String k:keywords) {
-            jsonKeywords.add(k);
-        }
-        json.add("keywords", jsonKeywords);
-        return json;*/
     }
 
     public void setApplicationField(String applicationField) { this.applicationField = applicationField; }
@@ -70,7 +47,12 @@ public class ServiceMetadata {
 
     public void setDescription(String description) { this.description = description; }
 
-    public void setKeywords(ArrayList<String> keywords) { this.keywords = keywords; }
+    public void setKeywords(ArrayList<String> keywords) {
+        for (String k:keywords) {
+            k = k.trim();
+        }
+        this.keywords = keywords;
+    }
 
     public ArrayList<String> getKeywords() { return keywords; }
 
@@ -83,6 +65,7 @@ public class ServiceMetadata {
     public String getOwner() { return owner; }
 
     public String getMethodName() { return method; }
+
 
     public void addKeyword(String keyword) { this.keywords.add(keyword); }
 

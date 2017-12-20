@@ -20,7 +20,7 @@ public class Service extends Thread {
     }
 
     public void run() {
-        while (true) {
+        while (!Thread.currentThread().isInterrupted()) {
             // Wait request
             JsonRpcMessage receivedRpcRequest = null;
             try {
