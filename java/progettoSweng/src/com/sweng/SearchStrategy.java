@@ -23,7 +23,7 @@ public abstract class SearchStrategy {
         JsonObject j=(new Gson()).fromJson(str,JsonObject.class);
         switch (j.get("type").getAsString()){
             case "TitleSearchStrategy":
-                return new TitleSearchStrategy(j.get("methodName").getAsString());
+                return new TitleSearchStrategy(j.get("method").getAsString());
             case "OwnerSearchStrategy":
                 return new OwnerSearchStrategy(j.get("owner").getAsString());
             case "KeywordSearchStrategy":{

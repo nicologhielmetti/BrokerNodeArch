@@ -16,6 +16,6 @@ public class TitleSearchStrategy extends SearchStrategy {
 
     @Override
     public JsonElement toJsonElement(){
-        return (new Gson()).fromJson("{\"type\":\"TitleSearchStrategy\",\"methodName\":"+title+"}",JsonElement.class);
+        return (new Gson()).fromJson("{\"type\":\"TitleSearchStrategy\",\"method\":"+title+"}",JsonElement.class);
     }
 }

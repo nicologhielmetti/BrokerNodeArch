@@ -69,7 +69,6 @@ public class ZeroMQConnection implements IConnection {
             ZMsg z=new ZMsg();
             z.push(msg);
             z.push(identity.duplicate());
-
             z.send(sender);
         }
     }

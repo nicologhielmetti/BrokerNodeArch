@@ -11,6 +11,7 @@ import com.jsonrpc.Error;
 
 
 import com.jsonrpc.*;
+import javafx.util.Pair;
 
 // todo timer on response
 
@@ -157,6 +158,13 @@ public class Node {
         return new ID(this.id++);
     }
 
+    public void showRunningServices() {
+        Iterator<Map.Entry<String, Service>> i = ownServices.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry<String,Service> it = i.next();
+            System.out.println("Name: " + it.getKey() + " - " + it.getValue().getServiceMetadata().toJson());
+        }
+    }
 
 
 }

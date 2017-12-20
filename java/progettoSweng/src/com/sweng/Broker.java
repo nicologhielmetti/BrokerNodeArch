@@ -82,9 +82,13 @@ public class Broker {
     }
 
     void deleteService(JsonRpcRequest request) {
-        String name = request.getParams().getAsJsonObject().get("method").toString();//todo non gestire con il nome ma con il riferimento alla connessione
-
-        services.remove(name);
+        String name = request.getParams().getAsJsonObject().get("method").getAsString();//todo non gestire con il nome ma con il riferimento alla connessione
+        for (ServiceMetadata s: services) {
+            if(s.getMethodName().equals(name)) {
+                services.remove(s);
+                return;
+            }
+        }
     }
 
     void handleServicesListRequest(JsonRpcRequest request, JsonRpcManager manager) {

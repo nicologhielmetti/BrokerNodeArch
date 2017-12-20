@@ -47,6 +47,7 @@ public class DummyNode {
                 case 3 : provideService(); break;
                 case 4 : deleteService(); break;
                 case 5 : break;
+                case 6 : node.showRunningServices(); break;
                 default : System.out.println("No option found"); break;
             }
         } while (key != 5);
