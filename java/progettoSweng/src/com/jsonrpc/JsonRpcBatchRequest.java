@@ -43,7 +43,7 @@ public class JsonRpcBatchRequest extends JsonRpcMessage {
         JsonRpcBatchRequest batch = new JsonRpcBatchRequest();
         for (JsonElement e : array) {
             JsonRpcRequest r = JsonRpcRequest.fromJson(e.toString());
-            if (r == null) return null;
+            if (r == null) r = JsonRpcRequest.invalid();
             batch.add(r);
         }
         if (batch.isEmpty()) return null;

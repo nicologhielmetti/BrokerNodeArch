@@ -18,7 +18,7 @@ public class JsonRpcResponse extends JsonRpcMessage {
         if (id != null && !id.isNull()) {
             if (id.isString()) json.addProperty("id", id.getAsString());
             else json.addProperty("id", id.getAsInt());
-        }
+        }else json.add("id", JsonNull.INSTANCE);
     }
 
     public JsonRpcResponse(JsonElement result, ID id) {

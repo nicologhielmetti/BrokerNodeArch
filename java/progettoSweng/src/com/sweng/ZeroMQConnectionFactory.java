@@ -21,7 +21,7 @@ public class ZeroMQConnectionFactory implements IConnectionFactory {
     public IConnection createConnection() {
         ZMQ.Socket socket = context.socket(ZMQ.DEALER);
         socket.connect(address);
-        return new ZeroMQConnection(socket);
+        return new ZeroMQConnection(socket,context);
     }
 
 }

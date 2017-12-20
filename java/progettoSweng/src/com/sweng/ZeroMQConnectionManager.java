@@ -86,7 +86,7 @@ public class ZeroMQConnectionManager implements IConnectionManager {
                 pollEvents();
             }else{
                 Pair<ZFrame, Pair<Socket, Socket>> connection=connections_queue.poll();
-                return new ZeroMQConnection(connection.getValue().getValue(),frontend,connection.getKey());
+                return new ZeroMQConnection(connection.getValue().getValue(),frontend,connection.getKey(),context);
             }
         }
     }

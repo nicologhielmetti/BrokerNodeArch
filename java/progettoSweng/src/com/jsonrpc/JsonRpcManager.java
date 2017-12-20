@@ -31,15 +31,23 @@ public class JsonRpcManager {
 
     private JsonRpcMessage listen() throws ParseException {
         Gson gson = new Gson();
-        String input = connection.read();
-        JsonRpcMessage msg = JsonRpcRequest.fromJson(input);
-        if (msg != null) return msg;
-        msg = JsonRpcResponse.fromJson(input);
-        if (msg != null) return msg;
-        msg = JsonRpcBatchRequest.fromJson(input);
-        if (msg != null) return msg;
-        msg = JsonRpcBatchResponse.fromJson(input);
-        if (msg != null) return msg;
+        String input = connection.read().trim();
+        JsonRpcMessage msg = null;
+
+        if(input.charAt(0)=='['){
+            msg = JsonRpcBatchRequest.fromJson(input);
+            if (msg != null) return msg;
+            msg = JsonRpcBatchResponse.fromJson(input);
+            if (msg != null) return msg;
+            //error
+
+        }else {
+            JsonRpcRequest.fromJson(input);
+            if (msg != null) return msg;
+            msg = JsonRpcResponse.fromJson(input);
+            if (msg != null) return msg;
+        }
+
 
         connection.consume();
         throw new ParseException("\""+input+ "\" is not a valid json-rpc message");

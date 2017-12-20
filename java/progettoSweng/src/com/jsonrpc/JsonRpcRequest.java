@@ -54,11 +54,16 @@ public class JsonRpcRequest extends JsonRpcMessage {
         return json.get("method").getAsString();
     }
 
-
-
     public boolean isNotification() {
         return !json.has("id");
     }
+
+    public static JsonRpcRequest invalid() {
+        return new JsonRpcRequest(null);
+    }
+    public boolean isValid(){ return json!=null;}
+
+
 
     public String toString() {
         return toJson();
@@ -79,4 +84,6 @@ public class JsonRpcRequest extends JsonRpcMessage {
         if (fields + 2 != json.size()) return null; //there are other fields -> is not a well-formed Json-RPC Request
         return new JsonRpcRequest(json);
     }
+
+
 }
