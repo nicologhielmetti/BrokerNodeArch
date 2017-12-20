@@ -75,7 +75,7 @@ public class Node {
         } else {
             // Timeout
         }
-        System.out.println("Service registered!");
+        System.out.println("Server: Service registered!");
         // Start new service
         service.start();
         ownServices.put(metadata.getMethodName(), service);
@@ -98,7 +98,7 @@ public class Node {
             availableService.delete();
             this.ownServices.remove(method);
         } else {
-            System.err.println("There is no service named " + method);
+            System.err.println("Server: There is no service named " + method);
         }
     }
 
@@ -119,7 +119,7 @@ public class Node {
         try {
             response = (JsonRpcResponse) manager.listenResponse();
         } catch (com.jsonrpc.ParseException e) {
-            System.err.println("Local parse exeption: " + response.toString());
+            System.err.println("Client: Local parse exeption: " + response.toString());
             response = JsonRpcResponse.error(JsonRpcCustomError.localParseError(), ID.Null());
         }
         return response;
@@ -134,7 +134,7 @@ public class Node {
         try {
             response = manager.listenResponse();
         } catch (com.jsonrpc.ParseException e) {
-            System.err.println("Local parse exeption: " + e.getCause().toString());
+            System.err.println("Client: Local parse exeption: " + e.getCause().toString());
             response = JsonRpcResponse.error(JsonRpcCustomError.localParseError(), ID.Null());
         }
         return response;

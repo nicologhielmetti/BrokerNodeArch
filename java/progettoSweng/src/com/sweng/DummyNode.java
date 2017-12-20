@@ -55,7 +55,7 @@ public class DummyNode {
 
     // Get list of available services from broker (Client side function)
     private static void getServiceList() {
-        System.out.println("Please select a type of search : ");
+        System.out.println("Client: Please select a type of search : ");
         System.out.println("1 - Title");
         System.out.println("2 - Owner");
         System.out.println("3 - Keyword");
@@ -77,7 +77,7 @@ public class DummyNode {
                 search = new KeywordSearchStrategy(keyword);
                 break;
             default :
-                System.out.println("No option found");
+                System.out.println("Client: No option found");
                 return;
         }
         ArrayList<ServiceMetadata> serviceList = node.requestServiceList(search);
@@ -91,9 +91,9 @@ public class DummyNode {
 
     // Make a service request - invoke a service (Client side function)
     private static void invokeService() {
-        System.out.print("Insert method : ");
+        System.out.print("Client: Insert method : ");
         String method = keyboard.next();
-        System.out.print("Insert params (property:value) comma separated (leave empty if no parameters needed) : ");
+        System.out.print("Cient: Insert params (property:value) comma separated (leave empty if no parameters needed) : ");
         String params = keyboard.next();
         List<String> parameters = new ArrayList<>(Arrays.asList(params.split(",")));
         JsonObject jsonParameters = new JsonObject();
@@ -107,7 +107,7 @@ public class DummyNode {
 
     // Provide a own service (Server side function)
     private static void provideService() {
-        System.out.print("Please insert the name of the service you want to add (sum or mul) > ");
+        System.out.print("Server: Please insert the name of the service you want to add (sum or mul) > ");
         String option = keyboard.next();
         if (option.equals("sum")) {
             node.provideService(metadataSum, methodSum);
@@ -115,11 +115,14 @@ public class DummyNode {
         else if (option.equals("mul")) {
             node.provideService(metadataMul, methodMul);
         }
+        else {
+            System.out.println("Server: No service available with this name, please implement it");
+        }
     }
 
     // Delete a own service (Server side function)
     private static void deleteService() {
-        System.out.print("Please insert the name of the service you want to delete > ");
+        System.out.print("Server: Please insert the name of the service you want to delete > ");
         String methodName = keyboard.next();
         node.deleteService(methodName);
     }
@@ -136,7 +139,7 @@ public class DummyNode {
             public JsonRpcResponse run(JsonRpcRequest request) {
                 JsonRpcResponse response = null;
                 try {
-                    System.out.println("Service is running...");
+                    System.out.println("Server: Service is running...");
                     JsonObject parameters = request.getParams().getAsJsonObject();
                     int result = 0;
                     for (int i = 1; i <= parameters.size(); i++) {
@@ -153,15 +156,15 @@ public class DummyNode {
                 }
                 catch (IllegalArgumentException e) {
                     response = JsonRpcResponse.error(JsonRpcCustomError.wrongParametersReceived(), request.getID());
-                    System.err.println("Wrong JSON-RPC Request received, a JSON-RPC Error is returned to requester");
+                    System.err.println("Server: Wrong JSON-RPC Request received, a JSON-RPC Error is returned to requester");
                 }
                 finally {
-                    System.out.println("Service finish");
+                    System.out.println("Server: Service finish");
                     return response;
                 }
             }
         };
-        System.out.println("Service created");
+        System.out.println("Server: Service created");
 
 
         // mul service
@@ -175,7 +178,7 @@ public class DummyNode {
             public JsonRpcResponse run(JsonRpcRequest request) {
                 JsonRpcResponse response = null;
                 try {
-                    System.out.println("Service is running...");
+                    System.out.println("Server: Service is running...");
                     JsonObject parameters = request.getParams().getAsJsonObject();
                     int result = 1;
                     for (int i = 1; i <= parameters.size(); i++) {
@@ -192,15 +195,15 @@ public class DummyNode {
                 }
                 catch (IllegalArgumentException e) {
                     response = JsonRpcResponse.error(JsonRpcCustomError.wrongParametersReceived(), request.getID());
-                    System.err.println("Wrong JSON-RPC Request received, a JSON-RPC Error is returned to requester");
+                    System.err.println("Server: Wrong JSON-RPC Request received, a JSON-RPC Error is returned to requester");
                 }
                 finally {
-                    System.out.println("Service finish");
+                    System.out.println("Server: Service finish");
                     return response;
                 }
             }
         };
-        System.out.println("Service created");
+        System.out.println("Server: Service created");
     }
 
 }
