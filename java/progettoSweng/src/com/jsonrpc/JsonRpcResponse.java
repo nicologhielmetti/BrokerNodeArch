@@ -12,7 +12,7 @@ public class JsonRpcResponse extends com.jsonrpc.JsonRpcMessage {
         this.json = json;
     }
 
-    private JsonRpcResponse(com.jsonrpc.ID id) {
+    private JsonRpcResponse(ID id) {
         json = new JsonObject();
         json.addProperty("jsonrpc", "2.0");
         if (id != null && !id.isNull()) {
@@ -32,16 +32,16 @@ public class JsonRpcResponse extends com.jsonrpc.JsonRpcMessage {
     }
 
 
-    public static JsonRpcResponse error(com.jsonrpc.Error e, com.jsonrpc.ID id) {
+    public static JsonRpcResponse error(Error e, ID id) {
         return new JsonRpcResponse(e, id);
     }
 
     public com.jsonrpc.ID getID() {
         JsonPrimitive j = json.getAsJsonPrimitive("id");
         if (j == null) return null;
-        if (j.isString()) return new com.jsonrpc.ID(j.getAsString());
-        if (j.isNumber()) return new com.jsonrpc.ID(j.getAsInt());
-        if (j.isJsonNull()) return new com.jsonrpc.ID();
+        if (j.isString()) return new ID(j.getAsString());
+        if (j.isNumber()) return new ID(j.getAsInt());
+        if (j.isJsonNull()) return new ID();
         return null; //invalid id
     }
 
@@ -51,7 +51,7 @@ public class JsonRpcResponse extends com.jsonrpc.JsonRpcMessage {
 
     public com.jsonrpc.Error getError() {
         if (!isError()) return null;
-        return (new Gson()).fromJson(json.get("error"), com.jsonrpc.Error.class);
+        return (new Gson()).fromJson(json.get("error"), Error.class);
     }
 
     public JsonElement getResult() {
@@ -73,7 +73,7 @@ public class JsonRpcResponse extends com.jsonrpc.JsonRpcMessage {
         if (json.has("result") == json.has("error"))
             return null; //"Either the result member or error member MUST be included, but both members MUST NOT be included."
         if (json.has("error")) {
-            com.jsonrpc.Error e = (new Gson()).fromJson(json.get("error"), com.jsonrpc.Error.class);  //check if error is valid
+            Error e = (new Gson()).fromJson(json.get("error"), Error.class);  //check if error is valid
             if (e == null) return null;
         }
         if (3 != json.size()) return null; //there are other fields -> is not a well-formed Json-RPC Request

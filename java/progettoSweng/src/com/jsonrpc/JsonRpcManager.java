@@ -3,47 +3,47 @@ package com.jsonrpc;
 import com.google.gson.Gson;
 
 public class JsonRpcManager {
-    private com.jsonrpc.IConnection connection;
+    private IConnection connection;
 
-    public JsonRpcManager(com.jsonrpc.IConnection connection) {
+    public JsonRpcManager(IConnection connection) {
         this.connection = connection;
     }
 
-    public com.jsonrpc.JsonRpcMessage listenRequest() throws ParseException {
-        com.jsonrpc.JsonRpcMessage msg;
+    public JsonRpcMessage listenRequest() throws ParseException {
+        JsonRpcMessage msg;
         do {
             msg = listen();
-        } while (!(msg instanceof com.jsonrpc.JsonRpcRequest) && !(msg instanceof com.jsonrpc.JsonRpcBatchRequest));
+        } while (!(msg instanceof JsonRpcRequest) && !(msg instanceof JsonRpcBatchRequest));
         connection.consume();
         return msg;
     }
 
-    public com.jsonrpc.JsonRpcMessage listenResponse() throws ParseException {
-        com.jsonrpc.JsonRpcMessage msg;
+    public JsonRpcMessage listenResponse() throws ParseException {
+        JsonRpcMessage msg;
         do {
             msg = listen();
-        } while (!(msg instanceof com.jsonrpc.JsonRpcResponse) && !(msg instanceof com.jsonrpc.JsonRpcBatchResponse));
+        } while (!(msg instanceof JsonRpcResponse) && !(msg instanceof JsonRpcBatchResponse));
         connection.consume();
         return msg;
     }
 
 
-    private com.jsonrpc.JsonRpcMessage listen() throws ParseException {
+    private JsonRpcMessage listen() throws ParseException {
         Gson gson = new Gson();
         String input = connection.read().trim();
-        com.jsonrpc.JsonRpcMessage msg = null;
+        JsonRpcMessage msg = null;
 
         if(input.charAt(0)=='['){
-            msg = com.jsonrpc.JsonRpcBatchRequest.fromJson(input);
+            msg = JsonRpcBatchRequest.fromJson(input);
             if (msg != null) return msg;
-            msg = com.jsonrpc.JsonRpcBatchResponse.fromJson(input);
+            msg = JsonRpcBatchResponse.fromJson(input);
             if (msg != null) return msg;
             //error
 
         }else {
-            msg = com.jsonrpc.JsonRpcRequest.fromJson(input);
+            msg = JsonRpcRequest.fromJson(input);
             if (msg != null) return msg;
-            msg = com.jsonrpc.JsonRpcResponse.fromJson(input);
+            msg = JsonRpcResponse.fromJson(input);
             if (msg != null) return msg;
         }
 
@@ -53,7 +53,7 @@ public class JsonRpcManager {
     }
 
 
-    public void send(com.jsonrpc.JsonRpcMessage msg) {
+    public void send(JsonRpcMessage msg) {
         connection.send(msg.toString());
     }
 }

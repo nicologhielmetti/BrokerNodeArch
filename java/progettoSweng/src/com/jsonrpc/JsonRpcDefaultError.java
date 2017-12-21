@@ -1,7 +1,7 @@
 package com.jsonrpc;
 
 import com.google.gson.JsonPrimitive;
-import com.jsonrpc.Error;
+
 
 public class JsonRpcDefaultError {
 
