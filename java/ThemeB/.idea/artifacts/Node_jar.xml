@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Node:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Node_jar</output-path>
+    <root id="archive" name="Node.jar">
+      <element id="module-output" name="Node" />
+      <element id="module-output" name="Service" />
+      <element id="module-output" name="SearchStrategy" />
+      <element id="module-output" name="ConnectionInterfaces" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/out/artifacts/ZeroMQImplementation_jar/ZeroMQImplementation.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/out/artifacts/JsonRpcLibrary_jar/JsonRpcLibrary.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/gson-2.8.2.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

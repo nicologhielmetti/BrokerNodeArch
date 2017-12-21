@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Broker/Broker.iml" filepath="$PROJECT_DIR$/Broker/Broker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ConnectionInterfaces/ConnectionInterfaces.iml" filepath="$PROJECT_DIR$/ConnectionInterfaces/ConnectionInterfaces.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JsonRpcLibrary/JsonRpcLibrary.iml" filepath="$PROJECT_DIR$/JsonRpcLibrary/JsonRpcLibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Node/Node.iml" filepath="$PROJECT_DIR$/Node/Node.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SearchStrategy/SearchStrategy.iml" filepath="$PROJECT_DIR$/SearchStrategy/SearchStrategy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Service/Service.iml" filepath="$PROJECT_DIR$/Service/Service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SwengWithModules.iml" filepath="$PROJECT_DIR$/SwengWithModules.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ZeroMQImplementation/ZeroMQImplementation.iml" filepath="$PROJECT_DIR$/ZeroMQImplementation/ZeroMQImplementation.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="jeromq-0.4.3-javadoc">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/jeromq-0.4.3.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib/jeromq-0.4.3-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>

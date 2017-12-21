@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="JsonRpcLibrary:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/JsonRpcLibrary_jar</output-path>
+    <root id="archive" name="JsonRpcLibrary.jar">
+      <element id="module-output" name="JsonRpcLibrary" />
+      <element id="module-output" name="ConnectionInterfaces" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/gson-2.8.2.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="JsonRpcLibrary">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/out/artifacts/JsonRpcLibrary_jar/JsonRpcLibrary.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
