@@ -1,6 +1,5 @@
 package com.sweng;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import com.jsonrpc.JsonRpcRequest;
 import com.jsonrpc.JsonRpcResponse;
@@ -40,7 +39,16 @@ public class DummyNode {
             System.out.println("4 - Delete a own service");
             System.out.println("5 - Exit");
             System.out.print("> ");
-            key = keyboard.nextInt();
+            key = -1;
+            while (key == -1) {
+                if (keyboard.hasNextInt()) {
+                    key = keyboard.nextInt();
+                } else {
+                    System.err.println("Client: not a number");
+                    System.out.println("> ");
+                    keyboard.next();
+                }
+            }
             switch (key) {
                 case 1 : getServiceList(); break;
                 case 2 : invokeService(); break;
@@ -60,23 +68,32 @@ public class DummyNode {
         System.out.println("2 - Owner");
         System.out.println("3 - Keyword");
         System.out.print("> ");
-        int key = keyboard.nextInt();
+        int key = -1;
+        while (key == -1) {
+            if (keyboard.hasNextInt()) {
+                key = keyboard.nextInt();
+            } else {
+                System.err.println("Client: not a number");
+                System.out.println("> ");
+                keyboard.next();
+            }
+        }
         SearchStrategy search;
         switch (key) {
-            case 1 :
+            case 1:
                 System.out.print("Please insert title > ");
                 search = new TitleSearchStrategy(keyboard.next());
                 break;
-            case 2 :
+            case 2:
                 System.out.print("Please insert a service owner > ");
                 search = new OwnerSearchStrategy(keyboard.next());
                 break;
-            case 3 :
+            case 3:
                 System.out.print("Please insert a keyword space separated > ");
                 String keyword = keyboard.next();
                 search = new KeywordSearchStrategy(keyword);
                 break;
-            default :
+            default:
                 System.out.println("Client: No option found");
                 return;
         }
@@ -99,7 +116,12 @@ public class DummyNode {
         JsonObject jsonParameters = new JsonObject();
         for (String s: parameters){
             String[] param = s.split(":");
-            jsonParameters.addProperty(param[0], param[1]); // fix error please (exeption)
+            try { // if the user insert a wrong formatted string (parameter:value) an exeption is caught
+                jsonParameters.addProperty(param[0], param[1]);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.err.println("Client: Wrong formatted string, please insert a string well formatted ex. parameter1:value1, parameter2:value2...");
+                return;
+            }
         }
         JsonRpcResponse response = node.requestService(method, jsonParameters);
         System.out.println("client received: " + response.toString());

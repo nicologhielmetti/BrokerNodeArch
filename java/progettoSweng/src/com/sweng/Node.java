@@ -4,22 +4,22 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonArray;
 
-import java.io.IOException;
-import java.util.*;
-
-import com.jsonrpc.Error;
-
-
 import com.jsonrpc.*;
-import javafx.util.Pair;
+
+import java.util.*;
 
 // todo timer on response
 
+/**
+ *  This class contains server side and client side function because when can have a single instance of Node as node
+ *  that can do a client, a server or both.
+ */
+
 public class Node {
 
-    private Map<String, Service> ownServices;
-    private IConnectionFactory connectionFactory;
-    private int id;
+    private Map<String, Service> ownServices; /** Service that are provided by a node */
+    private IConnectionFactory connectionFactory; /** It is used to create new connetion */
+    private int id; /** Every JSON-RPC request form a node have a different ID */
 
     // Start of Service handler functionality
 
@@ -49,7 +49,6 @@ public class Node {
      * is successful a response is return with the correct method name in order not to have duplicated
      * method identifier.
      * When the service is correctly published this method start a thread that wait requests from clients.
-     * This
      * @param metadata, function
      */
 
@@ -82,6 +81,11 @@ public class Node {
         return true;
     }
 
+    /**
+     * deleteService is a public api that allow to the service owner to delete a service.
+     * @param method
+     */
+
     public void deleteService(String method) {
         if (this.ownServices.containsKey(method)) {
             IConnection connection = this.connectionFactory.createConnection();
@@ -110,6 +114,18 @@ public class Node {
 
     // Begin of Service requester functionality
 
+    /**
+     * requestService is a public api used to send single request to a service registered in the system broker.
+     * This method send a JSON-RPC request and wait for JSON-RPC response :
+     * - If the response is correctly received is returned to the requester.
+     * - If the requested service is not available in the broker a JSON-RPC Error method not found is received as response.
+     * - If the received JSON-RPC response can't be correctly parsed from the requester a custom JSON-RPC Error is returned
+     *   and an error is printed to console.
+     * - If timeout occurred, a custom error is returned. todo timeout!!!!!
+     * @param method
+     * @param parameters
+     * @return
+     */
 
     public JsonRpcResponse requestService(String method, JsonElement parameters) {
         JsonRpcManager manager = new JsonRpcManager(this.connectionFactory.createConnection());
@@ -125,20 +141,14 @@ public class Node {
         return response;
     }
 
-    public JsonRpcMessage requestService(List<JsonRpcRequest> requests) {
-        JsonRpcManager manager = new JsonRpcManager(this.connectionFactory.createConnection());
-        JsonRpcBatchRequest batchRequest = new JsonRpcBatchRequest();
-        batchRequest.add(requests);
-        manager.send(batchRequest);
-        JsonRpcMessage response;
-        try {
-            response = manager.listenResponse();
-        } catch (com.jsonrpc.ParseException e) {
-            System.err.println("Client: Local parse exeption: " + e.getCause().toString());
-            response = JsonRpcResponse.error(JsonRpcCustomError.localParseError(), ID.Null());
-        }
-        return response;
-    }
+    /**
+     * requestServiceList is a public api used to retrieve all services registered in the system broker.
+     * This method send a particular JSON-RPC request wih method = "getServicesList", that is a particular service inside
+     * the system broker, and a parameter that is a searchStrategy that is an object that allow the user to define the
+     * type of serch that want perform. For more information see Broker and SearchStrategy class.
+     * @param searchStrategy
+     * @return
+     */
 
    public ArrayList<ServiceMetadata> requestServiceList(SearchStrategy searchStrategy) {
         ArrayList<ServiceMetadata> list = new ArrayList<>();
@@ -152,12 +162,7 @@ public class Node {
         return list;
     }
 
-    // End of Service requester functionality
-
-    private ID generateNewId() {
-        return new ID(this.id++);
-    }
-
+    /** This method print to console (for debug purpose) all service that are correctly published by the node */
     public void showRunningServices() {
         Iterator<Map.Entry<String, Service>> i = ownServices.entrySet().iterator();
         while (i.hasNext()) {
@@ -166,5 +171,15 @@ public class Node {
         }
     }
 
+    // End of Service requester functionality
+
+    /**
+     * generateNewId is a private method that increment the id every time a request is generated
+     * @return
+     * */
+
+    private ID generateNewId() {
+        return new ID(this.id++);
+    }
 
 }

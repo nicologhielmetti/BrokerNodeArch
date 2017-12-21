@@ -1,11 +1,9 @@
 package com.sweng;
 
-import com.jsonrpc.*;
-import com.jsonrpc.Error;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import com.jsonrpc.*;
 
 public class Service extends Thread {
 
@@ -26,7 +24,7 @@ public class Service extends Thread {
             try {
                 receivedRpcRequest = this.manager.listenRequest();
             } catch (ParseException e) {
-                System.err.println("Parse exeption");
+                System.err.println("Server: Parse exeption");
                 this.manager.send(JsonRpcDefaultError.parseError());
             }
             if (receivedRpcRequest.isBatch()) { //if is a batch request
@@ -61,7 +59,7 @@ public class Service extends Thread {
         try {
             return this.function.run(request);
         } catch(RuntimeException e) {
-            System.err.println("Runtime exeption in IServiceMethod implementation");
+            System.err.println("Server: Runtime exeption in IServiceMethod implementation");
             return JsonRpcResponse.error(JsonRpcCustomError.internalServiceError(), request.getID());
         }
     }

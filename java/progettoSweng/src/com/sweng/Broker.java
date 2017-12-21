@@ -86,6 +86,7 @@ public class Broker {
         for (ServiceMetadata s: services) {
             if(s.getMethodName().equals(name)) {
                 services.remove(s);
+                this.servers.remove(name);
                 return;
             }
         }
