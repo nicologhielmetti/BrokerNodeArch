@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonArray;
 
 import com.jsonrpc.*;
+import javafx.util.Pair;
 
 import java.util.*;
 
@@ -151,6 +152,35 @@ public class Node {
     }
 
     /**
+     * requestService is a public api used to send batch request to one or more service registered in the system broker.
+     * This method send a JSON-RPC batch request and wait for JSON-RPC batch response :
+     * - If the response is correctly received is returned to the requester.
+     * - If the requested service is not available in the broker a JSON-RPC Error method not found is received as response.
+     * - If the received JSON-RPC response can't be correctly parsed from the requester a custom JSON-RPC Error is returned
+     *   and an error is printed to console.
+     * - If timeout occurred, a custom error is returned. todo timeout!!!!!
+     * @param methodsAndParameters
+     * @return
+     */
+
+    public JsonRpcBatchResponse requestService(ArrayList<Pair<String, JsonElement>> methodsAndParameters) {
+        JsonRpcManager manager = new JsonRpcManager(this.connectionFactory.createConnection());
+        JsonRpcBatchRequest requests = new JsonRpcBatchRequest();
+        for (Pair<String, JsonElement> request: methodsAndParameters) {
+            requests.add(new JsonRpcRequest(request.getKey(), request.getValue(), generateNewId()));
+        }
+        manager.send(requests);
+        JsonRpcBatchResponse responses = new JsonRpcBatchResponse();
+        try {
+            responses = (JsonRpcBatchResponse) manager.listenResponse();
+        } catch (com.jsonrpc.ParseException e) {
+            System.err.println("Client: Local parse exeption: " + responses.toString());
+            responses.add(JsonRpcResponse.error(JsonRpcCustomError.localParseError(), ID.Null()));
+        }
+        return responses;
+    }
+
+    /**
      * requestServiceList is a public api used to retrieve all services registered in the system broker.
      * This method send a particular JSON-RPC request wih method = "getServicesList", that is a particular service inside
      * the system broker, and a parameter that is a searchStrategy that is an object that allow the user to define the
@@ -183,11 +213,11 @@ public class Node {
     // End of Service requester functionality
 
     /**
-     * generateNewId is a private method that increment the id every time a request is generated
+     * generateNewId is private a  method that increment the id every time a request is generated
      * @return
      * */
 
-    private ID generateNewId() {
+     private ID generateNewId() {
         return new ID(this.id++);
     }
 
