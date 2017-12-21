@@ -4,7 +4,7 @@ import com.google.gson.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-public class JsonRpcResponse extends JsonRpcMessage {
+public class JsonRpcResponse extends com.jsonrpc.JsonRpcMessage {
 
     private JsonObject json;
 
@@ -12,7 +12,7 @@ public class JsonRpcResponse extends JsonRpcMessage {
         this.json = json;
     }
 
-    private JsonRpcResponse(ID id) {
+    private JsonRpcResponse(com.jsonrpc.ID id) {
         json = new JsonObject();
         json.addProperty("jsonrpc", "2.0");
         if (id != null && !id.isNull()) {
@@ -21,27 +21,27 @@ public class JsonRpcResponse extends JsonRpcMessage {
         }else json.add("id", JsonNull.INSTANCE);
     }
 
-    public JsonRpcResponse(JsonElement result, ID id) {
+    public JsonRpcResponse(JsonElement result, com.jsonrpc.ID id) {
         this(id);
         json.add("result", result);
     }
 
-    private JsonRpcResponse(Error e, ID id) {
+    private JsonRpcResponse(com.jsonrpc.Error e, com.jsonrpc.ID id) {
         this(id);
         json.add("error", e.getJsonObject());
     }
 
 
-    public static JsonRpcResponse error(Error e, ID id) {
+    public static JsonRpcResponse error(com.jsonrpc.Error e, com.jsonrpc.ID id) {
         return new JsonRpcResponse(e, id);
     }
 
-    public ID getID() {
+    public com.jsonrpc.ID getID() {
         JsonPrimitive j = json.getAsJsonPrimitive("id");
         if (j == null) return null;
-        if (j.isString()) return new ID(j.getAsString());
-        if (j.isNumber()) return new ID(j.getAsInt());
-        if (j.isJsonNull()) return new ID();
+        if (j.isString()) return new com.jsonrpc.ID(j.getAsString());
+        if (j.isNumber()) return new com.jsonrpc.ID(j.getAsInt());
+        if (j.isJsonNull()) return new com.jsonrpc.ID();
         return null; //invalid id
     }
 
@@ -49,9 +49,9 @@ public class JsonRpcResponse extends JsonRpcMessage {
         return json.has("error");
     }
 
-    public Error getError() {
+    public com.jsonrpc.Error getError() {
         if (!isError()) return null;
-        return (new Gson()).fromJson(json.get("error"), Error.class);
+        return (new Gson()).fromJson(json.get("error"), com.jsonrpc.Error.class);
     }
 
     public JsonElement getResult() {
@@ -73,7 +73,7 @@ public class JsonRpcResponse extends JsonRpcMessage {
         if (json.has("result") == json.has("error"))
             return null; //"Either the result member or error member MUST be included, but both members MUST NOT be included."
         if (json.has("error")) {
-            Error e = (new Gson()).fromJson(json.get("error"), Error.class);  //check if error is valid
+            com.jsonrpc.Error e = (new Gson()).fromJson(json.get("error"), com.jsonrpc.Error.class);  //check if error is valid
             if (e == null) return null;
         }
         if (3 != json.size()) return null; //there are other fields -> is not a well-formed Json-RPC Request

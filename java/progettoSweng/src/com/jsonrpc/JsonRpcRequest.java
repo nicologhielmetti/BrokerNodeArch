@@ -7,7 +7,7 @@ import com.google.gson.JsonPrimitive;
 
 
 
-public class JsonRpcRequest extends JsonRpcMessage {
+public class JsonRpcRequest extends com.jsonrpc.JsonRpcMessage {
 
     private JsonObject json = null;
 
@@ -22,7 +22,7 @@ public class JsonRpcRequest extends JsonRpcMessage {
         if (params != null) json.add("params", params);
     }
 
-    public JsonRpcRequest(String method, JsonElement params, ID id) {
+    public JsonRpcRequest(String method, JsonElement params, com.jsonrpc.ID id) {
         this(method, params);
         if(id!=null && !id.isNull()){
             if(id.isString())json.addProperty("id", id.getAsString());
@@ -38,12 +38,12 @@ public class JsonRpcRequest extends JsonRpcMessage {
 
 
 
-    public ID getID() {
+    public com.jsonrpc.ID getID() {
         JsonPrimitive j=json.getAsJsonPrimitive("id");
         if(j==null)return null;
-        if(j.isString())return new ID(j.getAsString());
-        if(j.isNumber())return new ID(j.getAsInt());
-        if(j.isJsonNull())return new ID();
+        if(j.isString())return new com.jsonrpc.ID(j.getAsString());
+        if(j.isNumber())return new com.jsonrpc.ID(j.getAsInt());
+        if(j.isJsonNull())return new com.jsonrpc.ID();
         return null; //invalid id
     }
 

@@ -1,50 +1,49 @@
 package com.jsonrpc;
 
 import com.google.gson.Gson;
-import com.jsonrpc.ParseException;
 
 public class JsonRpcManager {
-    private IConnection connection;
+    private com.jsonrpc.IConnection connection;
 
-    public JsonRpcManager(IConnection connection) {
+    public JsonRpcManager(com.jsonrpc.IConnection connection) {
         this.connection = connection;
     }
 
-    public JsonRpcMessage listenRequest() throws ParseException {
-        JsonRpcMessage msg;
+    public com.jsonrpc.JsonRpcMessage listenRequest() throws ParseException {
+        com.jsonrpc.JsonRpcMessage msg;
         do {
             msg = listen();
-        } while (!(msg instanceof JsonRpcRequest) && !(msg instanceof JsonRpcBatchRequest));
+        } while (!(msg instanceof com.jsonrpc.JsonRpcRequest) && !(msg instanceof com.jsonrpc.JsonRpcBatchRequest));
         connection.consume();
         return msg;
     }
 
-    public JsonRpcMessage listenResponse() throws ParseException {
-        JsonRpcMessage msg;
+    public com.jsonrpc.JsonRpcMessage listenResponse() throws ParseException {
+        com.jsonrpc.JsonRpcMessage msg;
         do {
             msg = listen();
-        } while (!(msg instanceof JsonRpcResponse) && !(msg instanceof JsonRpcBatchResponse));
+        } while (!(msg instanceof com.jsonrpc.JsonRpcResponse) && !(msg instanceof com.jsonrpc.JsonRpcBatchResponse));
         connection.consume();
         return msg;
     }
 
 
-    private JsonRpcMessage listen() throws ParseException {
+    private com.jsonrpc.JsonRpcMessage listen() throws ParseException {
         Gson gson = new Gson();
         String input = connection.read().trim();
-        JsonRpcMessage msg = null;
+        com.jsonrpc.JsonRpcMessage msg = null;
 
         if(input.charAt(0)=='['){
-            msg = JsonRpcBatchRequest.fromJson(input);
+            msg = com.jsonrpc.JsonRpcBatchRequest.fromJson(input);
             if (msg != null) return msg;
-            msg = JsonRpcBatchResponse.fromJson(input);
+            msg = com.jsonrpc.JsonRpcBatchResponse.fromJson(input);
             if (msg != null) return msg;
             //error
 
         }else {
-            msg = JsonRpcRequest.fromJson(input);
+            msg = com.jsonrpc.JsonRpcRequest.fromJson(input);
             if (msg != null) return msg;
-            msg = JsonRpcResponse.fromJson(input);
+            msg = com.jsonrpc.JsonRpcResponse.fromJson(input);
             if (msg != null) return msg;
         }
 
@@ -54,7 +53,7 @@ public class JsonRpcManager {
     }
 
 
-    public void send(JsonRpcMessage msg) {
+    public void send(com.jsonrpc.JsonRpcMessage msg) {
         connection.send(msg.toString());
     }
 }
