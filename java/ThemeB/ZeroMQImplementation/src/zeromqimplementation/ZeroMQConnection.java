@@ -2,6 +2,7 @@ package zeromqimplementation;
 
 import connectioninterfaces.IConnection;
 import connectioninterfaces.TimeoutException;
+import logger.Logger;
 import org.zeromq.ZFrame;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Socket;
@@ -46,14 +47,14 @@ public class ZeroMQConnection implements IConnection {
             do {
                 head = msg.popString();
             } while (!msg.isEmpty());
-            System.out.println("ZeroMQConnection received : \"" + head + "\"");
+            Logger.log("ZeroMQConnection received : \"" + head + "\"");
             unset = false;
         }
         return head;
     }
 
     @Override
-    public String read(long milliseconds) throws TimeoutException {
+    public String read(long milliseconds) throws TimeoutException{
         if (unset) {
             ZMQ.Poller poller = context.poller(1);
 
@@ -65,7 +66,7 @@ public class ZeroMQConnection implements IConnection {
             do {
                 head = msg.popString();
             } while (!msg.isEmpty());
-            System.out.println("ZeroMQConnection received : \"" + head + "\"");
+            Logger.log("ZeroMQConnection received : \"" + head + "\"");
             unset = false;
         }
         return head;
@@ -81,7 +82,7 @@ public class ZeroMQConnection implements IConnection {
 
     @Override
     public void send(String msg) {
-        System.out.println("Sending : " + msg);
+        Logger.log("Sending : " + msg);
         if (sender == null) {
             ZMsg z = new ZMsg();
             z.push(msg);

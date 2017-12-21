@@ -63,11 +63,11 @@ public class DummyNode {
                 case 2 : invokeService(); break;
                 case 3 : provideService(); break;
                 case 4 : deleteService(); break;
-                case 5 : break;
+                case 5 : return;
                 case 6 : node.showRunningServices(); break;
                 default : System.out.println("No option found"); break;
             }
-        } while (key != 5);
+        }while (key != 5);
     }
 
     // Get list of available services from broker (Client side function)

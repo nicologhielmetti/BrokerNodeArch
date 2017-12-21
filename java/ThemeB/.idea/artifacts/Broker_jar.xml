@@ -9,6 +9,7 @@
       <element id="extracted-dir" path="$PROJECT_DIR$/out/artifacts/ZeroMQImplementation_jar/ZeroMQImplementation.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/out/artifacts/JsonRpcLibrary_jar/JsonRpcLibrary.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/gson-2.8.2.jar" path-in-jar="/" />
+      <element id="module-output" name="Logger" />
     </root>
   </artifact>
 </component>

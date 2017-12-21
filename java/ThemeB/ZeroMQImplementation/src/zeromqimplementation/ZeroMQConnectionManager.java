@@ -4,6 +4,7 @@ package zeromqimplementation;
 import connectioninterfaces.IConnection;
 import connectioninterfaces.IConnectionManager;
 import javafx.util.Pair;
+import logger.Logger;
 import org.zeromq.ZFrame;
 import org.zeromq.ZMQ;
 import org.zeromq.ZMQ.Context;
@@ -51,7 +52,7 @@ public class ZeroMQConnectionManager implements IConnectionManager {
             ZMsg orig = ZMsg.recvMsg(frontend);
             ZMsg msg = orig.duplicate();
 
-            //System.out.println("received : " + msg.toString());
+            //Logger.log("received : " + msg.toString());
 
             ZFrame identity = msg.pop();
             Pair<Socket, Socket> sockets = connections.get(identity.toString());
@@ -75,7 +76,7 @@ public class ZeroMQConnectionManager implements IConnectionManager {
             String request = msg.popString();
 
 
-            System.out.println("ZeroMQConnectionManager received :" + identity + ";" + request);
+            Logger.log("ZeroMQConnectionManager received :" + identity + ";" + request);
 
             sockets.getKey().send(request);
         }

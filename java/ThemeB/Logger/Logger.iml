@@ -7,8 +7,5 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="jeromq-0.4.3-javadoc" level="project" />
-    <orderEntry type="module" module-name="ConnectionInterfaces" />
-    <orderEntry type="module" module-name="Logger" />
   </component>
 </module>

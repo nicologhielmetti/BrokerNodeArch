@@ -5,6 +5,7 @@
       <element id="module-output" name="ZeroMQImplementation" />
       <element id="module-output" name="ConnectionInterfaces" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/jeromq-0.4.3.jar" path-in-jar="/" />
+      <element id="module-output" name="Logger" />
     </root>
   </artifact>
 </component>
