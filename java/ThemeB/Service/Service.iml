@@ -9,5 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="gson-2.8.2-javadoc" level="project" />
     <orderEntry type="library" name="JsonRpcLibrary" level="project" />
+    <orderEntry type="module" module-name="JsonRpcLibrary" />
   </component>
 </module>
