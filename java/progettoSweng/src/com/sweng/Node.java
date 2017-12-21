@@ -55,7 +55,6 @@ public class Node {
     public boolean provideService(ServiceMetadata metadata, IServiceMethod function) {
         JsonRpcManager manager = new JsonRpcManager(this.connectionFactory.createConnection());
         Service service = new Service(metadata, function, manager);
-
         JsonRpcRequest registerServiceRequest = new JsonRpcRequest("registerService", metadata.toJson(), this.generateNewId());
         manager.send(registerServiceRequest);
         JsonRpcResponse registerServiceResponse = null;
@@ -83,6 +82,10 @@ public class Node {
 
     /**
      * deleteService is a public api that allow to the service owner to delete a service.
+     * * This method send a particular JSON-RPC notification wih method = "deleteService", that is a particular service
+     * inside the system broker, and a parameter that is the name of the method (Service) that must be deleted.
+     * No response is  expected because broker must delete the service.
+     * If there id no service provided by node with methodName = method an error is returned.
      * @param method
      */
 
@@ -105,6 +108,12 @@ public class Node {
             System.err.println("Server: There is no service named " + method);
         }
     }
+
+    /**
+     * This api is used to allow the node user to change at runtime the connection implementation used to connect to
+     * broker that want to use. For example a node can change ip and port used.
+     * @param connectionFactory
+     */
 
     public void setConncetionFactory(IConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
