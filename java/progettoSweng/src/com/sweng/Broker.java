@@ -4,16 +4,14 @@ import java.util.*;
 
 import com.jsonrpc.*;
 import com.google.gson.*;
-import com.jsonrpc.Error;
+import javafx.util.Pair;
 
 
-//todo handle broker services as Service(s) (now they are hard-coded)
-//todo change get__ to listen__ where necessary
+public class Broker extends Thread {
 
-public class Broker {
+    public final boolean verbose = true;
 
     private IConnectionManager connectionManager;
-    private boolean isClosed;
 
     private Map<String, IServiceMethod> brokerServices = new HashMap<>();
 
@@ -23,8 +21,10 @@ public class Broker {
     /**
      * Generate a method name to identify unequivocally a Service.
      *
-     * @param hint
-     * @return
+     * @param hint : if a service with this name already exists, it's added a suffix with the version number
+     *             example:
+     *             sum -> sum@1 -> sum@2 -> sum@3 ...
+     * @return the generated name
      */
     String generateMethodName(String hint) {
         if (servers.get(hint) == null) return hint;
@@ -39,6 +39,13 @@ public class Broker {
         return generated;
     }
 
+    /**
+     * This "service" is hard-coded because we need to have the reference to the connection manager
+     *
+     * @param request
+     * @param manager
+     * @return
+     */
     JsonRpcResponse registerService(JsonRpcRequest request, JsonRpcManager manager) {
         JsonObject params = request.getParams().getAsJsonObject();
 
@@ -50,14 +57,14 @@ public class Broker {
 
         name = generateMethodName(name);
 
-        if (verbose) System.out.println("registerService: generated name = " + name);
+        Logger.log("registerService: generated name = " + name);
 
         ServiceMetadata serviceMetadata = ServiceMetadata.fromJson(request.getParams().getAsJsonObject());
         serviceMetadata.setMethodName(name);
         servers.put(name, manager);
         services.add(serviceMetadata);
 
-        if (verbose) System.out.println("registerService: service registered");
+        Logger.log("registerService: service registered");
 
         JsonObject result = new JsonObject();
         result.addProperty("serviceRegistered", true);
@@ -66,84 +73,67 @@ public class Broker {
         return new JsonRpcResponse(result, request.getID());
     }
 
-    /*
-    void deleteService(JsonRpcRequest request) {
-        String name = request.getParams().getAsJsonObject().get("method").getAsString();
-        for (ServiceMetadata s : services) {
-            if (s.getMethodName().equals(name)) {
-                services.remove(s);
-                this.servers.remove(name);
-                return;
-            }
-        }
-    }
-
-    void handleServicesListRequest(JsonRpcRequest request, JsonRpcManager manager) {
-        JsonObject j = request.getParams().getAsJsonObject();
-        List<ServiceMetadata> list;
-
-        if (j == null) list = getServicesList();
-        else {
-            SearchStrategy searchStrategy = SearchStrategy.fromJson(j.toString());
-            if (searchStrategy == null) {
-                manager.send(JsonRpcResponse.error(JsonRpcCustomError.wrongSerchStrategy(), request.getID()));
-                return;
-            }
-            list = getServicesList(searchStrategy);
-        }
-
-        JsonArray result = new JsonArray();
-        for (ServiceMetadata s : list) {
-            result.add(s.toJson());
-        }
-
-        if (verbose) System.out.println("generated list (result):" + result.toString());
-        if (verbose) System.out.println("id:" + request.getID());
-        manager.send(new JsonRpcResponse(result, request.getID()));
-    }
-    */
+    /**
+     * @return a list with all the stored services
+     */
     List<ServiceMetadata> getServicesList() {
         return services;
     }
 
+    /**
+     * @param searchStrategy
+     * @return a list with all the stored services that satisfy the filter specified by searchStrategy
+     */
     List<ServiceMetadata> getServicesList(SearchStrategy searchStrategy) {
         return searchStrategy.filterList(services);
     }
 
-    boolean filterRequest(JsonRpcRequest request, JsonRpcManager manager, JsonRpcResponse response) {
+    /**
+     * This method filter the request direct to the broker itself
+     *
+     * @param request
+     * @param manager
+     * @return a pair containing a boolean indicating if the request has been already handled, and a response.
+     * The response is null if the request is a notification.
+     */
+    Pair<Boolean, JsonRpcResponse> filterRequest(JsonRpcRequest request, JsonRpcManager manager) {
         IServiceMethod service = brokerServices.get(request.getMethod());
 
         if (service != null) {
-            response=service.run(request);
-            return true;
+            return new Pair<>(true, service.run(request));
         }
 
-        if(request.getMethod().equals("registerService")){
-                    if (verbose) System.out.println("registerService request");
-                    response=registerService(request, manager);
-                    return true;
+        if (request.getMethod().equals("registerService")) {
+            Logger.log("registerService request");
+            return new Pair<>(true, registerService(request, manager));
         }
-        return false;
+
+        return new Pair<>(false, null);//the request has to be forwarded
     }
 
 
-    void connectionThread(JsonRpcManager m) {
+    /**
+     * @param manager
+     */
+    void handleConnection(JsonRpcManager manager) {
 
-        if (verbose) System.out.println("connectionThread begin");
+        Logger.log("connectionThread begin");
 
         JsonRpcMessage r = null;
         try {
-            r = m.listenRequest();
+            r = manager.listenRequest(1000);
         } catch (ParseException e) {
             //e.printStackTrace();
-            m.send(JsonRpcDefaultError.parseError());
+            manager.send(JsonRpcDefaultError.parseError());
             return;
+        } catch (TimeoutException e) {
+
         }
 
         if (r instanceof JsonRpcRequest) {
 
-            JsonRpcResponse response=handleRequest((JsonRpcRequest)r,m);
-            if(response!=null) m.send(response);
+            JsonRpcResponse response = handleRequest((JsonRpcRequest) r, manager);
+            if (response != null) manager.send(response);
 
         } else if (r instanceof JsonRpcBatchRequest) {
             JsonRpcBatchRequest requestBatch = (JsonRpcBatchRequest) r;
@@ -151,97 +141,54 @@ public class Broker {
 
             for (JsonRpcRequest request : requestBatch.get()) {
                 if (request.isValid()) {
-                    JsonRpcResponse response = handleRequest(request, m);
+                    JsonRpcResponse response = handleRequest(request, manager);
                     if (response != null) responseBatch.add(response);
                 } else {
                     responseBatch.add(JsonRpcDefaultError.invalidRequest());
                 }
             }
-            m.send(responseBatch);
+            manager.send(responseBatch);
 
         } else {
             //error
-            m.send(JsonRpcDefaultError.invalidRequest());
+            manager.send(JsonRpcDefaultError.invalidRequest());
         }
-
     }
 
     JsonRpcResponse handleRequest(JsonRpcRequest request, JsonRpcManager manager) {
-        JsonRpcResponse response=null;
-        if (filterRequest(request, manager, response))
-            return response;
+        Pair<Boolean, JsonRpcResponse> filtered = filterRequest(request, manager);
+        if (filtered.getKey())
+            return filtered.getValue();
+
 
         if (verbose)
             System.out.println("connectionThread: method=\"" + request.getMethod() + "\"\trequest=" + request.toString());
 
 
-        if (request.isNotification()) {
-            //todo gestire le notifiche
-        } else {
+        JsonRpcManager server = servers.get(request.getMethod());
 
-            JsonRpcManager server = servers.get(request.getMethod());
+        if (server != null) {
+            server.send(request);
 
-            if (server != null) {
-                server.send(request);
-                JsonRpcMessage res = null;
-                try {
-                    res = server.listenResponse();
-                } catch (ParseException | NullPointerException e) {
-                    e.printStackTrace();
-                }
-                manager.send(res);
-            } else {
-                return JsonRpcDefaultError.methodNotFound(request.getID());
+            if (request.isNotification()) return null; // if its a notification the broker simply forward it
+
+            JsonRpcMessage res = null;
+            try {
+                res = server.listenResponse(1000);
+            } catch (ParseException | NullPointerException e) {
+                e.printStackTrace();
+            } catch (TimeoutException e) {
+                e.printStackTrace();
             }
-
+            manager.send(res);
+        } else {
+            return JsonRpcDefaultError.methodNotFound(request.getID());
         }
+
+
         return null;
     }
 
-
-    class LocalConnection implements IConnection {
-
-        String head;
-        boolean unset = true;
-        LocalConnection other = null;
-        Queue<String> queue = new ArrayDeque<>();
-
-        public LocalConnection() {
-        }
-
-        public LocalConnection(LocalConnection other) {
-            this.other = other;
-            other.other = this;
-        }
-
-        @Override
-        public String read() {
-            while (queue.isEmpty()) ;
-            return queue.peek();
-        }
-
-        @Override
-        public String read(long milliseconds) throws TimeoutException {
-            if (queue.isEmpty()) throw new TimeoutException("");
-            return queue.peek();
-        }
-
-        @Override
-        public void consume() {
-            queue.poll();
-        }
-
-        @Override
-        public void send(String msg) {
-            other.queue.add(msg);
-        }
-
-        @Override
-        public void close() {
-
-        }
-
-    }
 
     class DeleterService implements IServiceMethod {
         Broker broker;
@@ -302,7 +249,7 @@ public class Broker {
 
                 if (broker.verbose) System.out.println("generated list (result):" + result.toString());
                 if (broker.verbose) System.out.println("id:" + request.getID());
-               return new JsonRpcResponse(result, request.getID());
+                return new JsonRpcResponse(result, request.getID());
             } catch (IllegalArgumentException e) {
                 System.err.println("ListProviderService: Wrong JSON-RPC Request received, a JSON-RPC Error is returned to requester");
                 return JsonRpcResponse.error(JsonRpcCustomError.wrongParametersReceived(), request.getID());
@@ -316,29 +263,23 @@ public class Broker {
         brokerServices.put("deleteService", new DeleterService(this));
     }
 
-    void close() {
-        isClosed = true;
-    }
+    @Override
+    public void run() {
+        while (!this.isInterrupted()) {
 
-    public final boolean verbose = true;
-
-    void start() {
-        isClosed = false;
-        while (!isClosed) {
-
-            if (verbose) System.out.println("Broker waiting for incoming connection...");
+            Logger.log("Broker waiting for incoming connection...");
 
             IConnection c = connectionManager.acceptConnection();
 
             JsonRpcManager j = new JsonRpcManager(c);
 
 
-            if (verbose) System.out.println("Broker handling the request");
+            Logger.log("Broker handling the request");
 
             Thread t1 = new Thread(() -> {
                 try {
-                    connectionThread(j);
-                    if (verbose) System.out.println("Broker handled the request");
+                    handleConnection(j);
+                    Logger.log("Broker handled the request");
                 } catch (Exception e) {
                     // handle: log or throw in a wrapped RuntimeException
                     throw new RuntimeException("InterruptedException caught in lambda", e);

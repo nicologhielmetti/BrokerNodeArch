@@ -46,7 +46,7 @@ public class ZeroMQConnection implements IConnection {
             do {
                 head = msg.popString();
             } while (!msg.isEmpty());
-            System.out.println("ZeroMQConnection received : \"" + head + "\"");
+            Logger.log("ZeroMQConnection received : \"" + head + "\"");
             unset = false;
         }
         return head;
@@ -65,7 +65,7 @@ public class ZeroMQConnection implements IConnection {
             do {
                 head = msg.popString();
             } while (!msg.isEmpty());
-            System.out.println("ZeroMQConnection received : \"" + head + "\"");
+            Logger.log("ZeroMQConnection received : \"" + head + "\"");
             unset = false;
         }
         return head;
@@ -81,7 +81,7 @@ public class ZeroMQConnection implements IConnection {
 
     @Override
     public void send(String msg) {
-        System.out.println("Sending : " + msg);
+        Logger.log("Sending : " + msg);
         if (sender == null) {
             ZMsg z = new ZMsg();
             z.push(msg);

@@ -11,13 +11,11 @@ public class ZeroMQConnectionFactory implements IConnectionFactory {
         this.address=address;
     }
 
-
     @Override
     public void finalize() {
         context.term();
     }
 
-    //todo handle ObjectPool
     public IConnection createConnection() {
         ZMQ.Socket socket = context.socket(ZMQ.DEALER);
         socket.connect(address);

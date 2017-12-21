@@ -49,7 +49,7 @@ public class ZeroMQConnectionManager implements IConnectionManager {
             ZMsg orig = ZMsg.recvMsg(frontend);
             ZMsg msg = orig.duplicate();
 
-            //System.out.println("received : " + msg.toString());
+            //Logger.log("received : " + msg.toString());
 
             ZFrame identity = msg.pop();
             Pair<Socket, Socket> sockets = connections.get(identity.toString());
@@ -73,7 +73,7 @@ public class ZeroMQConnectionManager implements IConnectionManager {
             String request = msg.popString();
 
 
-            System.out.println("ZeroMQConnectionManager received :" + identity + ";" + request);
+            Logger.log("ZeroMQConnectionManager received :" + identity + ";" + request);
 
             sockets.getKey().send(request);
         }

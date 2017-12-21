@@ -9,5 +9,10 @@ public class DummyBroker {
         Broker broker=new Broker(connectionManager);
 
         broker.start();
+        try {
+            broker.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
