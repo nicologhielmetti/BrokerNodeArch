@@ -9,7 +9,7 @@ import jsonrpclibrary.Error;
  */
 public class JsonRpcCustomError {
 
-    public static Error wrongSerchStrategy() {
+    public static Error wrongSearchStrategy() {
         return new Error(-32000, "SearchStrategy is ill-formed");
     }
 
