@@ -301,7 +301,6 @@ public class Node {
             e.printStackTrace();
         }
         timer.cancel();
-        //while (i.hasNext()) {
         ArrayList<String> names = new ArrayList<>();
         for (Iterator<Map.Entry<String, Service>> i = ownServices.entrySet().iterator(); i.hasNext();){
             Map.Entry<String,Service> it = i.next();
