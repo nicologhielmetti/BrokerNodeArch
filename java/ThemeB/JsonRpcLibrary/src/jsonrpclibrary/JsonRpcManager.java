@@ -14,7 +14,6 @@ public class JsonRpcManager {
     public JsonRpcMessage listenRequest() throws ParseException {
         JsonRpcMessage msg = null;
         do {
-
             try {
                 msg = listen(-1);
             } catch (TimeoutException e) {
@@ -27,11 +26,19 @@ public class JsonRpcManager {
 
     public JsonRpcMessage listenRequest(long milliseconds) throws ParseException, TimeoutException {
         JsonRpcMessage msg;
+        long tStart = System.currentTimeMillis();
+        long tDelta = 0;
         do {
-            msg = listen(milliseconds);
-        } while (!(msg instanceof JsonRpcRequest) && !(msg instanceof JsonRpcBatchRequest));
-        connection.consume();
-        return msg;
+            msg = listen(milliseconds - tDelta);
+            tDelta=System.currentTimeMillis()-tStart;
+        } while (!(msg instanceof JsonRpcRequest) && !(msg instanceof JsonRpcBatchRequest) && tDelta<milliseconds);
+
+        if(msg instanceof JsonRpcRequest || msg instanceof JsonRpcBatchRequest){
+            connection.consume();
+            return msg;
+        }
+        else throw new TimeoutException("");
+
     }
 
     public JsonRpcMessage listenResponse() throws ParseException {
@@ -48,12 +55,19 @@ public class JsonRpcManager {
     }
 
     public JsonRpcMessage listenResponse(long milliseconds) throws ParseException, TimeoutException {
-        JsonRpcMessage msg = null;
+        JsonRpcMessage msg;
+        long tStart = System.currentTimeMillis();
+        long tDelta = 0;
         do {
-            msg = listen(milliseconds);
-        } while (!(msg instanceof JsonRpcResponse) && !(msg instanceof JsonRpcBatchResponse));
-        connection.consume();
-        return msg;
+            msg = listen(milliseconds - tDelta);
+            tDelta=System.currentTimeMillis()-tStart;
+        } while(!(msg instanceof JsonRpcResponse) && !(msg instanceof JsonRpcBatchResponse) && tDelta<milliseconds);
+
+        if(msg instanceof JsonRpcResponse || msg instanceof JsonRpcBatchResponse){
+            connection.consume();
+            return msg;
+        }
+        else throw new TimeoutException("");
     }
 
     /**
