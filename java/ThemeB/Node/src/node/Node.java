@@ -11,6 +11,7 @@ import javafx.util.Pair;
 import jsonrpclibrary.*;
 import logger.Logger;
 import searchstrategy.SearchStrategy;
+import searchstrategy.TitleSearchStrategy;
 import service.IServiceMethod;
 import service.JsonRpcCustomError;
 
@@ -51,6 +52,15 @@ public class Node {
         this.id = 0;
         this.connectionFactory = connectionFactory;
         ownServices = new HashMap<>();
+        // See description in checkPublishedService() method
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                checkPublishedService();
+            }
+        };
+        Timer timer = new Timer();
+        timer.schedule(task,60000, 60000);
     }
 
     /**
@@ -76,7 +86,7 @@ public class Node {
             Logger.log( JsonRpcCustomError.localParseError().getCode() + " " + JsonRpcCustomError.localParseError().getMessage());
             return false;
         } catch (TimeoutException e) {
-            Logger.log(JsonRpcCustomError.localParseError().getCode() + " " + JsonRpcCustomError.conncetionTimeout().getMessage());
+            Logger.log(JsonRpcCustomError.localParseError().getCode() + " " + JsonRpcCustomError.connectionTimeout().getMessage());
             return false;
         }
 
@@ -135,6 +145,25 @@ public class Node {
         this.connectionFactory = connectionFactory;
     }
 
+    /**
+     * This method is used only to check the services publication status on the system broker.
+     * For example if the broker went down the list of the available services would be empty.
+     * For this reason this function called every 60 seconds check if the services owned by node still published.
+     * If are not (this means that broker goes down and now is up) the services would be provided again.
+     */
+
+    public void checkPublishedService() {
+        ArrayList<ServiceMetadata> serviceRegistered = this.requestServiceList();
+        Iterator<Map.Entry<String, Service>> i = ownServices.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry<String,Service> it = i.next();
+            if (!serviceRegistered.contains(it)) {
+                this.ownServices.remove(it);
+                this.provideService(it.getValue().getServiceMetadata(), it.getValue().getFunction());
+            }
+        }
+    }
+
     // End of Service handler functionality
 
     // Begin of Service requester functionality
@@ -164,7 +193,7 @@ public class Node {
             response = JsonRpcResponse.error(JsonRpcCustomError.localParseError(), ID.Null());
         }  catch (TimeoutException e) {
             Logger.log("Timeout");
-            response = JsonRpcResponse.error(JsonRpcCustomError.conncetionTimeout(), ID.Null());
+            response = JsonRpcResponse.error(JsonRpcCustomError.connectionTimeout(), ID.Null());
         }
         return response;
     }
@@ -196,7 +225,7 @@ public class Node {
             responses.add(JsonRpcResponse.error(JsonRpcCustomError.localParseError(), ID.Null()));
         } catch (TimeoutException e) {
             Logger.log("Timeout");
-            responses.add(JsonRpcResponse.error(JsonRpcCustomError.conncetionTimeout(), ID.Null()));
+            responses.add(JsonRpcResponse.error(JsonRpcCustomError.connectionTimeout(), ID.Null()));
         }
         return responses;
     }
