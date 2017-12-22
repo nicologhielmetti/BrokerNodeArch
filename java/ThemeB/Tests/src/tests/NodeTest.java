@@ -1,4 +1,4 @@
-package node;
+package tests;
 
 import broker.Broker;
 import broker.DummyBroker;
@@ -12,6 +12,8 @@ import javafx.util.Pair;
 import jsonrpclibrary.JsonRpcBatchResponse;
 import jsonrpclibrary.JsonRpcRequest;
 import jsonrpclibrary.JsonRpcResponse;
+import node.Node;
+import searchstrategy.OwnerSearchStrategy;
 import service.IServiceMethod;
 import service.JsonRpcCustomError;
 import service.ServiceMetadata;
@@ -81,7 +83,8 @@ public class NodeTest {
         divideMetadata.setApplicationField("Math");
 
         powerMetadata = new ServiceMetadata("power","NodeTester");
-        divideMetadata.setDescription("Get power of num1^(num2). Parameters format: num1:double,num2:double.");
+        divideMetadata.setDescription(
+                "Get power of n numbers given as params (power = (((n1^(n2))^(n3))^(n4))^... . Parameters format: [].");
         divideMetadata.setApplicationField("Math");
 
         boolean isRunning = node.provideService(divideMetadata, divide) && node.provideService(powerMetadata,power);
@@ -104,7 +107,7 @@ public class NodeTest {
         jsonObject.addProperty("num1",10);
         jsonObject.addProperty("num2",100);
         JsonRpcResponse response = node.requestService("divide",jsonObject);
-        assertEquals(true ,abs(response.getResult().getAsJsonObject().get("quotient").getAsDouble() - 0.1) <= 1e-15);
+        assertEquals(true , Math.abs(response.getResult().getAsJsonObject().get("quotient").getAsDouble() - 0.1) <= 1e-15);
     }
 
     @org.junit.Test
@@ -130,14 +133,20 @@ public class NodeTest {
         List<JsonRpcResponse> responses = batchResponse.get();
         assertEquals(true, responses.size() == 2);
         assertEquals(true,
-                abs(responses.get(0).getResult().getAsJsonObject().get("quotient").getAsDouble() - 0.11141215) <= 1e-15);
+                Math.abs(responses.get(0).getResult().getAsJsonObject().get("quotient").getAsDouble() - 0.11141215) <= 1e-15);
         assertEquals(true,
-                abs(responses.get(1).getResult().getAsJsonPrimitive().getAsDouble() - 64) <= 1e-15);
+                Math.abs(responses.get(1).getResult().getAsJsonPrimitive().getAsDouble() - 64) <= 1e-15);
     }
 
     @org.junit.Test
     public void requestServiceList() throws Exception {
-
+        provideService();
+        ArrayList<ServiceMetadata> metadata = node.requestServiceList(new OwnerSearchStrategy("NodeTester"));
+        assertEquals(true,metadata.size() == 2);
+        assertEquals(true,
+                metadata.get(0).getMethodName().equals("divide") ^ metadata.get(1).getMethodName().equals("divide"));
+        assertEquals(true,
+                metadata.get(0).getMethodName().equals("power") ^ metadata.get(1).getMethodName().equals("power"));
     }
 
 }
