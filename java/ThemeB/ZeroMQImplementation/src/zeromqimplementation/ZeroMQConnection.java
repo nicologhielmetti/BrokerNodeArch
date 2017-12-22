@@ -60,7 +60,7 @@ public class ZeroMQConnection implements IConnection {
 
             poller.register(socket, ZMQ.Poller.POLLIN);
             if (poller.poll(milliseconds) < 0)
-                throw new TimeoutException("Timeout Exception");
+                throw new TimeoutException("ZeroMQConnection received nothing");
 
             ZMsg msg = ZMsg.recvMsg(socket);
             do {

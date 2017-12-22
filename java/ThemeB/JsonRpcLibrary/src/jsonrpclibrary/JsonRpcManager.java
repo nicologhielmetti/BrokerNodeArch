@@ -84,9 +84,9 @@ public class JsonRpcManager {
         JsonRpcMessage msg;
 
         if (input.charAt(0) == '[') {
-            msg = JsonRpcBatchRequest.fromJson(input);
-            if (msg != null) return msg;
             msg = JsonRpcBatchResponse.fromJson(input);
+            if (msg != null) return msg;
+            msg = JsonRpcBatchRequest.fromJson(input);
             if (msg != null) return msg;
             //error
             connection.consume();
