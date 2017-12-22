@@ -12,6 +12,8 @@
     <orderEntry type="module" module-name="ConnectionInterfaces" />
     <orderEntry type="module" module-name="Service" />
     <orderEntry type="library" name="JsonRpcLibrary" level="project" />
+    <orderEntry type="module" module-name="SearchStrategy" />
+    <orderEntry type="library" name="ZeroMQImplementation" level="project" />
     <orderEntry type="module-library">
       <library name="JUnit4">
         <CLASSES>
@@ -22,7 +24,5 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="SearchStrategy" />
-    <orderEntry type="library" name="ZeroMQImplementation" level="project" />
   </component>
 </module>

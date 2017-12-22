@@ -14,7 +14,6 @@ import static org.junit.Assert.*;
 public class ConnectionTest {
     @Test
     public void send_receive() throws TimeoutException{
-        JsonRpcManager managerReceiver, managerSender;
         IConnectionFactory connectionFactory;
         IConnectionManager connectionManager;
 
@@ -36,7 +35,6 @@ public class ConnectionTest {
 
     @Test (timeout=1000,expected = TimeoutException.class)
     public void timeout() throws TimeoutException {
-        JsonRpcManager managerReceiver, managerSender;
         IConnectionFactory connectionFactory;
         IConnectionManager connectionManager;
 
