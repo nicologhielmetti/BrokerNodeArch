@@ -1,6 +1,5 @@
 package jsonrpclibrary;
 
-import com.google.gson.Gson;
 import connectioninterfaces.IConnection;
 import connectioninterfaces.TimeoutException;
 
@@ -73,17 +72,16 @@ public class JsonRpcManager {
     /**
      * @param milliseconds: If nothing arrive in that time a TimeoutException is thrown.
      *                      If it is a negative number it waits forever.
-     * @return
-     * @throws ParseException
-     * @throws TimeoutException
+     * @return a JsonRpcMessage object if a valid message arrive within the timeout
+     * @throws ParseException   if a not well-formed json-rpc message is received
+     * @throws TimeoutException if nothing arrive within the timeout
      */
     private JsonRpcMessage listen(long milliseconds) throws ParseException, TimeoutException {
-        Gson gson = new Gson();
         String input = milliseconds >= 0 ? connection.read(milliseconds) : connection.read();
         if (input == null) throw new TimeoutException("");
 
         input = input.trim();
-        JsonRpcMessage msg = null;
+        JsonRpcMessage msg;
 
         if (input.charAt(0) == '[') {
             msg = JsonRpcBatchRequest.fromJson(input);
