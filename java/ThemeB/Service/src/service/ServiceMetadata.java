@@ -8,6 +8,9 @@ import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+/**
+ *  ServiceMetadata class contains all information about a service used by Node and Broker to identify services
+ */
 public class ServiceMetadata {
 
     private String method;
@@ -17,6 +20,11 @@ public class ServiceMetadata {
     private String description;
     private String activationDate;
 
+
+    /** ServiceMetadata constructor
+     * @param method
+     * @param owner
+     * */
     public ServiceMetadata(String method, String owner) {
         this.keywords = new ArrayList<>();
         this.method = method;
@@ -26,22 +34,37 @@ public class ServiceMetadata {
         activationDate = dateFormat.format(date);
     }
 
+    /**
+     * This method is used to create a ServiceMetadata object from a JsonObject through GSON object deserialization
+     * @param json
+     * @return
+     */
     static public ServiceMetadata fromJson(JsonObject json) {
         Gson gson = new Gson();
         return gson.fromJson(json, ServiceMetadata.class);
     }
 
+    /**
+     * This method is used to create a JsonObject from a ServiceMetadata object through GSON object serialization
+     * @return
+     */
     public JsonObject toJson() {
         Gson gson=new Gson();
         return gson.fromJson(gson.toJson(this),JsonObject.class);
     }
 
+    // Setter
+
+    /** @param applicationField */
     public void setApplicationField(String applicationField) { this.applicationField = applicationField; }
 
+    /** @param method */
     public void setMethodName(String method) { this.method = method; }
 
+    /** @param description */
     public void setDescription(String description) { this.description = description; }
 
+    /** @param keywords */
     public void setKeywords(ArrayList<String> keywords) {
         for (String k:keywords) {
             k = k.trim();
@@ -49,26 +72,38 @@ public class ServiceMetadata {
         this.keywords = keywords;
     }
 
-    public ArrayList<String> getKeywords() { return keywords; }
-
-    public String getActivationDate() { return activationDate; }
-
-    public String getApplicationField() { return applicationField; }
-
-    public String getDescription() { return description; }
-
-    public String getOwner() { return owner; }
-
-    public String getMethodName() { return method; }
-
-
+    /** @param keyword */
     public void addKeyword(String keyword) { this.keywords.add(keyword); }
 
-    static void test(){
-        Gson gson=new Gson();
-        ServiceMetadata sm=new ServiceMetadata("sum","me");
-        String s=gson.toJson(sm);
-        System.out.println(s);
-        sm=gson.fromJson(s,ServiceMetadata.class);
-    }
+    //Getter
+
+    /** Keywords getter
+     * @return
+     */
+    public ArrayList<String> getKeywords() { return keywords; }
+
+    /** ActivationDate getter
+     * @return
+     */
+    public String getActivationDate() { return activationDate; }
+
+    /** ApplicationField getter
+     * @return
+     */
+    public String getApplicationField() { return applicationField; }
+
+    /** Description getter
+     * @return
+     */
+    public String getDescription() { return description; }
+
+    /** Owner getter
+     * @return
+     */
+    public String getOwner() { return owner; }
+
+    /** Method getter
+     * @return
+     */
+    public String getMethodName() { return method; }
 }

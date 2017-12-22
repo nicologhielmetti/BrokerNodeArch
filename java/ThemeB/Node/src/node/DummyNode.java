@@ -1,5 +1,7 @@
 package node;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonObject;
 import connectioninterfaces.IConnectionFactory;
@@ -75,6 +77,7 @@ public class DummyNode {
         System.out.println("1 - Title");
         System.out.println("2 - Owner");
         System.out.println("3 - Keyword");
+        System.out.println("4 - All");
         System.out.print("> ");
         int key = -1;
         while (key == -1) {
@@ -101,11 +104,14 @@ public class DummyNode {
                 String keyword = keyboard.next();
                 search = new KeywordSearchStrategy(keyword);
                 break;
+            case 4:
+                search=null;
+                break;
             default:
                 System.err.println("Client: No option found");
                 return;
         }
-        ArrayList<ServiceMetadata> serviceList = node.requestServiceList(search);
+        ArrayList<ServiceMetadata> serviceList =  search!=null ? node.requestServiceList(search) : node.requestServiceList() ;
         if (serviceList.isEmpty()) {
             System.out.println("Client: no result from search");
         }
@@ -118,13 +124,31 @@ public class DummyNode {
     private static void invokeService() {
         System.out.print("Client: Insert method : ");
         String method = keyboard.next();
-        System.out.print("Cient: Insert params (property:value) comma separated (leave empty if no parameters needed) : ");
+        if(method.equals("sum")){
+            System.out.print("Client: Insert values (separated with comma) : ");
+            String params = keyboard.next();
+            List<String> parameters = new ArrayList<>(Arrays.asList(params.split(",")));
+            JsonArray jsonParameters = new JsonArray();
+            for (String s: parameters){
+                try { // if the user insert a wrong formatted string (parameter:value) an exception is caught
+                    jsonParameters.add(Integer.valueOf(s));
+                } catch (NumberFormatException e) {
+                    System.err.println("Client: Wrong formatted input, please insert an input well formatted ex. 1,32,22 ");
+                    return;
+                }
+            }
+            JsonRpcResponse response = node.requestService(method, jsonParameters);
+            if(response.getResult()!=null)System.out.println("Client received:  result=" + response.getResult().toString());
+            else System.out.println("Client received: " + response.toString());
+            return;
+        }
+        System.out.print("Client: Insert params (property:value) comma separated (leave empty if no parameters needed) : ");
         String params = keyboard.next();
         List<String> parameters = new ArrayList<>(Arrays.asList(params.split(",")));
         JsonObject jsonParameters = new JsonObject();
         for (String s: parameters){
             String[] param = s.split(":");
-            try { // if the user insert a wrong formatted string (parameter:value) an exeption is caught
+            try { // if the user insert a wrong formatted string (parameter:value) an exception is caught
                 jsonParameters.addProperty(param[0], param[1]);
             } catch (ArrayIndexOutOfBoundsException e) {
                 System.err.println("Client: Wrong formatted string, please insert a string well formatted ex. parameter1:value1, parameter2:value2...");
@@ -170,10 +194,10 @@ public class DummyNode {
                 JsonRpcResponse response = null;
                 try {
                     System.out.println("Server: Service is running...");
-                    JsonObject parameters = request.getParams().getAsJsonObject();
+                    JsonArray parameters = request.getParams().getAsJsonArray();
                     int result = 0;
-                    for (int i = 1; i <= parameters.size(); i++) {
-                        result += parameters.get("num" + String.valueOf(i)).getAsInt();
+                    for(JsonElement e:parameters){
+                        result+=e.getAsInt();
                     }
                     System.out.println(result);
 

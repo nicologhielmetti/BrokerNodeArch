@@ -256,7 +256,7 @@ public class Broker extends Thread {
         @Override
         public JsonRpcResponse run(JsonRpcRequest request) {
             try {
-                JsonObject j = request.getParams().getAsJsonObject();
+                JsonObject j = request.getParams()!=null ? request.getParams().getAsJsonObject() : null;
                 List<ServiceMetadata> list;
 
                 if (j == null) list = getServicesList();

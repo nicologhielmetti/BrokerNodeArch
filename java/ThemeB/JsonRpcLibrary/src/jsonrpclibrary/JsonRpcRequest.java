@@ -48,7 +48,7 @@ public class JsonRpcRequest extends JsonRpcMessage {
     }
 
     public JsonElement getParams() {
-        return json.get("params");
+        return json.has("params")?json.get("params"):null;
     }
     public String getMethod() {
         return json.get("method").getAsString();
