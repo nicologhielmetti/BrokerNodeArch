@@ -10,7 +10,7 @@ public class DummyBroker {
 
         IConnectionManager connectionManager = new ZeroMQConnectionManager(6789);
         Broker broker=new Broker(connectionManager);
-
+        System.out.println("Broker is on ...");
         broker.start();
         try {
             broker.join();

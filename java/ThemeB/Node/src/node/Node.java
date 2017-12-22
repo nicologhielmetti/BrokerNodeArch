@@ -19,8 +19,6 @@ import service.ServiceMetadata;
 
 import java.util.*;
 
-// todo timer on response
-
 /**
  *  This class contains server side and client side function because when can have a single instance of Node as node
  *  that can do a client, a server or both.
@@ -31,6 +29,8 @@ public class Node {
     private Map<String, Service> ownServices; /** Service that are provided by a node */
     private IConnectionFactory connectionFactory; /** It is used to create new connection */
     private int id; /** Every JSON-RPC request from a node have a different jsonrpclibrary.ID */
+    private Timer timer; /** please see below
+
 
     // Start of Service handler functionality
 
@@ -58,7 +58,7 @@ public class Node {
                 checkPublishedService();
             }
         };
-        Timer timer = new Timer();
+        timer = new Timer();
         timer.schedule(task,60000, 60000);
     }
 
@@ -125,9 +125,8 @@ public class Node {
             JsonRpcRequest request = JsonRpcRequest.notification("deleteService", jsonMethod);
             manager.send(request);
             // Delete service
-            Service availableService = this.ownServices.get(method);
-            availableService.interrupt();
-            availableService.delete();
+            this.ownServices.get(method).interrupt();
+            this.ownServices.get(method).delete();
             this.ownServices.remove(method);
         } else {
             Logger.log("Server: There is no service named " + method);
@@ -174,7 +173,7 @@ public class Node {
      * - If the requested service is not available in the broker a JSON-RPC jsonrpclibrary.Error method not found is received as response.
      * - If the received JSON-RPC response can't be correctly parsed from the requester a custom JSON-RPC jsonrpclibrary.Error is returned
      *   and an error is printed to console.
-     * - If timeout occurred, a custom error is returned. todo timeout!!!!!
+     * - If timeout occurred, a custom error is returned.
      * @param method
      * @param parameters
      * @return
@@ -204,7 +203,7 @@ public class Node {
      * - If the requested service is not available in the broker a JSON-RPC jsonrpclibrary.Error method not found is received as response.
      * - If the received JSON-RPC response can't be correctly parsed from the requester a custom JSON-RPC jsonrpclibrary.Error is returned
      *   and an error is printed to console.
-     * - If timeout occurred, a custom error is returned. todo timeout!!!!!
+     * - If timeout occurred, a custom error is returned.
      * @param methodsAndParameters
      * @return
      */
@@ -268,7 +267,7 @@ public class Node {
         return list;
     }
 
-    /** This method print to console (for debug purpose) all service that are correctly published by the node */
+    /** This method return all service that are correctly published by the node */
     public ArrayList<String> showRunningServices() {
         ArrayList<String> runningServicesName = new ArrayList<>();
         Iterator<Map.Entry<String, Service>> i = ownServices.entrySet().iterator();
@@ -286,9 +285,27 @@ public class Node {
      * generateNewId is private a  method that increment the id every time a request is generated
      * @return
      * */
-
      private ID generateNewId() {
         return new ID(this.id++);
     }
 
+    /**
+     * This method delete all service in the system broker
+     */
+    public void close() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        timer.cancel();
+        ArrayList<String> names = new ArrayList<>();
+        for (Iterator<Map.Entry<String, Service>> i = ownServices.entrySet().iterator(); i.hasNext();){
+            Map.Entry<String,Service> it = i.next();
+            names.add(it.getKey());
+        }
+        for (Iterator<String> i = names.iterator(); i.hasNext();) {
+            this.deleteService(i.next());
+        }
+    }
 }
