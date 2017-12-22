@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JsonRpcBatchRequest extends JsonRpcMessage {
-    List<JsonRpcRequest> batch = new ArrayList<>();
+    private List<JsonRpcRequest> batch = new ArrayList<>();
 
     public JsonRpcBatchRequest() {
     }

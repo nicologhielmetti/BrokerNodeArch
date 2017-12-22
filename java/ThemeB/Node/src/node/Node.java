@@ -42,7 +42,7 @@ public class Node {
 
     /**
      * Node is the constructor of the Node class.
-     * The IConncetionFactory parameter is used to define which is used to define
+     * The IConnectionFactory parameter is used to define which is used to define
      * the connection that this object have to use.
      * @param connectionFactory
      */
@@ -68,7 +68,7 @@ public class Node {
         Service service = new Service(metadata, function, manager);
         JsonRpcRequest registerServiceRequest = new JsonRpcRequest("registerService", metadata.toJson(), this.generateNewId());
         manager.send(registerServiceRequest);
-        JsonRpcResponse registerServiceResponse = null;
+        JsonRpcResponse registerServiceResponse;
         try {
             registerServiceResponse = (JsonRpcResponse) manager.listenResponse(1000);
         } catch (ParseException e) {
@@ -131,7 +131,7 @@ public class Node {
      * @param connectionFactory
      */
 
-    public void setConncetionFactory(IConnectionFactory connectionFactory) {
+    public void setConnectionFactory(IConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
     }
 
@@ -160,7 +160,7 @@ public class Node {
         try {
             response = (JsonRpcResponse) manager.listenResponse(1000);
         } catch (ParseException e) {
-            Logger.log("Client: Local parse exeption: " + response.toString());
+            Logger.log("Client: Local parse exception: " + response.toString());
             response = JsonRpcResponse.error(JsonRpcCustomError.localParseError(), ID.Null());
         }  catch (TimeoutException e) {
             Logger.log("Timeout");
@@ -180,7 +180,6 @@ public class Node {
      * @param methodsAndParameters
      * @return
      */
-
     public JsonRpcBatchResponse requestService(ArrayList<Pair<String, JsonElement>> methodsAndParameters) {
         JsonRpcManager manager = new JsonRpcManager(this.connectionFactory.createConnection());
         JsonRpcBatchRequest requests = new JsonRpcBatchRequest();
@@ -192,7 +191,7 @@ public class Node {
         try {
             responses = (JsonRpcBatchResponse) manager.listenResponse(1000);
         } catch (ParseException e) {
-            Logger.log("Client: Local parse exeption: " + responses.toString());
+            Logger.log("Client: Local parse exception: " + responses.toString());
             responses.add(JsonRpcResponse.error(JsonRpcCustomError.localParseError(), ID.Null()));
         } catch (TimeoutException e) {
             Logger.log("Timeout");
@@ -202,10 +201,10 @@ public class Node {
     }
 
     /**
-     * requestServiceList is a public api used to retrieve all services registered in the system broker.
+     * requestServiceList is a public api used to retrieve services registered in the system broker.
      * This method send a particular JSON-RPC request wih method = "getServicesList", that is a particular service inside
      * the system broker, and a parameter that is a searchStrategy that is an object that allow the user to define the
-     * type of serch that want perform. For more information see broker and SearchStrategy class.
+     * type of search that want perform. For more information see broker and SearchStrategy class.
      * @param searchStrategy
      * @return
      */
@@ -214,6 +213,23 @@ public class Node {
         ArrayList<ServiceMetadata> list = new ArrayList<>();
         list.clear();
         JsonRpcResponse response = this.requestService("getServicesList", searchStrategy.toJsonElement());
+        if (!response.isError()) {
+            JsonArray array = response.getResult().getAsJsonArray();
+            Iterator<JsonElement> iterator = array.iterator();
+            while (iterator.hasNext()) {
+                list.add(ServiceMetadata.fromJson(iterator.next().getAsJsonObject()));
+            }
+        }
+        return list;
+    }
+    /**
+     * requestServiceList is a public api used to retrieve all services registered in the system broker.
+     * @return a list containing all the available services
+     */
+    public ArrayList<ServiceMetadata> requestServiceList() {
+        ArrayList<ServiceMetadata> list = new ArrayList<>();
+        list.clear();
+        JsonRpcResponse response = this.requestService("getServicesList", null);
         if (!response.isError()) {
             JsonArray array = response.getResult().getAsJsonArray();
             Iterator<JsonElement> iterator = array.iterator();
