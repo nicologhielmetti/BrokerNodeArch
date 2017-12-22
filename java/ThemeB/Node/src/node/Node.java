@@ -225,12 +225,15 @@ public class Node {
     }
 
     /** This method print to console (for debug purpose) all service that are correctly published by the node */
-    public void showRunningServices() {
+    public ArrayList<String> showRunningServices() {
+        ArrayList<String> runningServicesName = new ArrayList<>();
         Iterator<Map.Entry<String, Service>> i = ownServices.entrySet().iterator();
         while (i.hasNext()) {
             Map.Entry<String,Service> it = i.next();
             Logger.log("Name: " + it.getKey() + " - " + it.getValue().getServiceMetadata().toJson());
+            runningServicesName.add(it.getKey());
         }
+        return runningServicesName;
     }
 
     // End of Service requester functionality
