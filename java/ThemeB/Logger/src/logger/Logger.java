@@ -1,7 +1,7 @@
 package logger;
 
 public class Logger {
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     public static void log(String msg) {
         if (DEBUG) System.out.println("LOG: " + msg);
