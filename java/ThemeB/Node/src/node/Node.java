@@ -76,7 +76,7 @@ public class Node {
             Logger.log( JsonRpcCustomError.localParseError().getCode() + " " + JsonRpcCustomError.localParseError().getMessage());
             return false;
         } catch (TimeoutException e) {
-            Logger.log(JsonRpcCustomError.localParseError().getCode() + " " + JsonRpcCustomError.conncetionTimeout().getMessage());
+            Logger.log(JsonRpcCustomError.localParseError().getCode() + " " + JsonRpcCustomError.connectionTimeout().getMessage());
             return false;
         }
 
@@ -164,7 +164,7 @@ public class Node {
             response = JsonRpcResponse.error(JsonRpcCustomError.localParseError(), ID.Null());
         }  catch (TimeoutException e) {
             Logger.log("Timeout");
-            response = JsonRpcResponse.error(JsonRpcCustomError.conncetionTimeout(), ID.Null());
+            response = JsonRpcResponse.error(JsonRpcCustomError.connectionTimeout(), ID.Null());
         }
         return response;
     }
@@ -196,7 +196,7 @@ public class Node {
             responses.add(JsonRpcResponse.error(JsonRpcCustomError.localParseError(), ID.Null()));
         } catch (TimeoutException e) {
             Logger.log("Timeout");
-            responses.add(JsonRpcResponse.error(JsonRpcCustomError.conncetionTimeout(), ID.Null()));
+            responses.add(JsonRpcResponse.error(JsonRpcCustomError.connectionTimeout(), ID.Null()));
         }
         return responses;
     }

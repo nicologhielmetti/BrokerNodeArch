@@ -131,7 +131,7 @@ public class Broker extends Thread {
             r = manager.listenRequest(1000);
         } catch (ParseException e) {
             Logger.error("Parse exception : received an invalid json-rpc message");
-            manager.send(JsonRpcDefaultError.parseError());
+            manager.send(JsonRpcResponse.error(JsonRpcDefaultError.parseError(),null));
             return;
         } catch (TimeoutException e) {
             //should never happen ( a connection is created when a message is received. So, where is the message?)
@@ -154,14 +154,14 @@ public class Broker extends Thread {
                     JsonRpcResponse response = handleRequest(request, manager);
                     if (response != null) responseBatch.add(response);
                 } else {
-                    responseBatch.add(JsonRpcDefaultError.invalidRequest());
+                    responseBatch.add(JsonRpcResponse.error(JsonRpcDefaultError.invalidRequest(),null));
                 }
             }
             manager.send(responseBatch);
 
         } else {
             //error
-            manager.send(JsonRpcDefaultError.invalidRequest());
+            manager.send(JsonRpcResponse.error(JsonRpcDefaultError.invalidRequest(),null));
         }
 
         //the request is handled : we can now free the connection
@@ -197,20 +197,20 @@ public class Broker extends Thread {
             } catch (ParseException e) {
                 Logger.error("ParseException : received an invalid json-rpc message " +
                         "( listening for a response from \"" + request.getMethod() + "\" server)");
-                res = JsonRpcDefaultError.internalError(request.getID());
+                res = JsonRpcResponse.error(JsonRpcDefaultError.internalError(),request.getID());
             } catch (TimeoutException e) {
                 Logger.error("TimeoutException :" +
                         " the \"" + request.getMethod() + "\" server did not respond in time( within 1 second ).");
-                res = JsonRpcDefaultError.internalError(request.getID());
+                res = JsonRpcResponse.error(JsonRpcCustomError.connectionTimeout(),request.getID());
             }
             if (!(res instanceof JsonRpcResponse)) {
                 Logger.error("\"" + request.getMethod() + "\" server " +
                         "responded with a batch response to a non-batch request");
-                res = JsonRpcDefaultError.internalError(request.getID());
+                res = JsonRpcResponse.error(JsonRpcDefaultError.internalError(),request.getID());
             }
             return (JsonRpcResponse) res;
         } else {
-            return JsonRpcDefaultError.methodNotFound(request.getID());
+            return JsonRpcResponse.error(JsonRpcDefaultError.methodNotFound(),request.getID());
         }
     }
 
