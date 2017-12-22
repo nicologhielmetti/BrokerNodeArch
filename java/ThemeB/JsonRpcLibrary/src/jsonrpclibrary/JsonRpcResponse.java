@@ -65,8 +65,13 @@ public class JsonRpcResponse extends JsonRpcMessage {
     }
 
     public static JsonRpcResponse fromJson(String str) {
-        JsonObject json = (new Gson()).fromJson(str, JsonObject.class);
-        if (json == null || !json.get("jsonrpc").getAsString().equals("2.0") || !json.has("id"))
+        JsonObject json;
+        try {
+            json = (new Gson()).fromJson(str, JsonObject.class);
+        }catch (JsonSyntaxException e){
+            return null;
+        }
+        if (!json.get("jsonrpc").getAsString().equals("2.0") || !json.has("id"))
             return null; // jsonrpc and id MUST be included
         if (json.has("result") == json.has("error"))
             return null; //"Either the result member or error member MUST be included, but both members MUST NOT be included."

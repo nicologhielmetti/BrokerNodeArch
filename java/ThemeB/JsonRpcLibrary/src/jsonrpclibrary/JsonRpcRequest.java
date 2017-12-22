@@ -1,10 +1,6 @@
 package jsonrpclibrary;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-
+import com.google.gson.*;
 
 
 public class JsonRpcRequest extends JsonRpcMessage {
@@ -32,8 +28,7 @@ public class JsonRpcRequest extends JsonRpcMessage {
 
 
     public static JsonRpcRequest notification(String method, JsonElement params) {
-        JsonRpcRequest r = new JsonRpcRequest(method, params);
-        return r;
+        return new JsonRpcRequest(method, params);
     }
 
 
@@ -74,8 +69,12 @@ public class JsonRpcRequest extends JsonRpcMessage {
     }
 
     public static JsonRpcRequest fromJson(String str) {
-        JsonObject json = (new Gson()).fromJson(str, JsonObject.class);
-        if (json == null) return null;
+        JsonObject json;
+        try {
+             json = (new Gson()).fromJson(str, JsonObject.class);
+        }catch (JsonSyntaxException e){
+            return null;
+        }
         if (json.get("jsonrpc") == null || !json.get("jsonrpc").getAsString().equals("2.0") || !json.has("method"))
             return null; // jsonrpc and method MUST be included
         int fields = 0;

@@ -5,7 +5,7 @@ import jsonrpclibrary.Error;
 /**
  * In this class are defined the JsonRpc application error.
  * From the JsonRpc specification http://www.jsonrpc.org/specification an application can
- * implemet error code from -32000 to -32099
+ * implement error code from -32000 to -32099
  */
 public class JsonRpcCustomError {
 

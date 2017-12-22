@@ -29,14 +29,13 @@ public class JsonRpcManager {
         long tDelta = 0;
         do {
             msg = listen(milliseconds - tDelta);
-            tDelta=System.currentTimeMillis()-tStart;
-        } while (!(msg instanceof JsonRpcRequest) && !(msg instanceof JsonRpcBatchRequest) && tDelta<milliseconds);
+            tDelta = System.currentTimeMillis() - tStart;
+        } while (!(msg instanceof JsonRpcRequest) && !(msg instanceof JsonRpcBatchRequest) && tDelta < milliseconds);
 
-        if(msg instanceof JsonRpcRequest || msg instanceof JsonRpcBatchRequest){
+        if (msg instanceof JsonRpcRequest || msg instanceof JsonRpcBatchRequest) {
             connection.consume();
             return msg;
-        }
-        else throw new TimeoutException("");
+        } else throw new TimeoutException("");
 
     }
 
@@ -59,14 +58,13 @@ public class JsonRpcManager {
         long tDelta = 0;
         do {
             msg = listen(milliseconds - tDelta);
-            tDelta=System.currentTimeMillis()-tStart;
-        } while(!(msg instanceof JsonRpcResponse) && !(msg instanceof JsonRpcBatchResponse) && tDelta<milliseconds);
+            tDelta = System.currentTimeMillis() - tStart;
+        } while (!(msg instanceof JsonRpcResponse) && !(msg instanceof JsonRpcBatchResponse) && tDelta < milliseconds);
 
-        if(msg instanceof JsonRpcResponse || msg instanceof JsonRpcBatchResponse){
+        if (msg instanceof JsonRpcResponse || msg instanceof JsonRpcBatchResponse) {
             connection.consume();
             return msg;
-        }
-        else throw new TimeoutException("");
+        } else throw new TimeoutException("");
     }
 
     /**
@@ -101,9 +99,10 @@ public class JsonRpcManager {
         }
     }
 
-    public IConnection getConnection(){
+    public IConnection getConnection() {
         return connection;
     }
+
     public void send(JsonRpcMessage msg) {
         connection.send(msg.toString());
     }

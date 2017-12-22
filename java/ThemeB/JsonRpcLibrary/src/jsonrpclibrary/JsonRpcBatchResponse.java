@@ -1,8 +1,6 @@
 package jsonrpclibrary;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
+import com.google.gson.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +36,12 @@ public class JsonRpcBatchResponse extends JsonRpcMessage {
     }
 
     public static JsonRpcBatchResponse fromJson(String str) {
-        JsonArray array = (new Gson()).fromJson(str, JsonArray.class);
-        if (array == null) return null;
+        JsonArray array;
+        try {
+            array = (new Gson()).fromJson(str, JsonArray.class);
+        }catch (JsonSyntaxException e){
+            return null;
+        }
         JsonRpcBatchResponse batch = new JsonRpcBatchResponse();
         for (JsonElement e : array) {
             JsonRpcResponse r = JsonRpcResponse.fromJson(e.toString());

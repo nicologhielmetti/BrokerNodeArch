@@ -11,7 +11,6 @@ import javafx.util.Pair;
 import jsonrpclibrary.*;
 import logger.Logger;
 import searchstrategy.SearchStrategy;
-import searchstrategy.TitleSearchStrategy;
 import service.IServiceMethod;
 import service.JsonRpcCustomError;
 

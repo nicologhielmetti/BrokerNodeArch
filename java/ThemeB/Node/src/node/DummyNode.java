@@ -186,7 +186,7 @@ public class DummyNode {
         metadataSum = new ServiceMetadata("sum", "DummyNode");
         metadataSum.setKeywords(new ArrayList<>(Arrays.asList("somma", "sum", "sommatoria")));
         metadataSum.setApplicationField("math");
-        metadataSum.setDescription("input (num1:int_value,...,numN:int_value)");
+        metadataSum.setDescription("input: int_value,int_value,...,int_value");
         // Set all metadata through setter methods
         methodSum = new IServiceMethod() {
             @Override

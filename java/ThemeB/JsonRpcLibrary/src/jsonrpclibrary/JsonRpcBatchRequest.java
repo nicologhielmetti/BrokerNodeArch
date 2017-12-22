@@ -3,6 +3,7 @@ package jsonrpclibrary;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonSyntaxException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +38,12 @@ public class JsonRpcBatchRequest extends JsonRpcMessage {
         return str.substring(0, str.length() - 1) + "]";
     }
 
-    public static JsonRpcBatchRequest fromJson(String str) {
-        JsonArray array = (new Gson()).fromJson(str, JsonArray.class);
-        if (array == null) return null;
+    public static JsonRpcBatchRequest fromJson(String str) {JsonArray array;
+        try {
+            array = (new Gson()).fromJson(str, JsonArray.class);
+        }catch (JsonSyntaxException e){
+            return null;
+        }
         JsonRpcBatchRequest batch = new JsonRpcBatchRequest();
         for (JsonElement e : array) {
             JsonRpcRequest r = JsonRpcRequest.fromJson(e.toString());

@@ -40,7 +40,7 @@ public class Service extends Thread {
             try {
                 receivedRpcRequest = this.manager.listenRequest();
             } catch (ParseException e) {
-                System.err.println("Parse exeption");
+                System.err.println("Parse exception");
                 this.manager.send(JsonRpcResponse.error(JsonRpcDefaultError.parseError(),null));
             }
             if (receivedRpcRequest.isBatch()) { //if is a batch request
@@ -70,7 +70,7 @@ public class Service extends Thread {
     }
 
     /**
-     * procesRequest handle the RuntimeException occurred when the IServiceMethod generate a RuntimeException.
+     * processRequest handle the RuntimeException occurred when the IServiceMethod generate a RuntimeException.
      * @param request
      * @return
      */
@@ -78,7 +78,7 @@ public class Service extends Thread {
         try {
             return this.function.run(request);
         } catch(RuntimeException e) {
-            System.err.println("Runtime exeption in IServiceMethod implementation");
+            System.err.println("Runtime exception in IServiceMethod implementation");
             return JsonRpcResponse.error(JsonRpcCustomError.internalServiceError(), request.getID());
         }
     }
