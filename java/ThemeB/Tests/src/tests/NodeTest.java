@@ -28,6 +28,7 @@ import static java.lang.Math.abs;
 import static java.lang.Math.exp;
 import static java.lang.Math.pow;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class NodeTest {
     private Node node;
@@ -62,14 +63,13 @@ public class NodeTest {
         }
     };
 
-    public NodeTest(){
-        if(connectionManager == null)
+    @org.junit.Before
+    public void setUp() throws Exception {
+        if(connectionManager == null) {
             connectionManager = new ZeroMQConnectionManager(6789);
-        if(broker == null) {
             broker = new Broker(connectionManager);
             broker.start();
         }
-
         if(connectionFactory == null) {
             connectionFactory = new ZeroMQConnectionFactory("tcp://localhost:6789");
             node = new Node(connectionFactory);
@@ -78,13 +78,14 @@ public class NodeTest {
 
     @org.junit.Test
     public void provideService() throws Exception {
+        node = new Node(connectionFactory);
         divideMetadata = new ServiceMetadata("divide","NodeTester");
         divideMetadata.setDescription("Divide num1 / num2. Parameters format: num1:double,num2:double.");
         divideMetadata.setApplicationField("Math");
 
         powerMetadata = new ServiceMetadata("power","NodeTester");
         divideMetadata.setDescription(
-                "Get power of n numbers given as params (power = (((n1^(n2))^(n3))^(n4))^... . Parameters format: [].");
+                "Get power of n numbers given as params (power = (((n1^(n2))^(n3))^(n4))^... . Parameters format: [n1, n2, ...].");
         divideMetadata.setApplicationField("Math");
 
         boolean isRunning = node.provideService(divideMetadata, divide) && node.provideService(powerMetadata,power);
@@ -131,10 +132,10 @@ public class NodeTest {
 
         JsonRpcBatchResponse batchResponse = node.requestService(listOfServices);
         List<JsonRpcResponse> responses = batchResponse.get();
-        assertEquals(true, responses.size() == 2);
-        assertEquals(true,
+        assertTrue(responses.size() == 2);
+        assertTrue(
                 Math.abs(responses.get(0).getResult().getAsJsonObject().get("quotient").getAsDouble() - 0.11141215) <= 1e-15);
-        assertEquals(true,
+        assertTrue(
                 Math.abs(responses.get(1).getResult().getAsJsonPrimitive().getAsDouble() - 64) <= 1e-15);
     }
 
@@ -142,10 +143,10 @@ public class NodeTest {
     public void requestServiceList() throws Exception {
         provideService();
         ArrayList<ServiceMetadata> metadata = node.requestServiceList(new OwnerSearchStrategy("NodeTester"));
-        assertEquals(true,metadata.size() == 2);
-        assertEquals(true,
+        assertTrue(metadata.size() == 2);
+        assertTrue(
                 metadata.get(0).getMethodName().equals("divide") ^ metadata.get(1).getMethodName().equals("divide"));
-        assertEquals(true,
+        assertTrue(
                 metadata.get(0).getMethodName().equals("power") ^ metadata.get(1).getMethodName().equals("power"));
     }
 

@@ -299,7 +299,6 @@ public class Broker extends Thread {
 
             JsonRpcManager j = new JsonRpcManager(c);
 
-
             Logger.log("Broker handling the request");
 
             Thread t1 = new Thread(() -> {
