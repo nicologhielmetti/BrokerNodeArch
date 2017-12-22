@@ -15,7 +15,7 @@ public class JsonRpcRequest extends JsonRpcMessage {
         this.json = json;
     }
 
-    private JsonRpcRequest(String method, JsonElement params) {
+    public JsonRpcRequest(String method, JsonElement params) {
         json = new JsonObject();
         json.addProperty("jsonrpc", "2.0");
         json.addProperty("method", method);
