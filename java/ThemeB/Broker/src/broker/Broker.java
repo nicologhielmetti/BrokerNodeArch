@@ -283,7 +283,7 @@ public class Broker extends Thread {
         }
     }
 
-    Broker(IConnectionManager connectionManager) {
+    public Broker(IConnectionManager connectionManager) {
         this.connectionManager = connectionManager;
         brokerServices.put("getServicesList", new ListProviderService(this));
         brokerServices.put("deleteService", new DeleterService(this));

@@ -160,7 +160,7 @@ public class Node {
         try {
             response = (JsonRpcResponse) manager.listenResponse(1000);
         } catch (ParseException e) {
-            Logger.log("Client: Local parse exeption: " + response.toString());
+            Logger.log("Client: Local parse exception: " + response.toString());
             response = JsonRpcResponse.error(JsonRpcCustomError.localParseError(), ID.Null());
         }  catch (TimeoutException e) {
             Logger.log("Timeout");
