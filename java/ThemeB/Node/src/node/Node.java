@@ -19,8 +19,6 @@ import service.ServiceMetadata;
 
 import java.util.*;
 
-// todo timer on response
-
 /**
  *  This class contains server side and client side function because when can have a single instance of Node as node
  *  that can do a client, a server or both.
