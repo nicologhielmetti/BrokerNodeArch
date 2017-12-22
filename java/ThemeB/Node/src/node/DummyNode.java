@@ -32,7 +32,6 @@ public class DummyNode {
     public static void main(String[] args) {
 
         // Create new node obj
-        //IConnectionFactory connectionFactory = new ZeroMQConnectionFactory("tcp://192.168.43.214:6789");
         IConnectionFactory connectionFactory = new ZeroMQConnectionFactory("tcp://localhost:6789");
         node = new Node(connectionFactory);
 
@@ -54,7 +53,7 @@ public class DummyNode {
                     key = keyboard.nextInt();
                 } else {
                     System.err.println("Client: not a number");
-                    System.out.println("> ");
+                    System.out.print("> ");
                     keyboard.next();
                 }
             }
@@ -63,9 +62,9 @@ public class DummyNode {
                 case 2 : invokeService(); break;
                 case 3 : provideService(); break;
                 case 4 : deleteService(); break;
-                case 5 : return;
+                case 5 : break;
                 case 6 : node.showRunningServices(); break;
-                default : System.out.println("No option found"); break;
+                default : System.err.println("No option found"); break;
             }
         }while (key != 5);
     }
@@ -83,7 +82,7 @@ public class DummyNode {
                 key = keyboard.nextInt();
             } else {
                 System.err.println("Client: not a number");
-                System.out.println("> ");
+                System.out.print("> ");
                 keyboard.next();
             }
         }
@@ -103,7 +102,7 @@ public class DummyNode {
                 search = new KeywordSearchStrategy(keyword);
                 break;
             default:
-                System.out.println("Client: No option found");
+                System.err.println("Client: No option found");
                 return;
         }
         ArrayList<ServiceMetadata> serviceList = node.requestServiceList(search);

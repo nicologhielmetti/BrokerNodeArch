@@ -6,8 +6,10 @@ import com.google.gson.JsonArray;
 
 import connectioninterfaces.IConnection;
 import connectioninterfaces.IConnectionFactory;
+import connectioninterfaces.TimeoutException;
 import javafx.util.Pair;
 import jsonrpclibrary.*;
+import logger.Logger;
 import searchstrategy.SearchStrategy;
 import service.IServiceMethod;
 import service.JsonRpcCustomError;
@@ -28,7 +30,7 @@ public class Node {
 
     private Map<String, Service> ownServices; /** Service that are provided by a node */
     private IConnectionFactory connectionFactory; /** It is used to create new connection */
-    private int id; /** Every JSON-RPC request form a node have a different jsonrpclibrary.ID */
+    private int id; /** Every JSON-RPC request from a node have a different jsonrpclibrary.ID */
 
     // Start of Service handler functionality
 
@@ -68,9 +70,14 @@ public class Node {
         manager.send(registerServiceRequest);
         JsonRpcResponse registerServiceResponse = null;
         try {
-            registerServiceResponse = (JsonRpcResponse) manager.listenResponse();
+            registerServiceResponse = (JsonRpcResponse) manager.listenResponse(1000);
         } catch (ParseException e) {
             e.printStackTrace();
+            Logger.log( JsonRpcCustomError.localParseError().getCode() + " " + JsonRpcCustomError.localParseError().getMessage());
+            return false;
+        } catch (TimeoutException e) {
+            Logger.log(JsonRpcCustomError.localParseError().getCode() + " " + JsonRpcCustomError.conncetionTimeout().getMessage());
+            return false;
         }
 
         // Read response from broker
@@ -82,7 +89,7 @@ public class Node {
         } else {
             // Timeout
         }
-        System.out.println("Server: Service registered!");
+        Logger.log("Server: Service registered!");
         // Start new service
         service.start();
         ownServices.put(metadata.getMethodName(), service);
@@ -114,7 +121,7 @@ public class Node {
             availableService.delete();
             this.ownServices.remove(method);
         } else {
-            System.err.println("Server: There is no service named " + method);
+            Logger.log("Server: There is no service named " + method);
         }
     }
 
@@ -151,10 +158,13 @@ public class Node {
         manager.send(request);
         JsonRpcResponse response = null;
         try {
-            response = (JsonRpcResponse) manager.listenResponse();
+            response = (JsonRpcResponse) manager.listenResponse(1000);
         } catch (ParseException e) {
-            System.err.println("Client: Local parse exeption: " + response.toString());
+            Logger.log("Client: Local parse exeption: " + response.toString());
             response = JsonRpcResponse.error(JsonRpcCustomError.localParseError(), ID.Null());
+        }  catch (TimeoutException e) {
+            Logger.log("Timeout");
+            response = JsonRpcResponse.error(JsonRpcCustomError.conncetionTimeout(), ID.Null());
         }
         return response;
     }
@@ -180,10 +190,13 @@ public class Node {
         manager.send(requests);
         JsonRpcBatchResponse responses = new JsonRpcBatchResponse();
         try {
-            responses = (JsonRpcBatchResponse) manager.listenResponse();
+            responses = (JsonRpcBatchResponse) manager.listenResponse(1000);
         } catch (ParseException e) {
-            System.err.println("Client: Local parse exeption: " + responses.toString());
+            Logger.log("Client: Local parse exeption: " + responses.toString());
             responses.add(JsonRpcResponse.error(JsonRpcCustomError.localParseError(), ID.Null()));
+        } catch (TimeoutException e) {
+            Logger.log("Timeout");
+            responses.add(JsonRpcResponse.error(JsonRpcCustomError.conncetionTimeout(), ID.Null()));
         }
         return responses;
     }
@@ -201,10 +214,12 @@ public class Node {
         ArrayList<ServiceMetadata> list = new ArrayList<>();
         list.clear();
         JsonRpcResponse response = this.requestService("getServicesList", searchStrategy.toJsonElement());
-        JsonArray array = response.getResult().getAsJsonArray();
-        Iterator<JsonElement> iterator = array.iterator();
-        while (iterator.hasNext()) {
-            list.add(ServiceMetadata.fromJson(iterator.next().getAsJsonObject()));
+        if (!response.isError()) {
+            JsonArray array = response.getResult().getAsJsonArray();
+            Iterator<JsonElement> iterator = array.iterator();
+            while (iterator.hasNext()) {
+                list.add(ServiceMetadata.fromJson(iterator.next().getAsJsonObject()));
+            }
         }
         return list;
     }
@@ -214,7 +229,7 @@ public class Node {
         Iterator<Map.Entry<String, Service>> i = ownServices.entrySet().iterator();
         while (i.hasNext()) {
             Map.Entry<String,Service> it = i.next();
-            System.out.println("Name: " + it.getKey() + " - " + it.getValue().getServiceMetadata().toJson());
+            Logger.log("Name: " + it.getKey() + " - " + it.getValue().getServiceMetadata().toJson());
         }
     }
 
