@@ -9,6 +9,7 @@ import com.google.gson.JsonPrimitive;
 import connectioninterfaces.IConnectionFactory;
 import connectioninterfaces.IConnectionManager;
 import javafx.util.Pair;
+import jsonrpclibrary.ID;
 import jsonrpclibrary.JsonRpcBatchResponse;
 import jsonrpclibrary.JsonRpcRequest;
 import jsonrpclibrary.JsonRpcResponse;
@@ -23,6 +24,7 @@ import zeromqimplementation.ZeroMQConnectionManager;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.exp;
@@ -112,6 +114,20 @@ public class NodeTest {
     }
 
     @org.junit.Test
+    public void batch() throws Exception{
+        JsonRpcBatchResponse batch=new JsonRpcBatchResponse();
+        batch.add(new JsonRpcResponse(new JsonPrimitive(2),new ID(2)));
+        batch.add(new JsonRpcResponse(new JsonPrimitive(3),new ID(3)));
+
+        System.out.println(batch.toJson());
+        assertTrue(JsonRpcBatchResponse.fromJson(batch.toJson())!=null);
+
+        batch.add(new JsonRpcResponse(new JsonPrimitive("4"),new ID("4")));
+        System.out.println(batch.toJson());
+        assertTrue(JsonRpcBatchResponse.fromJson(batch.toJson())!=null);
+    }
+
+    @org.junit.Test
     public void requestService1() throws Exception {
         provideService();
         ArrayList<Pair<String, JsonElement>> listOfServices = new ArrayList<>();
@@ -134,7 +150,7 @@ public class NodeTest {
         List<JsonRpcResponse> responses = batchResponse.get();
         assertTrue(responses.size() == 2);
         assertTrue(
-                Math.abs(responses.get(0).getResult().getAsJsonObject().get("quotient").getAsDouble() - 0.11141215) <= 1e-15);
+                Math.abs(responses.get(0).getResult().getAsJsonObject().get("quotient").getAsDouble() - 0.11141215) <= 1e-5);
         assertTrue(
                 Math.abs(responses.get(1).getResult().getAsJsonPrimitive().getAsDouble() - 64) <= 1e-15);
     }

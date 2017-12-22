@@ -223,7 +223,7 @@ public class Node {
             Logger.log("Client: Local parse exception: " + responses.toString());
             responses.add(JsonRpcResponse.error(JsonRpcCustomError.localParseError(), ID.Null()));
         } catch (TimeoutException e) {
-            Logger.log("Timeout");
+            Logger.log("Node: got timeout exception while waiting for batch response ("+e.getMessage()+")");
             responses.add(JsonRpcResponse.error(JsonRpcCustomError.connectionTimeout(), ID.Null()));
         }
         return responses;
