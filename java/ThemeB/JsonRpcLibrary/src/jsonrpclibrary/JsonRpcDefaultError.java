@@ -3,31 +3,22 @@ package jsonrpclibrary;
 
 public class JsonRpcDefaultError {
 
-    // There are no parameters because of parse error, can't access to jsonrpclibrary.ID field
-    public static JsonRpcResponse parseError() {
-        Error error = new Error(-32700, "Parse error");
-        return JsonRpcResponse.error(error, null);
+    public static Error parseError() {
+        return new Error(-32700, "Parse error");
     }
 
-    // There are no parameters because of invalid request, can't access to jsonrpclibrary.ID field
-    public static JsonRpcResponse invalidRequest() {
-        Error error = new Error(-32600, "Invalid Request");
-        return JsonRpcResponse.error(error, null);
+    public static Error invalidRequest() {
+        return new Error(-32600, "Invalid Request");
     }
 
-    public static JsonRpcResponse methodNotFound(ID id) {
-        Error error = new Error(-32601, "Method not found");
-        return JsonRpcResponse.error(error, id);
+    public static Error methodNotFound() {
+        return new Error(-32601, "Method not found");
     }
 
-    public static JsonRpcResponse invalidRequest(ID id) {
-        Error error = new Error(-32602, "Invalid params");
-        return JsonRpcResponse.error(error, id);
-    }
+    public static Error invalidParams() { return new Error(-32602, "Invalid params"); }
 
-    public static JsonRpcResponse internalError(ID id) {
-        Error error = new Error(-32603, "Internal error");
-        return JsonRpcResponse.error(error,id);
+    public static Error internalError() {
+        return new Error(-32603, "Internal error");
     }
 
 }

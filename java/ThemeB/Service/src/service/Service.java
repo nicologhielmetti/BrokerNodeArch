@@ -41,7 +41,7 @@ public class Service extends Thread {
                 receivedRpcRequest = this.manager.listenRequest();
             } catch (ParseException e) {
                 System.err.println("Parse exeption");
-                this.manager.send(JsonRpcDefaultError.parseError());
+                this.manager.send(JsonRpcResponse.error(JsonRpcDefaultError.parseError(),null));
             }
             if (receivedRpcRequest.isBatch()) { //if is a batch request
                 JsonRpcBatchRequest batch = (JsonRpcBatchRequest) receivedRpcRequest;

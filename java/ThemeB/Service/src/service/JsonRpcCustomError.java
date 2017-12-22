@@ -23,5 +23,5 @@ public class JsonRpcCustomError {
 
     public static Error wrongParametersReceived() { return new Error(-32603, "Wrong parameters received"); }
 
-    public static Error connectionTimeout() { return new Error(-32604, "Conncection timmeout"); }
+    public static Error connectionTimeout() { return new Error(-32604, "Connection timeout"); }
 }

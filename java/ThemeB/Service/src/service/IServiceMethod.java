@@ -10,6 +10,6 @@ import jsonrpclibrary.JsonRpcResponse;
 
 public interface IServiceMethod {
 
-    JsonRpcResponse run(JsonRpcRequest parameters) throws RuntimeException;
+    JsonRpcResponse run(JsonRpcRequest request) throws RuntimeException;
 
 }
